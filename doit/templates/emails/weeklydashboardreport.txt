@@ -1,0 +1,8 @@
+Hi {{ user }}, here is your DoIT weekly dashboard report.
+
+{{ overdueCards }} overdue cards.
+{{ overdue_in_seven }} overdue in the next seven days.
+{{ closed }} {% if closed > 1 %} cards {% else %} card {% endif %} this past week
+
+
+Spearhead Systems 2018

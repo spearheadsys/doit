@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+{% block main-content %}
+{% load static %}
+
+<div class="uk-padding-small">
+
+  <ul uk-tab>
+    <li class="uk-active"><a href="#">My Profile
+      <span uk-tooltip="title: Editing will soon be enabled." uk-icon="icon: question; ratio: .5"></span></a>
+    </li>
+    {% if user.profile_user.is_org_admin %}
+    <li><a href="#">Company Settings <span uk-tooltip="title: Coming shortly." uk-icon="icon: question; ratio: .5"></span></a></li>
+    {% endif %}
+    {% if user.profile_user.is_operator %}
+    <li><a href="#">Operator Settings</a></li>
+    {% endif %}
+    {% if user.profile_user.is_superuser %}
+    <li><a href="#">Superuser Settings</a></li>
+    {% endif %}
+  </ul>
+  <ul class="uk-switcher uk-margin">
+    <li>
+      <div class="uk-padding">
+
+        {{userform.as_p}}
+        {{userprofileform.as_p}}
+
+
+
+<!--        <p>First name: {{ user.first_name }}</p>-->
+<!--        <p>Last name: {{ user.last_name }}</p>-->
+<!--        <p>Username: {{ user.username }}</p>-->
+<!--        <p>Password: ***** </p>-->
+<!--        <p>Email: {{ user.email }}</p>-->
+<!--        {%if user.profile_user.company %}-->
+<!--          <p>Company: {{ user.profile_user.company }}</input>-->
+<!--        {% endif %}-->
+<!--        <p>User timezone: {{ user.profile_user.timezone }}</p>-->
+<!--        {% if user.profile_user.is_operator or user.profile_user.is_org_admin %}-->
+<!--          <p>Is Operator: {{ user.profile_user.is_operator }}</p>-->
+<!--          <p>Is on Call: {{ user.profile_user.is_oncall }}</p>-->
+<!--          <p>Is Superuser: {{ user.is_superuser }}</p>-->
+<!--          <p>Is Org Admin: {{ user.profile_user.is_org_admin }}</p>-->
+<!--          <p>Is Customer: {{ user.profile_user.is_customer }}</p>-->
+<!--        {% endif %}-->
+
+<!--        {% if userprofile and userprofile.picture %}-->
+<!--          <p>Picture: <img src="/media/{{ user.profile_user.picture }}"></p>-->
+<!--        {% else %}-->
+<!--        <p>Picture: <span uk-icon="icon: user;"></span>-->
+<!--        {% endif %}-->
+      </div>
+
+    </li>
+    <li>
+      <p>Company settings go here</p>
+    </li>
+    <li>Operator settings go here</li>
+    <li>Superuser settings go here</li>
+  </ul>
+
+
+
+</div>
+
+{% endblock main-content %}
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}
+
+
+
+

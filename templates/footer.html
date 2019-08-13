@@ -1,0 +1,297 @@
+{% load static %}
+
+<!-- TODO - add datepicker stuff only to necessary pages -->
+<script src="{% static "js/bootstrap-datepicker.js" %}"></script>
+<script src="{% static "js/daterangepicker.js" %}"></script>
+
+
+<!-- test bbb -->
+<script>
+$(document).ready(function(){
+  var column_form_index=0;
+  $("#add_column").click(function(){
+    column_form_index++;
+    $(this).parent().before($("#column_form").clone().attr("id","column_form" + column_form_index));
+    $("#column_form" + column_form_index).css("display","inline");
+    $("#column_form" + column_form_index).css("display","inline");
+    $("#column_form" + column_form_index + " :input").each(function(){
+        $(this).attr("id",$(this).attr("id") + column_form_index);
+        });
+    $("#remove_column" + column_form_index).click(function(){
+        $(this).closest("div").remove();
+    });
+  });
+});
+</script>
+<!-- end test bbb -->
+
+{% if page_name == "Edit Card" %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".edit-card-main-content").animate({ scrollTop: $('.edit-card-main-content').prop("scrollHeight")}, 1000);
+});
+</script>
+{% endif %}
+
+{% if page_name == "Cards" %}
+<!-- BEGIN NEW UIKIT -->
+<script type="text/javascript">
+    // generic: log start, added, removed, stop (useful for debugging)
+    // var util = UIkit.util;
+    // util.ready(function () {
+    //     util.on(document.body, 'start moved added removed stop', function (e, sortable, el) {
+    //         //console.log(e.type, sortable, el);
+    //     });
+    // });
+    // end generic
+
+  {% for column in columns %}
+  // add card to new column. then update order
+    UIkit.util.on('#{{column}}', 'added', function (e, el, type) {
+      // console.log("card is " + e.detail[1].id);
+      var card = e.detail[1].id
+      var column = e.target.attributes[1].value;
+      console.log("card is " + card);
+      console.log("destination column " + column)
+
+      var sortResult = { elementsOrder: [] };
+      $('#{{column}} > li').each(function () {
+          var currentEl = $(this);
+          sortResult.elementsOrder.push(currentEl[0].id);
+      });
+      $.ajax({
+          type: "POST",
+          //async: true,
+          url: "/cards/updatecardorder/",
+          //traditional: true,
+          data: {
+            arr: JSON.stringify(sortResult)
+            }
+      });
+
+      //UIkit.notification(`"${item.detail[1].id}" was added.`, 'success');
+      $.ajax({
+      type: "POST",
+      url: "/cards/movecard/",
+      data: {
+        card: card,
+        column: column,
+        }
+      });
+    });
+    // end add card to new column
+
+  //  update card order (move within column)
+  UIkit.util.on('#{{column}}', 'moved', function (e, sortable, el) {
+    var sortResult = { elementsOrder: [] };
+    $('#{{column}} > li').each(function () {
+        var currentEl = $(this);
+        sortResult.elementsOrder.push(currentEl[0].id);
+    });
+    $.ajax({
+        type: "POST",
+        //async: true,
+        url: "/cards/updatecardorder/",
+        //traditional: true,
+        data: {
+          arr: JSON.stringify(sortResult)
+          }
+    });
+  });
+  // end update card order
+  {% endfor %}
+</script>
+{% endif %}
+<!--END NEW UIKIT -->
+
+
+<!-- our js -->
+<script src="{% static "js/cards.js" %}"></script>
+
+
+{%  if page_name == "DoIT" or page_name == "Reports" %}
+  <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.css"/>-->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/r-2.2.2/datatables.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.css"/>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/r-2.2.2/datatables.min.js"></script>
+  <!--<script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.js"></script>-->
+
+  <script type="text/javascript">
+  $(document).ready( function () {
+    var report = $('#reports').DataTable({
+        buttons: [
+            'copy', 'pdf', 'csv', 'excel'
+        ]
+  });
+    report.buttons().container().appendTo( $('.col-sm-6:eq(0)', report.table().container() ) );
+  } );
+
+  $(function() {
+    $('input[name="daterange"]').daterangepicker(
+    {
+      timePicker: true,
+      timePicker24Hour: true,
+      locale: {
+          format: 'YYYY-MM-DD H:mm'
+      },
+      ranges: {
+       'Today': [moment(), moment()],
+       'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+       'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+       'This Month': [moment().startOf('month'), moment().endOf('month')],
+       'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      }
+    }
+    );
+  });
+  </script>
+
+<script>
+      <!-- updated due date -->
+      $(function() {
+        $( "#id_period_from" ).datepicker();
+        $( "#id_period_to" ).datepicker();
+      });
+</script>
+
+    <!-- datatables ajax -->
+    {# NOTE / TODO: there is probably a much better way to do this.#}
+<script type="text/javascript">
+
+  $.extend( $.fn.dataTable.defaults, {
+    "responsive": true,
+    "autoWidth": true,
+    "searching": true,
+    "paging":    false,
+    "stateSave": true
+  } );
+
+  $(document).ready( function () {
+    {# incidents_table #}
+    $('#incidents-table').DataTable({
+      "processing": true,
+      "deferRender": true,
+      "serverSide": true,
+      "paging": true,
+      "ordering": true,
+      {% if request.user.profile_user.is_operator %}
+       "order": [[ 5, "asc" ]],
+      {% endif %}
+      "ajax": {
+        url: "/open_incidents_ajax",
+      },
+      // TODO: operators and superuser have different columns to view
+      // we should probably have different columnDefs for each type of user
+      "columnDefs": [
+        {
+          "targets": 0,
+          "render": function ( data, type, row, meta ) {
+            return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
+        },
+        {
+          "targets": 4,
+          "render": function ( data, type, row, meta ) {
+            return moment(data).fromNow();
+          }
+        }
+      ]
+    });
+
+    {# closed_cards_ajax #}
+    $('#closedcards-table').DataTable({
+      "processing": true,
+      "deferRender": true,
+      "serverSide": true,
+      "paging": true,
+      "ajax": {
+        url: "/closed_cards_ajax",
+      },
+      "columnDefs": [
+        {
+          "targets": 0,
+          "render": function ( data, type, row, meta ) {
+            return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
+        },
+        {
+          "targets": 4,
+          "render": function ( data, type, row, meta ) {
+            return moment(data).fromNow();
+          }
+        }
+      ]
+    });
+
+    {# overdue_cards_ajax #}
+    $('#overdue-table').DataTable({
+      responsive: true,
+      "autoWidth": true,
+      "processing": true,
+      "deferRender": true,
+      "serverSide": true,
+      {% if user.profile_user.is_operator %}
+      "order": [[ 5, "desc" ]],
+      {% endif %}
+      paging: true,
+      "ajax": {
+        url: "/overdue_cards_ajax",
+      },
+      "columnDefs": [
+        {
+          "targets": 0,
+          "render": function ( data, type, row, meta ) {
+            return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
+        },
+        {
+          "targets": [1, 2, 3, 4, 6, 7],
+          "orderable": false,
+        },
+        {
+          "targets": 5,
+          "render": function ( data, type, row, meta ) {
+            return moment(data).fromNow();
+          }
+        }
+      ]
+    });
+
+
+    {# open_cards_ajax #}
+    $('#yourcards-table').DataTable({
+      dom: 'lBfrtip',
+      buttons: [
+          'copy', 'pdf', 'csv', 'excel'
+      ],
+      responsive: true,
+      "autoWidth": true,
+      "processing": true,
+      "deferRender": true,
+      "serverSide": true,
+      "order": [[ 5, "desc" ]],
+      paging: true,
+      "ajax": {
+        url: "/open_cards_ajax",
+      },
+      "columnDefs": [
+        {
+          "targets": 0,
+          "render": function ( data, type, row, meta ) {
+            return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
+        },
+        {
+          "targets": 5,
+          "render": function ( data, type, row, meta ) {
+            return moment(data).fromNow();
+          }
+        }
+      ]
+    });
+  });
+</script>
+
+{%  endif %}
+
+  </body>
+</html>

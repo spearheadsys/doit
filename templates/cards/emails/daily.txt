@@ -1,0 +1,12 @@
+Hi {{username}},
+
+Here is your DoIT daily Cards report.
+
+All your Cards: {{cardlist|length}}
+Overdue Cards: {{overduecards|length}}
+Cards due today: {{duetoday}}
+
+Here is a list of your overdue cards:
+{% for card, due_date in overduecards.items %}
+    {{card}} - {{due_date}}
+{% endfor %}

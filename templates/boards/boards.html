@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+{% block main-content %}
+
+<!--  uikit -->
+<div class="uk-padding uk-grid-small uk-child-width-1-1@s uk-child-width-1-2@m uk-child-width-1-4@l uk-grid-match uk-grid uk-grid-divider" uk-grid>
+  {% for board in boards %}
+  <div class="uk-animation-toggle " tabindex="0">
+    <div class="uk-card-medium uk-card-body uk-animation-fade uk-animation-slow uk-inline" style="background: {{board.color}};" data-boardlink="/cards/?board={{board.id}}" onclick="openBoard(this);">
+      <div>
+        <h3 class="uk-margin-remove-bottom">{{board.name}}</h3>
+        <p class="uk-text uk-margin-remove-top uk-text-small"><time datetime="{{board.board_created_time}}">{{board.board_created_time}}</time></p>
+        <p>{{board.description|slice:":50"}}</p>
+        <p class="uk-text-small">{{ board.allopen|default_if_none:"0" }} Open cards | {{board.all_closed_cards}} Closed cards | {{ board.alloverdue }} Overdue</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+<!-- end uikit -->
+{% endblock main-content %}
+
+{% block footer %}
+  <script type="text/javascript">
+    function openBoard(link) {
+      window.location = link.getAttribute('data-boardlink');
+    }
+  </script>
+  {% include "footer.html" %}
+{% endblock footer %}

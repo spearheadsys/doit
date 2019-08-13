@@ -1,0 +1,39 @@
+{% load static %}
+
+{% include "header.html" %}
+
+ <body>
+
+{% include "menu.html" %}
+
+    <!-- Begin page content -->
+    <div class="container">
+
+        <h1>Add a Column</h1>
+
+        <form id="addcolumn_form" method="post" action="/cards/addcolumn/">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" name="submit" value="Create Column" />
+        </form>
+
+    </div>
+<!-- TODO: add addcolumn modal -->
+    <!-- footer -->
+    <div class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <span class="navbar-text">
+                Something useful
+            </span>
+        </div>
+    </div>
+    <!-- end footer -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+
+  </body>
+</html>

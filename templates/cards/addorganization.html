@@ -1,0 +1,52 @@
+{% load static %}
+
+{% include "header.html" %}
+
+ <body>
+
+{% include "menu.html" %}
+
+    <!-- Begin page content -->
+    <div class="container">
+
+        <h1>Add an Organization</h1>
+
+        <form id="addorganization_form" method="post" action="/organizations/addorganization/">
+            {% csrf_token %}
+
+            {{ addOrganizationForm.as_ul }}
+
+            <input type="submit" name="submit" value="Create Organization" />
+        </form>
+
+
+    </div>
+
+    <!-- footer -->
+    <div class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <span class="navbar-text">
+                Something useful
+            </span>
+        </div>
+    </div>
+    <!-- end footer -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/jquery-ui-1.10.4.min.js" %}"></script>
+	<!-- used for datepicker modal addcard -->
+	<script src="{% static "js/jquery-ui-1.10.4.min.js" %}"></script>
+
+    <script>
+        <!-- updated due date -->
+        $(function() {
+          $( "#id_due_date" ).datepicker();
+        });
+    </script>
+
+  </body>
+</html>

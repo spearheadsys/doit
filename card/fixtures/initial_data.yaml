@@ -1,0 +1,47 @@
+# begin columntypes
+- model: card.columntype
+  pk: 1
+  fields:
+    name: Someday
+    created_time: 2016-01-10
+    modified_time: 2016-01-10
+- model: card.columntype
+  pk: 2
+  fields:
+    name: Actions
+    created_time: 2016-01-10
+    modified_time: 2016-01-10
+- model: card.columntype
+  pk: 3
+  fields:
+    name: Working
+    created_time: 2016-01-10
+    modified_time: 2016-01-10
+- model: card.columntype
+  pk: 4
+  fields:
+    name: Done
+    created_time: 2016-01-10
+    modified_time: 2016-01-10
+- model: card.columntype
+  pk: 4
+  fields:
+    name: Waiting
+    created_time: 2016-01-10
+    modified_time: 2016-01-10
+# end columtypes
+
+## begins users and profiles
+- model: auth.user
+  pk: 1
+  fields:
+    username: "doitadmin"
+    first_name: "Doit"
+    last_name: Admin
+    is_active: True
+    is_superuser: True
+    is_staff: True
+    # password is doit
+    password: "pbkdf2_sha256$12000$H2iAA5aYIpch$7ptLGFqrnVNX6bodQuVwlR8oEOdCfs23oyFY33CFLnw="
+    email: root@localhost
+## end users and profiles

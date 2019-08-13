@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% include "menu.html" %}
+
+{% block main-content %}
+{% load static %}
+
+<div class="container"> <!-- main div -->
+    <div>
+        <div>
+            <ul>
+            {% for i in todays_cards %}
+                <li><a href="/cards/editcard/{{i.id}}"><img src="/media/{{i.owner.user_related_name.picture}}" class="user-picture"> {{i.title}} - {{i.due_date}}</a></li>
+            {%endfor%}
+            </ul>
+        </div>
+    </div>
+
+
+<div> <!-- close main div -->
+
+<!-- gif loader -->
+<div id='loadingmessage' style='display:none'>
+  <img src="{% static  "img/loader.gif" %}"/>
+</div>
+<!-- end gif loader -->
+
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}

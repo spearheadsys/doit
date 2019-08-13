@@ -1,0 +1,33 @@
+{% load static %}
+<!-- Begin page content -->
+<div class="container">
+    <div class="row">
+
+		<ul class="nav nav-tabs" role="tablist">
+		  <li data-toggle="tab" class="active">
+			  <a href="#coldetails" data-toggle="tab">Column details</a>
+		  </li>
+		  <li data-toggle="tab" class="">
+			  <a href="#colorger" data-toggle="tab">Column order</a>
+			  #TODO: rearrange column order
+		  </li>
+		</ul>
+
+		<div class="tab-content">
+
+		  <div class="tab-pane fade in active" id="coldetails">
+		   <form id="editcolumn_form" method="POST" action="/cards/editcolumn/{{col.id}}" class="form-inline">
+				<div class="form-group">
+			   	<!-- {% csrf_token %} -->
+					{% load crispy_forms_tags %}
+					{% crispy editColumnForm  %}
+					<br />
+					<br />
+					<input type="submit" class="btn-primary" name="submit" value="Save Column" />
+				</div>
+			</form>
+		  </div>
+		</div>
+    </div>
+</div>
+

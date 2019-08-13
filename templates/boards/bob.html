@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% include "menu.html" %}
+
+{% block main-content %}
+<style>
+.filter-table .quick { margin-left: 0.5em; font-size: 0.8em; text-decoration: none; }
+.filter-table .quick:hover { text-decoration: underline; }
+td.alt { background-color: #ffc; background-color: rgba(255, 255, 0, 0.2); }
+</style>
+
+
+<div class="card-container">
+    <div>
+        <div>
+            <h6>BoB
+            <a href="#" id="myCards" title="Toggle cards assigned to you">Assigned to me</a></h6>
+        </div>
+    </div>
+
+
+<table class="table table-hover">
+    <caption>BoB - All open cards</caption>
+
+    <thead>
+      <tr>
+         <th>Board</th>
+         <th>Card</th>
+         <th>Column</th>
+         <th>Due Date</th>
+         <th>Owner</th>
+         <th>Company</th>
+         <th>Priority</th>
+         <th>Created time</th>
+      </tr>
+    </thead>
+
+    <tbody>
+        {% for card in cards %}
+        <tr
+            data-owner="{{ card.owner }}"
+            class="bob card-link"
+            id="{{ card.id }}"
+            data-id="{{card.id}}"
+            data-path="/cards/editcard/{{ card.id }}"
+            {% if card.type == "IN" %}
+            style="background-color: rgba(221, 0, 3, 0.62);"
+            {% else %}
+            style="background-color: white;"
+            {% endif %}
+        >
+            <td>{{ card.board }}</td>
+            <td>
+                {{ card }}
+            </td>
+            <td>{{ card.column.usage }}</td>
+            <td>{{ card.due_date }}</td>
+            <td>{{ card.owner }}
+                {% if card.owner.user_related_name.picture %}
+                <img class="user-picture"
+                 src="{{ card.owner.user_related_name.picture.url }}" />
+                {% else %}
+                <i class="card-owner glyphicon glyphicon-user" title="If {{ card.owner }} had a profile picture it would be great!"></i>
+                {% endif %}
+            </td>
+            <td>{{ card.company }}</td>
+            <td>{{ card.priority }}</td>
+            <td>{{ card.created_time }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<!-- AddCard Modal -->
+<div class="modal fade" id="addCardModal" tabindex="-1"
+    role="dialog" aria-labelledby="addCardLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
+            aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="addCardLabel">Add Card</h4>
+      </div>
+      <div class="modal-body">
+			<form id="addcard_form" method="POST" class=""
+                role="form" action="/cards/addcard/">
+				{% csrf_token %}
+
+			{{ addCardForm.title }}
+            {{ addCardForm.description }}
+            {{ addCardForm.owner }}
+            {{ addCardForm.watchers }}
+                {% if boardname.company.id %}
+                    <input id="id_company" name="company"
+                           placeholder="Search company name"
+                           type="hidden"
+                           value='{{ boardname.company.id }}'>
+                {% else %}
+                    {{ addCardForm.company }}
+                {% endif %}
+
+            {{ addCardForm.priority }}
+            {{ addCardForm.type }}
+            <br>
+            {{ addCardForm.estimate }}
+
+            <!-- TODO: when using add button from column we need to pass the
+            column ID along -->
+            {{ addCardForm.column }}
+
+            {{ addCardForm.due_date }}
+            {{ addCardForm.board }}
+				<br />
+				<input type="button" class="btn btn-primary"
+                    value="Create Card" onclick="validateAddCardForm()"/>
+			</form>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end addcard modal -->
+
+<!-- editcard Modal -->
+<div class="modal fade" id="editCardModal" tabindex="-1" role="dialog" aria-labelledby="editCardLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
+            aria-hidden="true">&times;</button>
+      </div>
+      	<div class="modal-body" style="overflow: visible;">
+
+	  	</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end editcard modal -->
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}

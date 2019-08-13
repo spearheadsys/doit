@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+{% block main-content %}
+  {{comment_form.media}}
+  {{editcard_form.media}}
+{% load humanize %}
+
+
+<!--NEW -->
+<div class="uk-padding-small">
+  <div class="uk-child-width-expand uk-grid-divider uk-grid-small uk-grid-collapse" uk-grid>
+    <div class="uk-width-1-4">
+      <div style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
+        <h4 class="uk-heading-bullet">Card details</h4>
+        {% if card.closed %}
+
+          <a class="uk-button-small uk-button-primary" href="/cards/reopencard/{{card.id}}">Reopen Card</a>
+
+
+        {% else %}
+          <a class="uk-button-small uk-button-danger" href="/cards/closecard/{{card.id}}">Close Card</a>
+        {% endif %}
+        <!-- TODO: define escalation <a class="uk-button-small uk-button-secondary" href="/cards/closecard/{{card.id}}">Escalate</a>-->
+
+        <input class="uk-input uk-text-lead" disabled value="{{editcard_form.title.value }}">
+
+        <div class="uk-margin">
+          <div uk-form-custom="target: > * > span:last-child">
+            <span>
+              <span uk-icon="icon: warning"></span> {{ card.priority }} Priority
+              <span></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <div class="uk-form-controls">
+            {{ editcard_form.owner.label}}
+            {{ card.owner.first_name }} {{ card.owner.last_name }}
+          </div>
+        </div>
+
+        <h4 class="uk-heading-bullet">Attachments</h4>
+        <!-- attachments -->
+        <div>
+
+          <form action="/attachments/addattachments/" class="uk-form-stacked"
+              enctype="multipart/form-data" id="attachment_form" method="POST">
+              {% csrf_token %}
+              <div>
+                <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
+
+                <div class="js-upload uk-placeholder uk-text-center">
+                  <span uk-icon="icon: cloud-upload"></span>
+                  <span class="uk-text-middle">Attach files by dropping them here or</span>
+                  <div uk-form-custom>
+                    <input multiple name="content" type="file">
+                    <span class="uk-link">selecting one</span>
+                  </div>
+                </div>
+
+              </div>
+          </form>
+
+          <progress class="uk-progress" hidden id="js-progressbar" max="100" value="0"></progress>
+          <script>
+              var bar = document.getElementById('js-progressbar');
+              UIkit.upload('.js-upload', {
+                  url: '/attachments/addattachments/',
+                  params: {
+                      'card' :'{{card.id}}',
+                  },
+                  multiple: true,
+                  type: "json",
+                  beforeSend: function () {
+                      console.log('beforeSend', arguments);
+                  },
+                  beforeAll: function () {
+                      console.log('beforeAll', arguments);
+                  },
+                  load: function () {
+                      console.log('load', arguments);
+                  },
+                  error: function () {
+                      console.log('error', arguments);
+                  },
+                  complete: function () {
+                    console.log('complete', arguments);
+                    var name = arguments[0].response['name'];
+                    var url = arguments[0].response['url'];
+                    content = '<li>';
+                    content += '<a href="/media/' + url + '" target="_blank">';
+                    content += '<span uk-icon="image"></span>';
+                    content += '<span>' + name + '</span>';
+                    content += '</a>';
+                    content += '<li>';
+                    $(content).appendTo("#attachmentshere");
+                  },
+                  loadStart: function (e) {
+                      console.log('loadStart', arguments);
+                      bar.removeAttribute('hidden');
+                      bar.max = e.total;
+                      bar.value = e.loaded;
+                  },
+                  progress: function (e) {
+                      console.log('progress', arguments);
+                      bar.max = e.total;
+                      bar.value = e.loaded;
+                  },
+                  loadEnd: function (e) {
+                      console.log('loadEnd', arguments);
+                      bar.max = e.total;
+                      bar.value = e.loaded;
+                  },
+                  completeAll: function () {
+                      console.log('completeAll', arguments);
+                      setTimeout(function () {
+                          bar.setAttribute('hidden', 'hidden');
+                      }, 1000);
+                  }
+              });
+          </script>
+
+          <div class="uk-panel uk-panel-scrollable">
+            <ul class="uk-list" id="attachmentshere">
+              <div uk-lightbox>
+              {% for i in attachments %}
+
+
+                {% if 'image' in i.mimetype %}
+
+                  <li>
+                    <a href="/media/{{i}}" target="_blank">
+                      <span uk-icon="image"></span>
+                      <span>{{i.name}}</span>
+                    </a>
+                  </li>
+
+
+
+
+                {% elif 'video' in i.mimetype %}
+                  <li>
+                    <a href="/media/{{i}}" target="_blank">
+                      <span uk-icon="video-camera"></span>
+                      <span>{{i.name}}</span>
+                    </a>
+                  </li>
+
+
+
+                {% else %}
+                  <li>
+                    <a href="/media/{{i}}" target="_blank">
+                      <span uk-icon="file"></span>
+                      <span>{{i.name}}</span>
+                    </a>
+                  </li>
+                {% endif %}
+
+              {% endfor %}
+              </div>
+            </ul>
+          </div>
+        </div>
+        <!-- end attachments -->
+
+      </div>
+      <div class="uk-divider-icon"></div>
+    </div>
+    <!-- middle column -->
+    <div>
+      <div id="middle-column" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
+      <div>
+          {{ card.description|safe|escape|linebreaks }}
+      </div>
+      <div>
+      {% for comment in comments %}
+      <h6>
+        {% if comment.owner.profile_user.picture %}
+        <img class="user-picture" src="/media/{{ comment.owner.profile_user.picture }}">
+        {% else %}
+        <span uk-icon="icon: user;"></span>
+        {% endif %}
+
+        {%if request.user == comment.owner %}
+           <strong>You</strong> replied on {{comment.created_time}}</h6>
+        {% else %}
+            {{comment.owner}} replied on {{comment.created_time}}</h6>
+        {% endif %}
+        <div %} %} False class="private-comment" comment.public endif if is {% {%>{{comment|safe|escape|linebreaks}}</div>
+      <hr>
+      {% endfor %}
+      </div>
+      <div>
+        <span>
+          <a class="target-scroll-on-load" id="target-scroll-on-load"></a>
+          <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post">
+            {% csrf_token %}
+            {{comment_form.comment}}
+            <div class="comment-actions">
+              <input name="card" type="hidden" value="{{card.id}}" />
+              <input class="uk-button-small uk-button-primary uk-button-large"  type="submit" value="Reply" />
+            </div>
+          </form>
+        </span>
+      </div>
+      </div>
+      <div class="uk-divider-icon"></div>
+    </div>
+
+  <!-- end middle column -->
+    <!-- third column-->
+    <div class="uk-width-1-5">
+      <div style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto >
+        {% for i in tracker%}
+          <div >
+            <div class="marker">{{i.created_time}}</div>
+            <div class="timeline-content">
+              <h6>
+                 {%if i.owner.profile_user.picture %}
+                  <img class="user-picture" src="/media/{{i.owner.profile_user.picture}}"> {{i.owner.first_name}} {{i.owner.last_name}}
+                {% else %}
+                  <span uk-icon="icon: user;"></span> {{i.owner.first_name}} {{i.owner.last_name}}
+                {% endif %}
+              </h6>
+              <span>{{i.action}} <i class="timeline-text-green">{{i.created_time | naturaltime}}</i></span>
+              <p>{{i.updated_fields}}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="uk-divider-icon"></div>
+    </div>
+    <!-- end third column-->
+</div>
+<!--END NEW -->
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+    <!-- todo: get this working using uikit-->
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#middle-column").animate({ scrollTop: $('#middle-column').prop("scrollHeight")}, 1000);
+});
+</script>
+{% endblock footer %}

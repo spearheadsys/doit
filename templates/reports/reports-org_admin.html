@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+
+{% block main-content %}
+
+<nav class="navbar board">
+	<a href=""></a>&nbsp;
+</nav>
+
+<!-- Begin page content -->
+<div class="container">
+
+  <div class="row">
+
+      <div class="col-md-2" style="padding: 10px; margin: 10px; border:1px solid black; text-align:center; font-size: 40px; font-weight: bold;">{{ allCards.count }}
+      <p style="font-size:10px;">cards have been created</p></div>
+      </div>
+  </div>
+
+  <!-- reporting -->
+  <div class="panel panel-default">
+      <div class="panel-body">
+          <div class="col-md-3">
+              <form action="" method="post">{% csrf_token %}
+
+          </div>
+          <div class="col-md-3">
+                  <input size="25" type="text" name="daterange">
+          </div>
+          <div class="col-md-3">
+                  <input type="submit" class="btn btn-primary center-block" value="Apply" />
+              </form>
+          </div>
+      </div>
+  </div>
+
+  <h4>Report for the period {{ reportperiod }}</h4>
+
+  <div>
+      <table id="reports" class="table table-striped table-bordered" cellspacing="0" width="100%">
+          <thead>
+              <tr>
+                  <th>Organization</th>
+                  <th>Card</th>
+                  <th>Card Owner</th>
+                  <th>Worklog</th>
+                  <th>Priority</th>
+                  <th>Worklog Owner</th>
+                  <th>Worklog Created Time</th>
+                  <th>Card Created Time</th>
+                  <th>Minutes</th>
+                  <th>Overtime</th>
+                  <th>Billable</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for i in reportresult %}
+              <tr>
+                  <td>{{ i.content_object.company }}</td>
+                  <td><a href="/cards/editcard/{{i.content_object.id}}">{{i.content_object.id}}</a> - {{ i.content_object.title }}</td>
+                  <td>{{ i.content_object.owner }}</td>
+                  <td>{{ i|safe}}</td>
+                  <td>{{ i.content_object.priority}}</td>
+                  <td>{{ i.owner }}</td>
+                  <td>{{ i.created_time }}</td>
+                  <td>{{ i.content_object.created_time }}</td>
+                  <td>{{ i.minutes }}</td>
+                  <td>{{ i.overtime }}</td>
+                  <td>{{ i.billable }}</td>
+              </tr>
+              {%  endfor %}
+          </tbody>
+      </table>
+      <br >
+      <table class="table table-striped table-bordered" >
+          <tr>
+              <th>Total minutes (overtime+normal)</th>
+              <th>Total overtime minutes</th>
+              <th>Total normal minutes</th>
+              <th>Non-billable minutes</th>
+          </tr>
+          <tr style="background-color: lightblue;">
+              <td colspan=""><strong>Total minutes:</strong> {{ totalminutes.minutes__sum }}</td>
+              <td colspan=""><strong>Working:</strong> {{ totalworkingminutes.minutes__sum }}</td>
+              <td colspan=""><strong>Overtime:</strong> {{ totalovertimeminutes.minutes__sum }}</td>
+              <td colspan=""><strong>Non-billable:</strong> {{ nonbillable.minutes__sum }}</td>
+          </tr>
+      </table>
+  </div>
+  <!-- end reporting -->
+
+</div> <!-- end container -->
+
+
+
+
+
+
+
+{% endblock main-content %}
+
+{% block footer %}
+ {% include "footer.html" %}
+{% endblock footer %}

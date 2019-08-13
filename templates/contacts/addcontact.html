@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% include "menu.html" %}
+
+{% block main-content %}
+
+{% load humanize %}
+{% load static %}
+
+<!-- Begin page content -->
+<nav class="navbar board">
+
+  <a href="/contacts" >Contacts</a>&nbsp;|&nbsp;
+  <a href="#" class="active">Create a Contact</a>
+
+</nav>
+
+<div class="container">
+
+
+<!-- tabs right -->
+    <div class="tabbable tabs-right">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#cdetails" data-toggle="tab">Contact details</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="cdetails">
+                <div>
+                    <form id="addcontact_form" method="POST"
+                        action="/contacts/addcontact/" role="form" enctype="multipart/form-data">
+                            {% csrf_token %}                         
+                            {{ add_contact_form.as_p }}                             
+                            {{ add_userprofile_form.as_p }}                            
+                        <br><br>
+                        <input type="submit" class="btn btn-primary"
+                            name="submit" value="Save Contact" />
+                        <a type="button" class="btn btn-info"
+                            name="closecontact" href="/contacts/" value="Back to Contacts">Back to Contacts</a>
+                        <br><br>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- /tabs -->
+
+</div> <!-- end main container-->
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}

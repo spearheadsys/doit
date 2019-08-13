@@ -1,0 +1,12 @@
+.DS_Store
+*.pyc
+.idea
+*.db
+*.bak
+media/*
+settings.json
+.vscode
+doit/static/media/
+doit/settings/sph-production/
+tags
+doit/static/js/node_modules/

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cards</title>
+    </head>
+    <body>
+        <h1>{{ company }}</h1>
+		{% regroup worklogs by card as worklog_list %}
+
+		{% for case in worklog_list %}
+		<div class="row" style="border:1px solid black; padding: 10px;">
+			<label>Cards name: <span style="color: blue">{{ case.grouper.title }}</span></label>
+			<br />
+			{% for worklog in case.list %}
+			<label>Worklog description: <span style="color: blue">{{ worklog.description }}</span></label>
+			<div class="row" style="color: red;">
+				Hours: {{ worklog.hours }}
+				Minutes: {{ worklog.minutes }}
+				Overtime hours: {{ worklog.overtime_hours }}
+				Overtime minutes: {{ worklog.overtime_minutes }}
+			</div>
+			{% endfor %}
+
+			<!-- <div class="row">
+				- Company ID: {{ case.grouper.company.name }}
+			</div> -->
+
+		</div>
+		<br />
+	{% endfor %}
+
+	<div class="row">
+		Total hours: {{ total_hours.hours__sum }}
+		Total minutes: {{ total_minutes.minutes__sum }} - ({% widthratio total_minutes.minutes__sum 60.0 1.0 %} hours
+	rounded up)
+
+		Total overtime hours: {{ total_overtime_hours.overtime_hours__sum }}
+		Total overtime minutes: {{ total_overtime_minutes.overtime_minutes__sum }} - ({% widthratio total_overtime_minutes.overtime_minutes__sum 60.0 1.0 %} hours rounded up)
+	</div>
+
+
+    </body>
+</html>
+
+
+		<!-- card.owner.userprofile.picture.url -->

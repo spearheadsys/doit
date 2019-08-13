@@ -1,0 +1,31 @@
+{% load static %}
+
+{% include "header.html" %}
+
+ <body>
+
+{% include "menu.html" %}
+
+    <!-- Begin page content -->
+    <div class="container">
+
+        <h1>Add a Worklog</h1>
+        <!-- card id is: {{ card }} - and users: {{ user }} -->
+        <form id="addworklog_form" method="post" action="/cards/addworklog/">
+            {% csrf_token %}
+            <input type="hidden" name="card" value="{{ card }}">
+            {{ worklog_form }}
+            <input type="submit" name="submit" value="Add Worklog" />
+        </form>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static "js/jquery.min.js" %}"></script>
+    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <script src="{% static "js/jquery-ui-1.10.4.min.js" %}"></script>
+
+  </body>
+</html>

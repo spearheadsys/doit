@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% include "menu.html" %}
+
+{% block main-content %}
+{% load static %}
+
+<div class="container"> <!-- main div -->
+
+{{calendar}}
+
+<div> <!-- close main div -->
+
+
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}

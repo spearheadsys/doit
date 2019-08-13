@@ -1,0 +1,13 @@
+{% include "header.html" %}
+
+{% if user.is_authenticated %}
+  {% include "menu.html" %}
+{% endif %}
+
+{% block main-content %}
+
+{% endblock main-content %}
+
+{% block footer %}
+
+{% endblock footer %}

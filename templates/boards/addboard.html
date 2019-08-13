@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+{% block main-content %}
+{{addBoardForm.media}}
+
+
+{% if addBoardForm.errors %}
+    {% for field in addBoardForm %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in addBoardForm.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!--  uikit -->
+<div class="uk-container">
+
+  <h1 class="uk-heading-bullet">Create a new board</h1>
+    <form id="addboard_form" method="POST" role="form" action="/boards/addboard/">
+      {% csrf_token %}
+        <div class="input-group input-group-sm">
+        {{ addBoardForm.as_p }}
+    
+      <h2 class="uk-heading-bullet">Columns <span uk-icon="question" uk-tooltip="Please note currently you cannot
+        use spaces within Column names and you MUST  select a usage for your column!"></span></h2>
+
+      <!-- begin add/rem-->
+      <div id="column_form" class="">
+        <p>
+          <input type="text" name="title" placeholder="Column name">
+          {{ addColumnForm.usage.label }}
+          {{ addColumnForm.usage }}
+          <input type="button" id="remove_column" value="Remove column">
+        </p>
+      </div>
+      <p>
+        <input type="button" value="Add column" id="add_column">
+      </p>
+
+      <!-- end add/rem-->
+      </div>
+        <br />
+        <input type="submit" class="uk-button uk-button-default uk-text-bold" name="submit" value="Create Board" />
+    </form>
+
+</div>
+<!-- end uikit -->
+
+{% endblock main-content %}
+
+{% block footer %}
+  {% include "footer.html" %}
+
+  <script type="application/javascript">
+    $(function() {
+      $('#id_due_date, #id_start_time').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm'));
+        var formdata = $('#editcard_form');
+      });
+
+      $('#id_due_date, #id_start_time').on('cancel.daterangepicker', function(ev, picker) {
+          $(this).val('');
+      });
+
+      $('#id_due_date').daterangepicker({
+        "singleDatePicker": true,
+        "timePicker": true,
+        "timePickerIncrement": 15,
+        "timePicker24Hour": true,
+        "autoUpdateInput": false,
+        "autoApply": true,
+        "showCustomRangeLabel": false,
+        locale: {
+            format: 'YYYY-MM-DD HH:mm'
+        }
+      }, function(start, end, label) {
+      });
+    });
+  </script>
+
+{% endblock footer %}

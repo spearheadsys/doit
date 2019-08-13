@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% include "menu.html" %}
+
+{% block main-content %}
+
+{% load humanize %}
+{% load static %}
+
+<!-- Begin page content -->
+<div class="container">
+
+    <!-- editcontract breadcrumbs  -->
+    <div class="breadcrumb flat">
+        <a href="/contracts">Contracts</a>
+        <a href="#" class="active">{{contract.name}}</a>
+        <!-- <a id="tname" href="#" class="active"></a> -->
+    </div>
+    <!-- end editcontract breadcrumbs  -->
+
+<!-- tabs right -->
+    <div class="tabbable tabs-right">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#cdetails" data-toggle="tab">Contract details</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="cdetails">
+                <div>
+                    <form id="editcontract_form" method="POST"
+                        action="/contracts/editcontract/{{contract.id}}" role="form">
+                                {% csrf_token %}
+                                {{ add_contract_form.as_p }} 
+                        <br><br>
+                        <input type="submit" class="btn btn-primary"
+                            name="submit" value="Save Contract" />
+                        <a type="button" class="btn btn-info"
+                            name="closecontract" href="/contracts/" value="Back to Contracts">Back to Contracts</a>
+                        <a type="button" class="btn btn-danger"
+                            name="deletecontract" href="/contracts/deletecontract/{{contract.id}}" value="Delete Contract">Delete Contract</a>
+                        <br><br>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- /tabs -->
+
+</div> <!-- end main container-->
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}

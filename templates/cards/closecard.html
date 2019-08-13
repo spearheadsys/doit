@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+
+{% block main-content %}
+
+{% load humanize %}
+{% load static %}
+
+<!-- Begin page content -->
+<div class="container">
+
+    <p class="alert alert-success">
+        Your card has been closed. 
+        Thank you.
+    </p>
+
+</div> <!-- end main container-->
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}

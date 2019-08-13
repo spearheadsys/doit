@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+
+{% block main-content %}
+
+{% load humanize %}
+{% load static %}
+{{addcardform.media}}
+
+  <!-- Begin page content -->
+  <div class="container">
+    <div id="cdetails">
+      <br>
+      <form id="addcard_form" method="POST"
+          action="/cards/addcard/" role="form">
+                  {% csrf_token %}
+                  {{ addcardform.as_p}}
+          <br><br>
+          <input type="submit" class="btn btn-primary"
+              name="submit" value="Save Card" />
+          <a type="button" class="btn btn-info"
+              name="back" href="{{request.META.HTTP_REFERER}}" value="Back">Back</a>
+          <br><br>
+      </form>
+    </div>
+  </div> <!-- end main container-->
+
+
+{% endblock main-content %}
+{% block footer %}
+  <script type="application/javascript">
+  // for addcard datepicker
+      $(function() {
+      $('#id_due_date, #id_start_time').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm'));
+        var formdata = $('#editcard_form');
+        console.log("datepicker form submitted!")  // sanity check
+        // console.log()  // sanity check
+
+      });
+    $('#id_due_date, #id_start_time').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+      $('#id_due_date').daterangepicker({
+          "singleDatePicker": true,
+          "timePicker": true,
+          "timePickerIncrement": 15,
+          "timePicker24Hour": true,
+          "autoUpdateInput": false,
+          "autoApply": true,
+          "showCustomRangeLabel": false,
+          locale: {
+              format: 'YYYY-MM-DD HH:mm'
+          }
+      }, function(start, end, label) {
+      //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+      });
+
+      $('#id_start_time').daterangepicker({
+          "singleDatePicker": true,
+          "timePicker": true,
+          "timePickerIncrement": 15,
+          "timePicker24Hour": true,
+          "showCustomRangeLabel": false,
+          "autoUpdateInput": false,
+          locale: {
+              format: 'YYYY-MM-DD HH:mm'
+          }
+      }, function(start, end, label) {
+      //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+      });
+      // This is for addcontract/editcontract
+      $('#id_start_date').daterangepicker({
+          "singleDatePicker": true,
+          "timePicker": false,
+          "showCustomRangeLabel": false,
+          locale: {
+              format: 'YYYY-MM-DD'
+          }
+      }, function(start, end, label) {
+      //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+      });
+      // This is for addcontract/editcontract
+      $('#id_end_date').daterangepicker({
+          "singleDatePicker": true,
+          "timePicker": false,
+          "showCustomRangeLabel": false,
+          locale: {
+              format: 'YYYY-MM-DD'
+          }
+      }, function(start, end, label) {
+      //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+      });
+    });
+  </script>
+
+{% include "footer.html" %}
+{% endblock footer %}

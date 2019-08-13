@@ -1,0 +1,45 @@
+{% load static %}
+
+{% include "header.html" %}
+
+ <body>
+
+{% include "menu.html" %}
+
+    <!-- Begin page content -->
+    <div class="container">
+        <h1>Delete a Card</h1>
+
+
+
+        <form id="deletecard_form" method="post" action="/cards/deletecard/">
+            {% csrf_token %}
+
+            <div>
+                <select name="card">
+                    {% for card in cards %}
+                        <option value="{{ card.id }}">{{ card.title }}</option>
+                    {% endfor %}
+                 </select>
+            </div>
+            <br />
+
+            <input type="submit" name="submit" value="Delete Card" />
+        </form>
+
+    </div>
+
+
+    <!-- footer -->
+    <div class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <span class="navbar-text">
+                Something useful
+            </span>
+        </div>
+    </div>
+    <!-- end footer -->
+
+
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!-- Begin page content -->
+<div class="container">
+	<h1>Move a Card</h1>
+
+	<form id="movecard_form" method="post" action="/cards/movecard/">
+		{% csrf_token %}
+
+		<div>
+			<select name="card">
+				{% for card in cards %}
+					<option value="{{ card.id }}">{{ card.title }}</option>
+				{% endfor %}
+			 </select>
+		</div>
+		<div class="">
+			<select name="column">
+				{% for column in columns %}
+					<option value="{{ column.id }}">{{ column.title }}</option>
+				{% endfor %}
+			 </select>
+		</div>
+		<br />
+
+		<input type="submit" name="submit" value="Move Card" />
+	</form>
+
+</div>
+
+
+<!-- footer -->
+<div class="navbar navbar-default navbar-fixed-bottom">
+	<div class="container">
+		<span class="navbar-text">
+			Something useful
+		</span>
+	</div>
+</div>
+<!-- end footer -->

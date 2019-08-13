@@ -1,0 +1,8 @@
+Hi {{ card.owner.first_name }} {{ card.owner.last_name }},
+
+Here is your reminder for the Card "{{ card.title }}".
+
+You can view your card at the following link: https://doit.spearhead.systems/cards/editcard/{{card.id}}.
+
+
+Spearhead Systems 2018

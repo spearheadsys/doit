@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% include "menu.html" %}
+
+{% block main-content %}
+
+{% load humanize %}
+{% load static %}
+
+<!-- Begin page content -->
+<div class="container">
+
+    <!-- editcontact breadcrumbs  -->
+    <div class="breadcrumb flat">
+        <a href="/contacts">contacts</a>
+        <a href="#" class="active">{{contact.name}}</a>
+        <!-- <a id="tname" href="#" class="active"></a> -->
+    </div>
+    <!-- end editcontact breadcrumbs  -->
+
+    <div class="column-container">
+
+<!-- tabs right -->
+    <div class="tabbable tabs-right">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#cdetails" data-toggle="tab">contact details</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="cdetails">
+                <div>
+                    <form id="editcontact_form" method="POST"
+                        action="/contacts/editcontact/{{contact.id}}" role="form">
+                                {% csrf_token %}
+                                {{ add_contact_form.as_p }} 
+                                {{ add_userprofile_form.as_p }} 
+                        <br><br>
+                        <input type="submit" class="btn btn-primary"
+                            name="submit" value="Save contact" />
+                        <a type="button" class="btn btn-info"
+                            name="closecontact" href="/contacts/" value="Back to contacts">Back to contacts</a>
+                        <a type="button" class="btn btn-danger"
+                            name="deletecontact" href="/contacts/deletecontact/{{contact.id}}" value="Delete contact">Delete contact</a>
+                        <br><br>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<!-- /tabs -->
+
+</div> <!-- end main container-->
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}

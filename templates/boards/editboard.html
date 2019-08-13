@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% include "header.html" %}
+    {% include "menu.html" %}
+{% block main-content %}
+{% load static %}
+
+<div class="container">
+    <div class="row">
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li data-toggle="tab" class="active">
+                <a href="#cdetails" data-toggle="tab">Board details</a>
+            </li>
+            <li data-toggle="tab" class="">
+                <a href="#columns" data-toggle="tab">Columns</a>
+            </li>
+        </ul>
+
+
+        <div class="tab-content">
+
+            <div class="tab-pane fade in active" id="cdetails">
+                <form id="editboard_form" method="POST" action="/boards/editboard/{{board.id}}" class="form-inline">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit" class="btn btn-primary" name="submit" value="Save Board" />
+                        <a type="button" class="btn btn-info"
+                            name="closecard" href="/cards/?board={{board.id}}" value="Back to Board">Back to Board</a>
+                    </div>
+                </form>
+                
+            </div>
+            
+
+            <div class="tab-pane fade in" id="columns">
+                <br />
+                <ul id="sortableboardcolumns">
+                {% for column in board_columns %}
+                    <li class="col-sm-3 list-group-item">
+                        Name: {{ column.title }}<br/>
+                        Usage: {{ column.usage }}<br/>
+                        Order: {{ column.order }}</li>
+                {% endfor %}
+                    <li><span><i class="glyphicon-plus-sign glyphicon"></i></span></li>
+                </ul>
+                <br />
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock main-content %}
+{% block footer %}
+    {% include "footer.html" %}
+{% endblock footer %}

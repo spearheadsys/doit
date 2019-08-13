@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% include "menu.html" %}
+
+{% block main-content %}
+
+<!-- Begin page content -->
+<div class="container">
+    <ul id="sortable">
+        {% for board in boards %}
+            <li class="col-sm-3 orgBoard" style="background-color: {{board.color}}">{{ board }}
+                <a href="" data-toggle="modal" data-path="/boards/editboard/{{ board.id }}" data-target="#editBoardModal"
+                 class="edit-board">
+                    <i class="glyphicon glyphicon-edit"></i>
+                </a>
+                <a href="/cards/?board={{board.id}}" class="open-board">
+                    <i class="glyphicon glyphicon-open"></i>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+<!-- AddBoard Modal -->
+<div class="modal fade" id="addBoardModal" tabindex="-1"
+    role="dialog" aria-labelledby="addBoardLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
+            aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="addBoardLabel">Add Board</h4>
+      </div>
+      <div class="modal-body">
+			<form id="addboard_form" method="POST" class="form-inline"
+                role="form" action="/boards/addboard/">
+				{% csrf_token %}
+			<div class="input-group input-group-sm">
+				{{ addBoardForm.as_p }}
+
+                    <br />
+                    <hr />
+                      {{ addColumnForm.management_form }}
+                    <div id="formm" class="input-group input-group-sm">
+                        {% for form in addColumnForm %}
+                        <div class="toggle-next">
+                            <div>{{  form.title }} {{  form.wip }} {{  form.order }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+			</div>
+				<br />
+                    <input type="submit" class="btn btn-primary" name="submit" value="Create Board" />
+			</form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end addBoardModal modal -->
+
+<!-- EditBoard Modal -->
+<div class="modal fade" id="editBoardModal" tabindex="-1"
+role="dialog" aria-labelledby="editBoardLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+            aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="editBoardLabel">Edit Board</h4>
+        </div>
+        <div class="modal-body">
+
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- end addBoardModal modal -->
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}

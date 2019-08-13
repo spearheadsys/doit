@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% include "menu.html" %}
+
+{% block main-content %}
+{% load static %}
+
+<div class="container"> <!-- main div -->
+    <!-- contract breadcrumbs  -->
+    <div class="breadcrumb flat">
+        <a href="/contracts" class="active">Contracts</a>
+        <!-- <a href="/contracts//editcontract/{{ contract.id }}" class="active"><i class="glyphicon glyphicon-cog"></i> {{contract.name}}</a> -->
+        <a href="addcontract/"><i class="glyphicon glyphicon-cog"></i> Create a Contract</a>
+    </div>
+    <!-- end contract breadcrumbs  -->
+    
+    <div class="column-container"> <!-- begin cards container -->
+        <div>
+            <table class="table">
+                <tr>
+                    <th>Active?</th>
+                    <th>Company</th>
+                    <th>Contract name</th>
+                    <th>Contract SLA</th>
+                    <th>Contract Start date</th>
+                    <th>Contract End date</th>
+                    <th>Contract Owner</th>
+                    <th>Delete</th>
+                </tr>
+                {% for contract in contracts_list %}
+                <tr>
+                    <td>
+                        {% if contract.active %} <i class="glyphicon glyphicon-ok-circle" style="color:green"></i>{% else %}<i class="glyphicon glyphicon-ban-circle" style="color:red"></i>{%endif%}
+                    </td>
+                    <td>{{contract.company}}</td>
+                    <td><a href="/contracts/editcontract/{{contract.id}}">{{contract.name}}</a></td>
+                    <td>{{contract.sla}}</td>
+                    <td>{{contract.start_date}}</td>
+                    <td>{{contract.end_date}}</td>
+                    <td>{{contract.end_date}}</td>
+                    <td>{{contract.owner.first_name}} {{contract.owner.last_name}}</td>
+                    <td><a type="button" class="btn btn-danger" name="deletecontract" href="/contracts/deletecontract/{{contract.id}}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </table>    
+        </div>
+    </div> <!-- end cards container -->
+
+
+<div> <!-- close main div -->
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}

@@ -1,0 +1,16 @@
+## Please do not reply to this email ##
+
+Hi {{owner.first_name}},
+
+Below is a list of cards that are overdue. Please take a look and
+update accordingly:
+    - fix the issue and close the card if possible
+    - check the due date and update based on your analysis of when this card can be closed
+      - make sure to leave a relevant public comment so that all parties are made aware of this delay
+
+Here are your overdue cards:
+{% for card in overdue_cards %}
+- {{ card }} - {{card.company}} {{card.due_date}} || https://doit.spearhead.systems/cards/editcard/{{card.id }}
+{% endfor %}
+
+# This is email is a service from Spearhead Systems, delivered by DoIT.

@@ -1,0 +1,855 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+
+{% block main-content %}
+{% load humanize %}
+{% load cards_extras %}
+
+<!-- new uikit -->
+{% if user.profile_user.is_customer is not True %}
+<div class="uk-padding-small" uk-grid>
+    <div class="uk-visible@s uk-width-expand">
+        <div class="uk-card uk-card-default uk-card-body">
+          <canvas id="worklogchart"></canvas>
+        </div>
+    </div>
+    <div class="uk-width-expand">
+        <div class="uk-visible@s uk-card uk-card-default uk-card-body">
+          <canvas id="opencardchart"></canvas>
+        </div>
+    </div>
+    <div class="uk-width-expand">
+      <div class="uk-visible@s uk-card uk-card-default uk-card-body">
+        <canvas id="toptagschart"></canvas>
+      </div>
+    </div>
+</div>
+
+<!--<div class="uk-padding-small" uk-grid>-->
+<!--    <div class="uk-visible@s uk-width-expand">-->
+
+<!--      <div class="uk-card uk-card-default">-->
+<!--          <div class="uk-card-header">-->
+<!--              <h3 class="uk-card-title">Priorities</h3>-->
+<!--          </div>-->
+<!--          <div class="uk-card-body">You own 23 cards and 0 projects.</div>-->
+<!--          <div class="uk-card-footer">-->
+<!--            <dl class="uk-description-list">-->
+<!--              <dt>Description term</dt>-->
+<!--              <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>-->
+<!--              <dt>Description term</dt>-->
+<!--              <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</dd>-->
+<!--              <dt>Description term</dt>-->
+<!--              <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</dd>-->
+<!--          </dl>-->
+<!--          </div>-->
+<!--      </div>-->
+
+<!--    </div>-->
+<!--</div>-->
+
+
+<div class="uk-child-width-1-6@m uk-grid-small uk-grid-match uk-padding" uk-grid>
+  {% if noowner %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body" style="background-color: #F08080;">
+      <h3 class="uk-card-title uk-text-center">Cards without owner</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#noowner-modal" uk-toggle>{{noowner.count}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+         uk-tooltip="These Accounts have not had any activity for the past 14 days!">
+      <h3 class="uk-card-title uk-text-center">Accounts without activity</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#neglected-modal" uk-toggle> - </a>
+      </h1>
+    </div>
+  </div>
+
+  {% if cardswithoutcompany %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+         uk-tooltip="These Cards are not associated with a Company!">
+      <h3 class="uk-card-title uk-text-center">Cards without Company</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#cardswithoutcompany-modal" uk-toggle>{{cardswithoutcompany|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if backlogcards %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">Cards in the Backlog</h3>
+      <h1 class="uk-text-danger uk-text-center">
+        <a class="uk-text-danger" href="#backlog-modal" uk-toggle>{{backlogcards|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if mybacklogcards %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+         uk-tooltip="These Cards have not been prioriotized!">
+      <h3 class="uk-card-title uk-text-center">My Backlog Cards</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#mybacklog-modal" uk-toggle>{{mybacklogcards|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if myincidents %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">My Open Incidents</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#myincidents-modal"uk-toggle>{{myincidents|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if incidents %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">All Open Incidents</h3>
+      <h1 class="uk-text-danger uk-text-center">
+        <a class="uk-text-danger" href="#incidents" uk-scroll>{{incidents}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if mycards %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">My Cards</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#mycards-modal"uk-toggle>{{mycards|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% else %}
+
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">You have no Cards</h3>
+      <h6 class="uk-text-center">You're all caught up!
+        {% if allcards %}
+        Can you give us hand with some of <a href="#allcards" uk-scroll>these cards</a>.
+        {% endif %}
+      </h6>
+    </div>
+  </div>
+  {% endif %}
+  {% if myoverduecards %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">My Overdue Cards</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#myoverduecards-modal" uk-toggle>{{myoverduecards|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+  {% if alloverduecards %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+      {% if myoverduecards > 2 %} style="background-color: #F08080;" {% endif %}
+    >
+      <h3 class="uk-card-title uk-text-center">All Overdue Cards</h3>
+      <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" uk-scroll>{{alloverduecards}}</a></h1>
+    </div>
+  </div>
+  {% endif %}
+  {% if myoverdueboards %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+      {% if myoverdueboards > 2 %} style="background-color: #F08080;" {% endif %}
+    >
+      <h3 class="uk-card-title uk-text-center">My Overdue Boards</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#myoverdueboard-modal" uk-toggle>{{myoverdueboards|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if alloverdueboards %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+      {% if alloverdueboards > 2 %} style="background-color: #F08080;" {% endif %}
+    >
+      <h3 class="uk-card-title uk-text-center">All Overdue Boards</h3>
+      <h1 class="uk-text-danger uk-text-center">
+        <a class="uk-text-danger" href="#alloverdueboards-modal" uk-toggle>{{alloverdueboards|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="uk-hidden">
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">My Card SLA Breaches</h3>
+      <h1 class="uk-text-danger uk-text-center"> - </h1>
+    </div>
+  </div>
+
+  <div class="uk-hidden">
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">All Card SLA Breaches</h3>
+      <h1 class="{% if alloverdueboards > 0 %}uk-text-danger{% endif %} uk-text-center"> - </h1>
+    </div>
+  </div>
+
+  <div class="uk-hidden">
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">My Cards Overdue Today</h3>
+      <h1 class="{% if mycardsoverduetoday > 0 %}uk-text-danger{% endif %} uk-text-center"> - </h1>
+    </div>
+  </div>
+
+  <div class="uk-hidden">
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">Cards overdue in 5 days</h3>
+      <h1 class="uk-text-center"> - </h1>
+    </div>
+  </div>
+
+  {% if cardswithoutduedate %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body" style="background-color: #F08080;">
+      <h3 class="uk-card-title uk-text-center">Cards Without Due Date</h3>
+      <h1 class="uk-text-danger uk-text-center">
+        <a class="uk-text-danger" href="#cardswithoutduedate-modal" uk-toggle>{{cardswithoutduedate|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if cardswatcher %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">Cards I'm Watching</h3>
+      <h1 class="uk-text-danger uk-text-center">
+        <a class="uk-text-danger" href="#cardswatcher-modal" uk-toggle>{{cardswatcher|length}}</a>
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endif %}
+<!-- end uikit -->
+
+
+
+
+{% if user.profile_user.is_customer is True %}
+<div class="uk-child-width-1-6@m uk-grid-small uk-grid-match uk-padding-small" uk-grid>
+  <div uk-sticky="animation: uk-animation-slide-top; offset: 80">
+    <a class="uk-button uk-button-primary uk-button-small" href="cards/addcard">Submit a request</a>
+  </div>
+</div>
+
+<div class="uk-child-width-1-6@m uk-grid-small uk-grid-match uk-padding-small" uk-grid>
+
+  {% if myincidents %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">My Open Incindents</h3>
+      <h1 class="uk-text-danger uk-text-center">{{myincidents|length}}</h1>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if customerowncards %}
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">My Cards</h3>
+      <h1 class="uk-text-center"><a class="uk-text-danger" href="#customerowncards-modal" uk-toggle>{{customerowncards|length}}</a></h1>
+    </div>
+  </div>
+  {% endif %}
+
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+      <h3 class="uk-card-title uk-text-center">All Cards</h3>
+      <h1 class="uk-text-center"><a href="#allcards" uk-scroll>{{allcustomercards}}</a></h1>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Begin page content -->
+<div class="container"> <!-- container -->
+  <ul uk-accordion="multiple: true">
+    <li>
+      <a class="uk-accordion-title" href="#"><h3>Incidents</h3></a>
+      <div class="uk-accordion-content" id="incidents">
+        <div class="border">
+          <div class="well">
+            <table id="incidents-table" class="table table-striped table-bordered" width="100%">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Card</th>
+                  <th>Organization</th>
+                  <th>Status</th>
+                  <th>Age</th>
+                  {% if request.user.profile_user.is_operator %}
+                  <th>Owner</th>
+                  <th>Board</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </li>
+    {% if user.profile_user.is_customer is not True %}
+    <li>
+      <a class="uk-accordion-title" href="#"><h3>All Overdue</h3></a>
+      <div class="uk-accordion-content" id="alloverduecards">
+        <div class="border">
+          <div class="well">
+            <table id="overdue-table" class="table table-striped table-bordered" width="100%">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Card</th>
+                  <th>Organization</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Age</th>
+                  {% if request.user.profile_user.is_operator %}
+                  <th>Owner</th>
+                  <th>Board</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </li>
+    {% endif %}
+    <li>
+      <a class="uk-accordion-title" href="#"><h3>All Cards</h3></a>
+      <div class="uk-accordion-content" id="allcards">
+          <div class="border">
+            <div class="well">
+              <table id="yourcards-table" class="table table-striped table-bordered" width="100%">
+                  <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Card</th>
+                        <th>Organization</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Age</th>
+                        {% if request.user.profile_user.is_operator %}
+                        <th>Owner</th>
+                        <th>Board</th>
+                        {% endif %}
+                      </tr>
+                  </thead>
+                  <tbody>
+
+                  </tbody>
+              </table>
+            </div>
+          </div>
+      </div>
+    </li>
+    <li>
+      <a class="uk-accordion-title" href="#"><h3>Closed Cards</h3></a>
+      <div class="uk-accordion-content">
+          <div class="border">
+            <div class="well">
+              <table id="closedcards-table" class="table table-striped table-bordered" width="100%">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Card</th>
+                    <th>Organization</th>
+                    <th>Priority</th>
+                    <th>Created time</th>
+                    {% if request.user.profile_user.is_operator %}
+                    <th>Owner</th>
+                    <th>Board</th>
+                    {% endif %}
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+      </div>
+    </li>
+
+  </ul>
+  
+
+</div> <!-- /container -->
+
+<!--TODO Change ul to table, datatables would be cool-->
+
+<!-- MODALS -->
+  <!-- cards without owner -->
+<div id="noowner-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">Cards without an Owner</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in noowner %}
+          <li><a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card.title|safe}}
+            <span class="uk-text-warning">{{card.due_date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end cards without owner -->
+
+  <!-- myoverduecards-->
+<div id="myoverduecards-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">My Overdue Cards</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in myoverduecards %}
+          <li><a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card.title|safe}}
+            <span class="uk-text-warning">{{card.due_date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end myoverduecards  -->
+
+  <!-- alloverdueboards-->
+<div id="alloverdueboards-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">All Overdue Boards</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for board in alloverdueboards %}
+          <li>
+            <a href="/cards/?board={{board.id}}">{{board.id}}</a> {{board}} <span class="uk-text-warning">{{board.due_date}}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end alloverdueboards  -->
+
+  <!-- myoverdueboard-modal-->
+<div id="myoverdueboard-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">My Overdue Boards</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for board in myoverdueboards %}
+          <li>
+            <a href="/cards/?board={{board.id}}">{{board.id}}</a> {{board}}
+            <span class="uk-text-warning">{{board.due_date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end myoverdueboard-modal  -->
+
+  <!-- cardswithoutduedate-modal-->
+<div id="cardswithoutduedate-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">My Overdue Boards</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in cardswithoutduedate %}
+          <li>
+            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}} </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end cardswithoutduedate-modal  -->
+
+  <!-- cardswatcher-modal-->
+<div id="cardswatcher-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">Cards I'm Watching</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in cardswatcher %}
+          <li>
+            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}} 
+            <span class="uk-text-warning">{{card.due_date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end cardswatcher-modal  -->
+
+  <!-- myincidents-modal-->
+<div id="myincidents-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">My Incidents</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in myincidents %}
+          <li>
+            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
+            <span class="uk-text-warning">{{card.due_date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end myincidents-modal  -->
+
+{% if customerowncards %}
+  <!-- myincidents-modal-->
+<div id="customerowncards-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">Cards I participate in</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in customerowncards %}
+          <li>
+            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
+            {% if card.due_date %}<span class="uk-text-warning">{{card.due_date}}</span>{% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end myincidents-modal  -->
+{% endif %}
+
+{% if backlogcards %}
+  <!-- bacllogcards-modal-->
+<div id="backlog-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">Cards in the Backlog</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in backlogcards %}
+          <li>
+            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
+            <span class="uk-text-warning">{{card.due_date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end backlogcards-modal  -->
+{% endif %}
+
+{% if mybacklogcards %}
+  <!-- mybacklogcards-modal-->
+<div id="mybacklog-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">My Cards in the Backlog</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in mybacklogcards %}
+          <li>
+            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
+            <span class="uk-text-warning">{{card.due_date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end mybacklogcards-modal  -->
+{% endif %}
+
+
+{% if cardswithoutcompany %}
+  <!-- myincidents-modal-->
+<div id="cardswithoutcompany-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">Cards without a Company</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in cardswithoutcompany %}
+          <li>
+            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
+            <span class="uk-text-warning">{{card.due_date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end myincidents-modal  -->
+{% endif %}
+
+  <!-- mycards-modal-->
+<div id="mycards-modal" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">My Cards</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+        <ul class="uk-list-striped">
+          {% for card in mycards %}
+          <li>
+            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
+            <span class="uk-text-warning">{{card.due_date}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</div>
+  <!-- end mycards-modal  -->
+
+<!-- end MODALS-->
+
+{% endblock main-content %}
+
+{% block footer %}
+
+<!-- worklog bar chartjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+<script>
+window.chartColors = {
+	barnred: 'rgb(124, 10, 2)',
+	carminered: 'rgb(150, 0, 24)',
+	usflagred: 'rgb(191,10,48)',
+	burgundyred: 'rgb(75, 192, 192)',
+	ferarired: 'rgb(255,40,0)',
+	hibiscusred: 'rgb(180,55,87)',
+	vermilion: 'rgb(126,25,27)',
+	candyapple: 'rgb(255, 8, 0)',
+	raspberry: 'rgb(210,31,60)',
+	imperial: 'rgb(237, 41, 57)',
+	scarlet: 'rgb(255, 36, 0)',
+
+};
+
+var color = Chart.helpers.color;
+var ctx = document.getElementById('worklogchart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'polarArea',
+    data: {
+        labels: [{% for operator in total_minutes_per_op %} '{{operator.operator.user}}', {% endfor %}],
+        datasets: [{
+          data: [{% for minutes in total_minutes_per_op %} {{minutes.minutes|default_if_none:"0"}}, {% endfor %}],
+          backgroundColor: [
+						color(chartColors.barnred).alpha(0.5).rgbString(),
+						color(chartColors.carminered).alpha(0.5).rgbString(),
+						color(chartColors.usflagred).alpha(0.5).rgbString(),
+						color(chartColors.hibiscusred).alpha(0.5).rgbString(),
+						color(chartColors.ferarired).alpha(0.5).rgbString(),
+						color(chartColors.vermilion).alpha(0.5).rgbString(),
+						color(chartColors.raspberry).alpha(0.5).rgbString(),
+						color(chartColors.imperial).alpha(0.5).rgbString(),
+						color(chartColors.candyapple).alpha(0.5).rgbString(),
+						color(chartColors.scarlet).alpha(0.5).rgbString(),
+						color(chartColors.burgundyred).alpha(0.5).rgbString(),
+						color(chartColors.ferarired).alpha(0.5).rgbString(),
+						color(chartColors.vermilion).alpha(0.5).rgbString(),
+						color(chartColors.candyapple).alpha(0.5).rgbString(),
+					],
+        }],
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Worklog minutes for last 7 days'
+      },
+      responsive: true,
+      legend: {
+        display: false
+    },
+   }
+});
+</script>
+<!-- end worklog bar chartjs -->
+
+<!-- opencardchart bar chartjs -->
+<script>
+var color = Chart.helpers.color;
+var ctx = document.getElementById('opencardchart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [{% for owner in group_by_owner_card_list %} '{{owner}}', {% endfor %}],
+        datasets: [{
+          data: [{% for minutes in group_by_owner_card_list.values %} {{minutes|default_if_none:"0"}}, {% endfor %}],
+          backgroundColor: [
+						color(chartColors.barnred).alpha(0.5).rgbString(),
+						color(chartColors.carminered).alpha(0.5).rgbString(),
+						color(chartColors.usflagred).alpha(0.5).rgbString(),
+						color(chartColors.hibiscusred).alpha(0.5).rgbString(),
+						color(chartColors.ferarired).alpha(0.5).rgbString(),
+						color(chartColors.vermilion).alpha(0.5).rgbString(),
+						color(chartColors.carminered).alpha(0.5).rgbString(),
+						color(chartColors.usflagred).alpha(0.5).rgbString(),
+						color(chartColors.candyapple).alpha(0.5).rgbString(),
+						color(chartColors.ferarired).alpha(0.5).rgbString(),
+						color(chartColors.burgundyred).alpha(0.5).rgbString(),
+						color(chartColors.ferarired).alpha(0.5).rgbString(),
+						color(chartColors.vermilion).alpha(0.5).rgbString(),
+						color(chartColors.candyapple).alpha(0.5).rgbString(),
+					],
+        }],
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Open cards per user'
+      },
+      responsive: true,
+      legend: {
+        display: false
+    },
+   }
+});
+</script>
+<!-- end opencardchart -->
+
+<!-- toptags chart -->
+<script>
+var color = Chart.helpers.color;
+var ctx = document.getElementById('toptagschart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: [{% for tag in top_tags %} '{{tag}}', {% endfor %}],
+        datasets: [{
+          data: [{% for tag in top_tags.values %} {{tag.num_times}}, {% endfor %}],
+          backgroundColor: [
+						color(chartColors.barnred).alpha(0.5).rgbString(),
+						color(chartColors.carminered).alpha(0.5).rgbString(),
+						color(chartColors.raspberry).alpha(0.5).rgbString(),
+						color(chartColors.hibiscusred).alpha(0.5).rgbString(),
+						color(chartColors.ferarired).alpha(0.5).rgbString(),
+						color(chartColors.vermilion).alpha(0.5).rgbString(),
+						color(chartColors.imperial).alpha(0.5).rgbString(),
+						color(chartColors.usflagred).alpha(0.5).rgbString(),
+						color(chartColors.candyapple).alpha(0.5).rgbString(),
+						color(chartColors.scarlet).alpha(0.5).rgbString(),
+					],
+        }],
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Top 10 card tags'
+      },
+      responsive: true,
+      legend: {
+        display: false
+    },
+   }
+});
+</script>
+<!-- end toptags chart -->
+
+
+{% include "footer.html" %}
+
+{% endblock footer %}

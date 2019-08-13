@@ -1,0 +1,512 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+{% block main-content %}
+  {{comment_form.media}}
+  {{editcard_form.media}}
+{% load humanize %}
+
+<div class="uk-padding-small ">
+  <div class="uk-grid-small" uk-grid>
+    <div class="uk-width-1-4" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
+
+      <ul uk-accordion="multiple: false">
+        <li class="uk-open">
+          <a class="uk-accordion-title" href="#"><h4 class="uk-heading-bullet">Card details</h4></a>
+          <div class="uk-accordion-content" id="carddetails">
+            <form action="" class="uk-form-stacked" id="editcard_form" method="POST" role="form">
+            {% csrf_token %}
+            {{ editcard_form.board }}
+            {{ editcard_form.title }}
+          <div class="uk-margin-small">
+            <div>
+              <span class="uk-link">
+                <a class="uk-link" href="#movecard-modal" uk-toggle><span uk-icon="icon: move"></span>Board</a>
+                <span></span>
+              </span>
+            </div>
+
+            <div uk-form-custom="target: > * > span:last-child">
+              {{ editcard_form.column }}
+              <span class="uk-link">
+                <span uk-icon="icon: pencil"></span>Column
+                <span></span>
+              </span>
+            </div>
+          </div>
+            <div class="uk-margin-small">
+              <div uk-form-custom="target: > * > span:last-child">
+                {{ editcard_form.priority }}
+                <span class="uk-link">
+                  <span uk-icon="icon: pencil"></span>Priority
+                  <span></span>
+                </span>
+              </div>
+            </div>
+            <div class="uk-margin-small">
+              <div uk-form-custom="target: > * > span:last-child">
+                {{ editcard_form.type }}
+                <span class="uk-link">
+                  <span uk-icon="icon: pencil"></span>Type
+                  <span></span>
+                </span>
+              </div>
+            </div>
+            <div class="uk-margin-small">
+              <div class="uk-form-controls">
+                {{ editcard_form.start_time.label }}
+                {{ editcard_form.start_time }}
+              </div>
+            </div>
+            <div class="uk-margin-small">
+              <div class="uk-form-controls">
+                {{ editcard_form.due_date.label }}
+                {{ editcard_form.due_date }}
+              </div>
+            </div>
+
+            <div class="uk-margin-small">
+              <div class="uk-form-controls">
+                {{ editcard_form.company.label }}
+                {{ editcard_form.company }}
+              </div>
+            </div>
+            <div class="uk-margin-small">
+              <div class="uk-form-controls">
+                {{ editcard_form.owner.label}}
+                {{ editcard_form.owner}}
+              </div>
+            </div>
+            <div class="uk-margin-small">
+              <div class="uk-form-controls">
+                {{ editcard_form.watchers.label}}
+                {{ editcard_form.watchers}}
+              </div>
+            </div>
+            <div class="uk-margin-small">
+              <div class="uk-form-controls">
+                {{ editcard_form.estimate.label }}
+                {{ editcard_form.estimate }}
+              </div>
+            </div>
+            <div class="uk-margin-small">
+              <div class="uk-form-controls">
+                {{ editcard_form.tags.label }}
+                {{ editcard_form.tags }}
+              </div>
+            </div>
+          </form>
+          </div>
+        </li>
+
+        <li>
+          <a class="uk-accordion-title" href="#"><h4 class="uk-heading-bullet">Reminders</h4></a>
+          <div class="uk-accordion-content" id="reminders">
+            <form action="/cards/addreminder/" class="uk-form-stacked" id="addreminder_form" method="post">
+              {% csrf_token %}
+              {{ addreminder_form.as_p }}
+              <input name="card" type="hidden" value="{{card.id}}">
+              <div class="">
+                <a class="uk-button-small uk-button-default" href="#" onclick="send_reminder()"
+              type="submit">Add Reminder</a>
+
+                <a aria-controls="collapseReminder" aria-expanded="false"
+                class="uk-button-small uk-button-secondary"
+                 data-toggle="collapse" href="#collapseReminders"
+                  onclick="get_reminders({{ card.id }})">View Reminders
+                </a>
+              </div>
+              <!-- TODO: post a comment (added a reminder?)?-->
+            </form>
+            <!-- REMINDER MESSAGES -->
+            <!-- TODO: get via ajax the result (class) and the message itself -->
+            <div class="hidden alert alert-success" id="reminder-mess-success" role="alert">The reminder was posted succesfully.</div>
+            <div class="hidden alert alert-danger" id="reminder-mess-failed" role="alert">The reminder was not posted. Please try again.</div>
+            <div class="collapse reminder-body" id="collapseReminders"></div>
+            <!--=== END Collapsable REMINDERS  ===-->
+          </div>
+        </li>
+
+        <li>
+          <a class="uk-accordion-title" href="#"><h4 class="uk-heading-bullet">Tasks</h4></a>
+          <div class="uk-accordion-content" id="tasks">
+            <form action="/cards/addtask/" id="add_task_form" method="post" >
+              <!-- csrf token here -->
+              {% csrf_token %}
+              <input name="card" type="hidden" value="{{card.id}}">
+              <input class="uk-input" name="task" placeholder="Add a task" type="text"/>
+               <!-- TODO: assign tasks to owner! -->
+              <a class="uk-button-small uk-button-default" href="#" onclick="send_task()"
+              type="submit">Add Task</a>
+              <a aria-controls="collapseTasks" aria-expanded="false"
+              class="uk-button-small uk-button-secondary"
+              data-toggle="collapse" href="#collapseTasks"
+              onclick="get_tasks({{ card.id }})">View Tasks</a>
+            </form>
+            <div class="hidden alert alert-success" id="task-mess-success" role="alert">The task was posted succesfully.</div>
+            <div class="hidden alert alert-danger" id="task-mess-failed" role="alert">The task was not posted. Please try again.</div>
+            <div class="collapse worklogs-body" id="collapseTasks"></div>
+          </div>
+        </li>
+
+        <li>
+          <a class="uk-accordion-title" href="#"><h4 class="uk-heading-bullet">Attachments</h4></a>
+          <div class="uk-accordion-content" id="attachments">
+            <form action="/attachments/addattachments/" class="uk-form-stacked"
+              enctype="multipart/form-data" id="attachment_form" method="POST">
+              {% csrf_token %}
+              <div>
+                <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
+
+                <div class="js-upload uk-placeholder uk-text-center">
+                  <span uk-icon="icon: cloud-upload"></span>
+                  <span class="uk-text-middle">Attach files by dropping them here or</span>
+                  <div uk-form-custom>
+                    <input multiple name="content" type="file">
+                    <span class="uk-link">selecting one</span>
+                  </div>
+                </div>
+
+              </div>
+          </form>
+            <div>
+          <div class="uk-panel uk-panel-scrollable">
+            <ul class="uk-list" id="attachmentshere">
+              <div uk-lightbox>
+              {% for i in attachments %}
+
+
+                {% if 'image' in i.mimetype %}
+
+                  <li>
+                    <a href="/media/{{i}}" target="_blank">
+                      <span uk-icon="image"></span>
+                      <span>{{i.name}}</span>
+                    </a>
+                  </li>
+
+
+
+
+                {% elif 'video' in i.mimetype %}
+                  <li>
+                    <a href="/media/{{i}}" target="_blank">
+                      <span uk-icon="video-camera"></span>
+                      <span>{{i.name}}</span>
+                    </a>
+                  </li>
+
+
+
+                {% else %}
+                  <li>
+                    <a href="/media/{{i}}" target="_blank">
+                      <span uk-icon="file"></span>
+                      <span>{{i.name}}</span>
+                    </a>
+                  </li>
+                {% endif %}
+
+              {% endfor %}
+              </div>
+            </ul>
+          </div>
+        </div>
+
+            <progress class="uk-progress" hidden id="js-progressbar" max="100" value="0"></progress>
+          <script>
+              var bar = document.getElementById('js-progressbar');
+              UIkit.upload('.js-upload', {
+                  url: '/attachments/addattachments/',
+                  params: {
+                      'card' :'{{card.id}}',
+                  },
+                  multiple: true,
+                  type: "json",
+                  beforeSend: function () {
+                      console.log('beforeSend', arguments);
+                  },
+                  beforeAll: function () {
+                      console.log('beforeAll', arguments);
+                  },
+                  load: function () {
+                      console.log('load', arguments);
+                  },
+                  error: function () {
+                      console.log('error', arguments);
+                      //alert("error");
+                  },
+                  complete: function () {
+                    console.log('complete', arguments);
+                    var name = arguments[0].response['name'];
+                    var upurl = arguments[0].response['url'];
+                    //alert(name);
+                    content = '<li>';
+                    content += '<a href="/media/' + upurl + '" target="_blank">';
+                    content += '<span uk-icon="image"></span>';
+                    content += '<span>' + name + '</span>';
+                    content += '</a>';
+                    content += '<li>';
+                    $(content).appendTo("#attachmentshere");
+                  },
+                  loadStart: function (e) {
+                      console.log('loadStart', arguments);
+                      bar.removeAttribute('hidden');
+                      bar.max = e.total;
+                      bar.value = e.loaded;
+                  },
+                  progress: function (e) {
+                      console.log('progress', arguments);
+                      bar.max = e.total;
+                      bar.value = e.loaded;
+                  },
+                  loadEnd: function (e) {
+                      console.log('loadEnd', arguments);
+                      bar.max = e.total;
+                      bar.value = e.loaded;
+                  },
+                  completeAll: function (arguments) {
+                      console.log('completeAll', arguments);
+
+                      setTimeout(function () {
+                          bar.setAttribute('hidden', 'hidden');
+                      }, 1000);
+                  }
+              });
+          </script>
+          </div>
+
+        </li>
+
+       <li>
+        <a class="uk-accordion-title" href="#"><h4 class="uk-heading-bullet">History</h4></a>
+        <div class="uk-accordion-content" uk-overflow-auto id="history">
+
+          {% for i in tracker%}
+            <div >
+              <div class="marker">{{i.created_time}}</div>
+              <div class="timeline-content">
+                <h6>
+                  {%if i.owner.profile_user.picture %}
+                    <img class="user-picture" src="/media/{{i.owner.profile_user.picture}}"> {{i.owner.first_name}} {{i.owner.last_name}}
+                  {% else %}
+                    <span uk-icon="icon: user;"></span>  {{i.owner.first_name}} {{i.owner.last_name}}
+                  {% endif %}
+                </h6>
+                <span>{{i.action}} <i class="timeline-text-green">{{i.created_time | naturaltime}}</i></span>
+                <p>{{i.updated_fields}}</p>
+              </div>
+            </div>
+          {% endfor %}
+
+        </div>
+       </li>
+
+      </ul>
+    </div>
+    <!-- middle column -->
+
+    <div class="uk-width-expand">
+      <div id="middle-column" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
+       <div class="uk-card uk-card-default uk-card-hover uk-card-body uk-background-muted">
+        <div>
+          {{ card.description|safe|linebreaks }}
+        </div>
+        </div>
+      <br>
+
+        <div>
+        {% for comment in comments %}
+          <div>
+            <div class="uk-padding-small">
+              <span>{{comment.owner.first_name}} on</span>
+              <span>{{comment.created_time}} said:</span>
+            </div>
+            <div class="uk-card uk-card-default uk-card-hover uk-card-body {% if comment.public is False %} uk-background-muted{% endif %}">
+              <article class="uk-comment">
+                <header class="uk-comment-header uk-grid-medium uk-flex-middle {% cycle 'uk-align-right' 'uk-align-left' %}" uk-grid>
+                  {% if comment.owner.profile_user.picture %}
+                    <div class="uk-width-auto">
+                      <img class="uk-comment-avatar" src="/media/{{ comment.owner.profile_user.picture }}" width="60" height="60" alt="">
+                    </div>
+                  {% endif %}
+                </header>
+                <div class="uk-comment-body">
+                    <p>{{comment|safe|escape|linebreaks}}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+          <br>
+        {% endfor %}
+        </div>
+
+        <div>
+          <span>
+            <a class="target-scroll-on-load" id="target-scroll-on-load"></a>
+            <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post">
+              {% csrf_token %}
+              {{comment_form.comment}}
+              <div class="comment-actions">
+                <span>Billable?</span>
+                {{ comment_form.billable }}
+                <span>Overtime?</span>
+                {{ comment_form.overtime }}
+                <span>Minutes worked: </span>
+                {{ comment_form.minutes }}
+                <input name="card" type="hidden" value="{{card.id}}" />
+                <input class="uk-button-small uk-button-primary" name="public" type="submit" value="Share with customer" />
+                <input class="uk-button-small uk-button-default"  name="internal" type="submit" value="Share internally" />
+                <input class="uk-button-small uk-button-secondary"  name="public_close" type="submit" value="Share with customer and close" />
+              </div>
+            </form>
+          </span>
+        </div>
+
+      </div>
+    <div class="uk-divider-icon"></div>
+  </div>
+
+  <!-- end middle column -->
+</div>
+
+<!-- This is the movecard-modal -->
+<div id="movecard-modal" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body">
+    <h2 class="uk-modal-title">Move card</h2>
+
+    <form action="/cards/movecardtoboard/" method="POST" id="movecardtoboardform">
+      {% csrf_token %}
+      <input name="card" type="hidden" value="{{card.id}}">
+      <div class="uk-margin">
+        <select class="uk-select" id="movetoboard" name="board">
+          <option selected="true" disabled>Choose a board</option>
+          {% for board in boards %}
+            <option value="{{board.id}}">{{board}}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="uk-margin ">
+        <select class="uk-select uk-hidden" id="boardcolumn" name="column">
+
+        </select>
+      </div>
+
+      <p class="uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+        <button class="uk-button uk-button-primary" type="submit">Save</button>
+      </p>
+    </form>
+
+    <script>
+    $('#movetoboard').on('change', function(event){
+      var boardId = $(this).val();
+      $.ajax({
+          type: "POST",
+          async: false,
+          url: "/boards/getcolumns/",
+          //traditional: true,
+          data: {
+            arr: boardId
+          },
+          success: function (data) {
+            postresult = data;
+          }
+      });
+      $('#boardcolumn').empty();
+      $('#boardcolumn').removeClass('uk-hidden');
+      $('#boardcolumn').append('<option selected="true" disabled>Choose a column</option>');
+      $('#boardcolumn').prop('selectedIndex', 0);
+      $.each(postresult, function (key, entry) {
+        $('#boardcolumn').append($('<option></option>').attr('value', entry.id).text(entry.title));
+      })
+    });
+    </script>
+
+
+  </div>
+</div>
+
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+  <script type="application/javascript">
+    // for editcard datepicker, autosubmit
+  $(function() {
+      $('#id_due_date, #id_start_time').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm'));
+        var formdata = $('#editcard_form');
+        console.log("datepicker form submitted!")  // sanity check
+        // console.log()  // sanity check
+        doit_submit_form(formdata);
+
+    });
+    $('#id_due_date, #id_start_time').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+      $('#id_due_date').daterangepicker({
+          "singleDatePicker": true,
+          "timePicker": true,
+          "timePickerIncrement": 15,
+          "timePicker24Hour": true,
+          "autoUpdateInput": false,
+          "autoApply": true,
+          "showCustomRangeLabel": false,
+          locale: {
+              format: 'YYYY-MM-DD HH:mm'
+          }
+      }, function(start, end, label) {
+      //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+      });
+
+      $('#id_start_time').daterangepicker({
+          "singleDatePicker": true,
+          "timePicker": true,
+          "timePickerIncrement": 15,
+          "timePicker24Hour": true,
+          "showCustomRangeLabel": false,
+          "autoUpdateInput": false,
+          locale: {
+              format: 'YYYY-MM-DD HH:mm'
+          }
+      }, function(start, end, label) {
+      //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+      });
+      // This is for addcontract/editcontract
+      $('#id_start_date').daterangepicker({
+          "singleDatePicker": true,
+          "timePicker": false,
+          "showCustomRangeLabel": false,
+          locale: {
+              format: 'YYYY-MM-DD'
+          }
+      }, function(start, end, label) {
+      //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+      });
+      // This is for addcontract/editcontract
+      $('#id_end_date').daterangepicker({
+          "singleDatePicker": true,
+          "timePicker": false,
+          "showCustomRangeLabel": false,
+          locale: {
+              format: 'YYYY-MM-DD'
+          }
+      }, function(start, end, label) {
+      //console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+      });
+    });
+  </script>
+
+<!-- todo: get this working using uikit-->
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#middle-column").animate({ scrollTop: $('#middle-column').prop("scrollHeight")}, 1000);
+});
+</script>
+
+{% endblock footer %}

@@ -1,0 +1,10 @@
+## Please do not reply to this email ##
+
+A new Card has been created in which you participate.
+
+Card title: %s
+Description: %s
+
+For more details view https://doit.spearhead.systems/cards/editcard/%d
+
+# This is email is a service from Spearhead Systems, delivered by DoIT.

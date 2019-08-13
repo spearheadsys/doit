@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+{% block main-content %}
+
+{% load static %}
+{{addOrganizationForm.media}}
+<nav class="navbar board">
+	<a href="" data-toggle="modal" data-target="#addOrganizationModal">Add Organization</a>&nbsp;
+</nav>
+<!-- Begin page content -->
+<div class="container">
+
+  <div>
+    <p>TODO; show users that do not have a company assigned!</p>
+    <p>TODO; show organizations without email domains!</p>
+    <p>TODO; show organizations without SLA!</p>
+    <p>TODO; show/add/edit associated email domains per company!</p>
+    <p>TODO; show or even better prevent using same email domain for multiple companies!</p>
+
+  </div>
+
+
+  <div><!-- tabs container -->
+    <!-- Nav tabs -->
+      <!-- this is lame, the company name MUST begin with a CAPITAL letter -->
+    <ul class="nav nav-tabs" role="tablist">
+        {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+            <li role="presentation" {% if letter == "A" %} class="active" {% endif %}>
+                <a href="#letter-{{ letter }}" aria-controls="profile" role="tab" data-toggle="tab">{{ letter }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+          <div role="tabpanel"
+              {% if letter == "A" %} class="tab-pane active" {% else %} class="tab-pane" {% endif %}
+          id="letter-{{ letter }}">
+              {% for org in org_list %}
+                {% if org|make_list|first in letter %}
+                      <div class="col-md-1" style="border: 1px solid #BFBFCE; padding: 5px; width: auto; margin: 4px;">
+                          {% if org.logo %}
+                              <img src="/media/{{ org.logo }}" /><br>
+                          {% endif %}
+                          Company Name: {{ org.name }} <br>
+                          Owner: {{ org.owner }} <br>
+                          Priority: {{ org.priority }} <br>
+                          Included hours: <br>
+                          Used: hours <br>
+                          SLA name: <br>
+                          SLA Response time: {{org.sla_response_time}} <br>
+                          <a href="/contacts/" style="text-decoration: underline">Contacts</a>:
+                          <ul>
+                              {% for i in user_list %}
+                                  {% if i.company.id == org.id %}
+                                      <li><a href="/profile?id={{i.id}}">{{ i.user.first_name }} {{ i.user.last_name }}</a></li>
+                                  {% endif %}
+                              {% endfor %}
+                          </ul>
+                          Add:
+                          <ul>
+                              <li><a href="/contacts/addcontact/{{org.id}}">Contact (Watchers)</a></li>
+                          <//ul>
+                          <ul>
+
+                          </ul>
+                      </div>
+                  {% endif %}
+              {% endfor %}
+          </div>
+      {% endfor %}
+  </div><!-- end tab content -->
+</div><!-- end tabs container -->
+
+    <!-- AddOrg Modal -->
+    <div class="modal fade" id="addOrganizationModal" tabindex="-1" role="dialog" aria-labelledby="addOrganizationLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</li>
+                    <h4 class="modal-title" id="addOrganizationModal">Add Organization</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addorganization_form" method="post" class="form-inline" role="form" action="/organizations/addorganization/">
+                        {% csrf_token %}
+                    <div class="input-group input-group-sm">
+                        {{  addOrganizationForm.as_p }}
+                            <input type="submit" class="btn-primary" name="submit" value="Save Organization" />
+                    </div>
+                        <br />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end addOrg modal -->
+
+</div><!-- end content -->
+
+<!-- TODO: cleanup, centralize this somewhere -->
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static "js/jquery.min.js" %}"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+<!-- used for datepicker modal addcard -->
+<script src="{% static "js/jquery-ui-1.10.4.min.js" %}"></script>
+
+
+<!-- end uikit -->
+{% endblock main-content %}
+{% block footer %}
+  {% include "footer.html" %}
+{% endblock footer %}

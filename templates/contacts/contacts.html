@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% include "header.html" %}
+
+{% include "menu.html" %}
+
+{% block main-content %}
+{% load static %}
+
+<nav class="navbar board">
+
+  <a href="/contacts" class="active">Contacts</a>&nbsp;|&nbsp;
+  <a href="addcontact/">Create a Contact</a>
+
+</nav>
+
+<div> <!-- main div -->
+    
+    <div class="container"> <!-- begin cards container -->
+        <div>
+            <table class="table">
+                <tr>
+                    <th>Active?</th>
+                    <th>Company</th>
+                    <th>Contact name</th>
+                    <th>Contact login</th>
+                    <th>Contact Created datee</th>
+                    <th>Delete</th>
+                </tr>
+                {% for contact in contacts_list %}
+                <tr>
+                    <td>
+                        {% if contact.user.is_active %} <i class="glyphicon glyphicon-ok-circle" style="color:green"></i>{% else %}<i class="glyphicon glyphicon-ban-circle" style="color:red"></i>{%endif%}
+                    </td>
+                    <td><a href="/organizations/editorganization/{{contact.company.id}}">{{contact.company}}</a></td>
+                    <td><a href="/contacts/editcontact/{{contact.user.id}}">{{contact.user.first_name}} {{contact.user.last_name}}</a></td>
+                    <td><a href="/contacts/editcontact/{{contact.user.id}}">{{contact.user.username}}</a></td>
+                    <td>{{contact.user.date_joined}}</td>
+                    <td><a type="button" class="btn btn-danger" name="deletecontact" href="/contacts/deletecontact/{{contact.id}}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </table>    
+        </div>
+    </div> <!-- end cards container -->
+
+
+<div> <!-- close main div -->
+
+{% endblock main-content %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock footer %}
