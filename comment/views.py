@@ -39,6 +39,8 @@ def add_comment(request):
         public_close = request.POST.get('public_close', False)
         if public is not False:
             public = True
+        if public_close is not False:
+            public_close = True
         if billable is not False:
             billable = True
         if overtime is not False:
@@ -62,20 +64,21 @@ def add_comment(request):
                 content_type=whatami,
                 object_id=int(related_card.id)
             )
-        if public_close:
+
+        if public_close and not comment_form:
             # TODO: update tracker accordingly: as of now, no tracking update for closing from here
             column_done =Columntype.objects.get(name="Done")
             board_done_column = Column.objects.get(board=related_card.board.id, usage=column_done.id)
-            if not comment_form:
-                comment_object = Comment.objects.create(
-                owner=u,
-                comment="Closed by operator",
-                public=True,
-                minutes=minutes,
-                overtime=overtime,
-                billable=billable,
-                content_type=whatami,
-                object_id=int(related_card.id)
+            # if not comment_form:
+            comment_object = Comment.objects.create(
+            owner=u,
+            comment="Closed by operator",
+            public=True,
+            minutes=minutes,
+            overtime=overtime,
+            billable=billable,
+            content_type=whatami,
+            object_id=int(related_card.id)
             )
             related_card.closed = True
             related_card.column = board_done_column
