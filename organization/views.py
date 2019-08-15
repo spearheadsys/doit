@@ -15,6 +15,7 @@ from contact.models import UserProfile
 from django.conf import settings
 import json
 from dal import autocomplete
+from board.models import Board
 from organization.models import EmailDomain
 doitVersion = settings.DOIT_VERSION
 
@@ -47,7 +48,7 @@ def organizations(request):
     # contract_list = Contract.objects.all().filter(active=True)
     user_list = [active_user for active_user in UserProfile.objects.select_related().all()
                  if active_user.user.is_active]
-
+    boards = Board.objects.filter(archived=False)
     addOrganizationForm = AddOrganizationsForm()
 
     # worked hours this month
@@ -68,6 +69,7 @@ def organizations(request):
         # 'contract_list': contract_list,
         'user_list': user_list,
         'doitVersion': doitVersion,
+        'boards': boards,
     }
     return render(request, 'organizations.html', context_dict)
 

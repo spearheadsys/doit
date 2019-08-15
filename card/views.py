@@ -77,6 +77,8 @@ def cards(request):
         }
         return render(request, 'boards/bob.html', context_dict, context)
 
+    boards = Board.objects.filter(archived=False)
+
     if request.user.profile_user.is_operator:
         numbers_list = Card.objects.all().filter(board=board_id).filter(closed=True)[:10]
         page = request.GET.get('page', 1)
@@ -183,6 +185,7 @@ def cards(request):
         'year': today_date.year,
         'month': today_date.month,
         'numbers': numbers,
+        'boards': boards,
     }
     return render(request, 'cards/cards.html', context_dict, context)
 
@@ -806,6 +809,7 @@ def editCard(request, card=None):
     instance = Card.objects.get(id=card)
     board = instance.board_id
     previous_column = Card.objects.get(id=card).column.usage
+    boards = Board.objects.filter(archived=False)
 
     # if request.method == 'POST':
     if request.is_ajax() or request.method == 'POST':
@@ -857,6 +861,7 @@ def editCard(request, card=None):
                 'page_name': "Edit Card",
                 'card': card,
                 'editcard_form': form,
+                'boards': boards,
             }
             return HttpResponse(render_to_string(form.errors, context_dict, RequestContext(request)))
 
@@ -946,7 +951,7 @@ def editCard(request, card=None):
                 'site_description': "",
                 'card': card,
                 'editcard_form': editcard_form,
-
+                'boards': boards,
                 'attachments': attachments,
                 'comment_form': comment_form,
                 'watchers': card_watchers,
@@ -998,6 +1003,7 @@ def editCard(request, card=None):
                 'comments': comments,
                 'addreminder_form': addreminder_form,
                 'attachment_form': attachment_form,
+                'boards': boards,
             }
             return render(request, 'cards/editcard-ext.html', context_dict)
     elif request.user.profile_user.company == instance.company:

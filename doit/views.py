@@ -236,8 +236,10 @@ def home(request):
 
         # ---
         top_tags = Card.tags.most_common()[:10]
-        print type(top_tags)
+        # print type(top_tags)
         # ---
+
+        boards = Board.objects.filter(archived=False)
 
         context_dict = {
             'site_title': "DoIT | Spearhead Systems",
@@ -263,6 +265,7 @@ def home(request):
             'total_minutes_per_op': total_minutes_per_op,
             'group_by_owner_card_list': group_by_owner_card_list,
             'top_tags': top_tags,
+            'boards': boards,
             'doitVersion': doitVersion,
         }
         return render(request, 'dashboard.html', context_dict)
@@ -756,6 +759,7 @@ def profile(request):
     except:
         up = None
 
+    boards = Board.objects.filter(archived=False)
     if request.user.profile_user.is_customer:
         userform = EditUserForm(
             initial={
@@ -804,6 +808,7 @@ def profile(request):
             'doitVersion': doitVersion,
             'userform': userform,
             'userprofileform': userprofileform,
+            'boards': boards,
         }
     elif request.user.profile_user.is_operator:
         userform = EditUserForm(
@@ -828,6 +833,7 @@ def profile(request):
             'doitVersion': doitVersion,
             'userform': userform,
             'userprofileform': userprofileform,
+            'boards': boards,
         }
     elif request.user.profile_user.is_superuser:
         userform = EditUserForm(
@@ -852,6 +858,7 @@ def profile(request):
             'doitVersion': doitVersion,
             'userform': userform,
             'userprofileform': userprofileform,
+            'boards': boards,
         }
 
     return render(request, 'profile.html', context_dict)

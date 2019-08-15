@@ -9,6 +9,7 @@ from django.conf import settings
 from datetime import datetime, time, timedelta
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
+from board.models import Board
 
 
 # GLOBALS
@@ -32,6 +33,7 @@ def reports(request):
     allCards = Card.objects.all()
     allTasks = Task.objects.all()
     organizations = Organization.objects.all()
+    boards = Board.objects.filter(archived=False)
     reportusers = User.objects.all().filter(is_staff=True)
     if request.method == "POST":
         organization = request.POST['organization'] or None
@@ -44,12 +46,10 @@ def reports(request):
         reportresult = Comment.objects.prefetch_related().filter(
             created_time__range=(startperiod, stopperiod)
         ).filter(minutes__gt=0)
-
         totalminutes = reportresult.aggregate(Sum('minutes'))
         nonbillable = reportresult.filter(billable=False).aggregate(Sum('minutes'))
         totalworkingminutes = reportresult.filter(overtime=False).aggregate(Sum('minutes'))
         totalovertimeminutes = reportresult.filter(overtime=True).aggregate(Sum('minutes'))
-
         # generate one time report
         context_dict = {
             'site_title': "Reports | Spearhead Systems",
@@ -66,6 +66,7 @@ def reports(request):
             'totalworkingminutes': totalworkingminutes,
             'totalovertimeminutes': totalovertimeminutes,
             'nonbillable': nonbillable,
+            'boards': boards,
         }
         return render(request, 'reports/reports.html', context_dict)
 
@@ -78,6 +79,7 @@ def reports(request):
             'allTasks': allTasks.count(),
             'organizations': organizations,
             'reportusers': reportusers,
+            'boards': boards,
         }
         return render(request, 'reports/reports.html', context_dict)
 

@@ -10,7 +10,7 @@ from contact.forms import ContactForm, UserProfileForm
 from organization.models import Organization
 from django.shortcuts import render
 from contact.models import UserProfile
-
+from board.models import Board
 
 
 # Create your views here.
@@ -52,11 +52,13 @@ def contacts(request, company=None):
             )
         else:
             contacts_list = UserProfile.objects.all().filter(is_customer=True)
+            boards = Board.objects.filter(archived=False)
             context_dict = {
                 'site_title': "Contacts | Spearhead Systems",
                 'page_name': "Add a Contact",
                 'add_contact_form': add_contact_form,
                 'contacts_list': contacts_list,
+                'boards': boards,
             }
     return render(request, 'contacts/contacts.html', context_dict)
     # return render(request, 'contacts/contacts.html', context_dict)
@@ -118,11 +120,13 @@ def addcontact(request, company=None):
         else:
             add_contact_form = ContactForm()
             add_userprofile_form = UserProfileForm()
+        boards = Board.objects.filter(archived=False)
         context_dict = {
             'site_title': "Contacts | Spearhead Systems",
             'page_name': "Add a Contact",
             'add_contact_form': add_contact_form,
             'add_userprofile_form': add_userprofile_form,
+            'boards': boards,
         }
     return render(request, 'contacts/addcontact.html', context_dict)
     # not very helpful TODO something
@@ -156,12 +160,14 @@ def editcontact(request, contact=None):
         add_contact_form = ContactForm(instance=instance)
         profile_instance = UserProfile.objects.get(user=instance)
         add_userprofile_form = UserProfileForm(instance=profile_instance)
+        boards = Board.objects.filter(archived=False)
         context_dict = {
             'site_title': "Contacts | Spearhead Systems",
             'page_name': "Edit a Contact",
             'add_contact_form': add_contact_form,
             'add_userprofile_form': add_userprofile_form,
             'contact': contact,
+            'boards': boards,
         }
         return render(request, 'contacts/editcontact.html', context_dict)
 

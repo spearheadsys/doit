@@ -16,10 +16,23 @@
                 </a>
               </li>
               <li>
+
                 <a class="uk-text-large" href="/boards">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: grid"></span>
                   Boards
                 </a>
+                <div class="uk-navbar-dropdown" >
+                    <ul class="uk-nav uk-navbar-dropdown-nav"">
+                      {% for board in boards %}
+                         <li><span class="uk-margin-small-right">
+                           <a href="/cards/addcard/?board={{board.id}}&company={{board.company_id}}" class="uk-link uk-icon" uk-icon="icon: plus-circle; ratio: 0.8;"></a>
+                           <a href="/cards/?board={{board.id}}" class="uk-link">{{board.name}}</a></span></li>
+                       {% endfor %}
+
+                    </ul>
+                </div>
+
+
 
               </li>
               <li>
