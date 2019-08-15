@@ -397,7 +397,8 @@ def addcard(request):
                 'owner': org_owner.id,
                 'company': company.id,
                 'addcardform': addcardform,
-                'board': Board.objects.get(id=board.id)
+                'board': Board.objects.get(id=board.id),
+                'boards': Board.objects.filter(archived=False)
             }
             return render(request, 'cards/addcard-ext.html', context_dict)
         else:
@@ -428,6 +429,7 @@ def addcard(request):
                 'page_name': "Add Card",
                 'site_description': "",
                 'addcardform': addcardform,
+                'boards': Board.objects.filter(archived=False)
                 # 'board': Board.objects.get(id=board)
             }
             return render(request, 'cards/addcard.html', context_dict)
