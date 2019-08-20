@@ -126,7 +126,7 @@
     <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
       <h3 class="uk-card-title uk-text-center">All Open Incidents</h3>
       <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#incidents" uk-scroll>{{incidents}}</a>
+        <a class="uk-text-danger" href="#incidents" onclick="UIkit.accordion('#dashboard-accordion').toggle(0);" uk-scroll>{{incidents}}</a>
       </h1>
     </div>
   </div>
@@ -170,7 +170,7 @@
       {% if myoverduecards > 2 %} style="background-color: #F08080;" {% endif %}
     >
       <h3 class="uk-card-title uk-text-center">All Overdue Cards</h3>
-      <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" uk-scroll>{{alloverduecards}}</a></h1>
+      <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1);" uk-scroll>{{alloverduecards}}</a></h1>
     </div>
   </div>
   {% endif %}
@@ -295,7 +295,7 @@
 
 <!-- Begin page content -->
 <div class="container"> <!-- container -->
-  <ul uk-accordion="multiple: true">
+  <ul uk-accordion="multiple: true" id="dashboard-accordion">
     <li>
       <a class="uk-accordion-title" href="#"><h3>Incidents</h3></a>
       <div class="uk-accordion-content" id="incidents">
@@ -324,7 +324,7 @@
     </li>
     {% if user.profile_user.is_customer is not True %}
     <li>
-      <a class="uk-accordion-title" href="#"><h3>All Overdue</h3></a>
+      <a class="uk-accordion-title" href="#" id="#overdue-accordion"><h3>All Overdue</h3></a>
       <div class="uk-accordion-content" id="alloverduecards">
         <div class="border">
           <div class="well">
