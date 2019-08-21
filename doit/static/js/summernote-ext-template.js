@@ -27,8 +27,8 @@
                 tooltip: 'Insert Template',
                 path: '/static/tpls',
                 list: {
-                    '48close': 'Pending close',
-                    '48inchidere': 'Curs de inchidere',
+                    '48close': '48 Hours',
+                    '48inchidere': '48 de Ore',
                 }
             };
 
