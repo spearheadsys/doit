@@ -14,7 +14,7 @@ class CommentForm(forms.ModelForm):
             'minutes'
         )
         widgets = {
-            'comment': SummernoteWidget(
+            'comment': SummernoteInplaceWidget(
             ),
             'minutes': forms.NumberInput(
                 attrs={
