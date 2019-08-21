@@ -28,7 +28,7 @@
                 path: '/static/tpls',
                 list: {
                     '48close': 'Pending close',
-                    '48-inchidere': 'Curs de inchidere',
+                    '48inchidere': 'Curs de inchidere',
                 }
             };
 
