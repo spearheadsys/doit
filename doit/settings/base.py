@@ -149,6 +149,7 @@ DJANGO_MAILBOX_ATTACHMENT_UPLOAD_TO='uploads'
 
 SUMMERNOTE_THEME = 'lite'
 SUMMERNOTE_CONFIG = {
+    'lang': None,
     'iframe': False,
     'summernote': {
         'airMode': False,
@@ -156,16 +157,28 @@ SUMMERNOTE_CONFIG = {
         'height': '400',
         'disableDragAndDrop': False,
     },
-
     'toolbar': [
         ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color']],
         ['para', ['ul', 'ol', 'paragraph', 'link']],
         ['insert', ['picture', 'video', 'table', 'hr']],
         ['misc', ['undo', 'redo']],
+        ['insert', ['template']],
     ],
+    # 'template': {
+    #     'path': '/static/tpls/',
+    #     'list': {
+    #         'pending-close': 'Pending close'
+    #     }
+    # },
+    'js': (
+       '/static/js/summernote-ext-template.js',
+    ),
+    'js_for_inplace': (
+        '/static/js/summernote-ext-template.js',
+    ),
     'attachment_require_authentication': True,
     'disable_attachment': False,
-    'lazy': False,
+    'lazy': False
 }
 
 # GIT master branch always points to the latest stable version

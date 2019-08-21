@@ -25,9 +25,9 @@ def add_comment(request):
     if request.is_ajax() or request.method == 'POST':
         comment_form = request.POST['comment']
         # TODO: if the comment form is submitted but the comment
-        # text is empty it still ends up here only to die when
-        # addnig ctype tracker (comment_object). either solve it here
-        # or in the UI
+        #         # text is empty it still ends up here only to die when
+        #         # addnig ctype tracker (comment_object). either solve it here
+        #         # or in the UI
         card = request.POST['card']
         minutes = request.POST.get('minutes', '0')
         if minutes == '':
@@ -37,10 +37,9 @@ def add_comment(request):
         internal = request.POST.get('internal', False)
         public = request.POST.get('public', False)
         public_close = request.POST.get('public_close', False)
+        print("this is a public_close???? > ", public_close)
         if public is not False:
             public = True
-        if public_close is not False:
-            public_close = True
         if billable is not False:
             billable = True
         if overtime is not False:
@@ -73,6 +72,25 @@ def add_comment(request):
             comment_object = Comment.objects.create(
             owner=u,
             comment="Closed by operator",
+            public=True,
+            minutes=minutes,
+            overtime=overtime,
+            billable=billable,
+            content_type=whatami,
+            object_id=int(related_card.id)
+            )
+            related_card.closed = True
+            related_card.column = board_done_column
+            related_card.save()
+
+        if public_close:
+            # TODO: update tracker accordingly: as of now, no tracking update for closing from here
+            column_done =Columntype.objects.get(name="Done")
+            board_done_column = Column.objects.get(board=related_card.board.id, usage=column_done.id)
+            # if not comment_form:
+            comment_object = Comment.objects.create(
+            owner=u,
+            comment=comment_form,
             public=True,
             minutes=minutes,
             overtime=overtime,
