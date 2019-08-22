@@ -27,6 +27,8 @@
                 tooltip: 'Insert Template',
                 path: '/static/tpls',
                 list: {
+                    'initial': 'Initial RO',
+                    'initial-en': 'Initial EN',
                     '48close': '48 Hours',
                     '48inchidere': '48 de Ore',
                 }
