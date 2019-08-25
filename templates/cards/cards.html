@@ -6,41 +6,49 @@
 {% block main-content %}
 {% load humanize %}
 
- <script>
+ <script type="text/javascript">
   // TODO: make columns collapsable and recover space: flex does
   // not autorespond to this event
   function collapseColumn(column) {
-  header = "#header"+column
-  col = "#"+column
-  $(header).dblclick(function(e){
-    console.log("header clicked")
-    if($(col).width() > 40){
-        $(col).animate({width: '40px', opacity: '0.35'});
-        $(col).children("header").addClass("collapsed-column-header");
-        $(col).children("ul").hide();
-        $(col).children("footer").hide();
-    }
-    else{
-        $(col).animate({width: '300px', opacity: '1'},{duration: 200})
-        $(col).children("header").removeClass("collapsed-column-header");
-        $(col).children("ul").show();
-        $(col).children("footer").show();
-    }
-  });
+    header = "#collapse-header"
+    col = "#collapseme"
+    $(header).dblclick(function(e){
+      console.log("header clicked")
+      if($(col).width() > 40){
+          $(col).animate({width: '40px', opacity: '0.35'});
+          $(col).children("header").addClass("collapsed-column-header");
+          $(col).children("ul").hide();
+          $(col).children("footer").hide();
+      }
+      else{
+          $(col).animate({width: '300px', opacity: '1'},{duration: 200})
+          $(col).children("header").removeClass("collapsed-column-header");
+          $(col).children("ul").show();
+          $(col).children("footer").show();
+      }
+    });
   }
+
 </script>
 
 <div class="uk-padding-small">
+    
+  <ul class="uk-subnav uk-subnav-pill">
+    <li id="filter-mine"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('.cardflt[data-owner!={{request.user}}]').toggle();$('#filter-mine').toggleClass('uk-active')">Mine</a></li>
+    <li id="filter-watching"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('li[data-watchers*={{request.user}}]').toggle();$('#filter-watching').toggleClass('uk-active')">Watching</a></li>
+  </ul>
+
   <div class="uk-child-width-expand@s uk-grid-small uk-flex-nowrap" uk-grid>
+
     {% for column in columns %}
-      <div>
-          <h4 >{{column}}</h4>
-          <ul id="{{column}}" data-column-id={{column.id}} data-column-usage="{{column.usage}}" uk-sortable="handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: uk-drag" uk-overflow-auto="selContainer: .uk-flex-nowrap;selContent: .uk-flex-nowrap" uk-height-viewport="offset-top: true; offset-bottom: 5" class="uk-background-muted uk-padding-small">
+      <div {% if column.usage.name == "Done" %}id="collapseme"{% endif%}>
+          <h4 {% if column.usage.name == "Done" %}id="collapse-header"{% endif%}>{{column}}</h4>
+            <ul id="{{column}}" data-column-id={{column.id}} data-column-usage="{{column.usage}}" uk-sortable="cls-custom: .uk-box-shadow-large .uk-background; handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: card-placeholder" uk-overflow-auto="selContainer: .uk-flex-nowrap;selContent: .uk-flex-nowrap" uk-height-viewport="offset-top: true; offset-bottom: 5" class="uk-background-muted uk-padding-small">
 
             <!-- DONE COLUMN AND CARDS -->
             {% if column.usage.name == "Done" %}
               {% for card in numbers %}
-              <li id={{card.id}} class="uk-margin uk-card-default">
+              <li id={{card.id}} class="uk-margin uk-card-default cardflt" data-owner="{{card.owner}}">
                 <div class="uk-card uk-card-default uk-card-body uk-card-small">{{card.title}}</div>
                 <div class="uk-card-footer" style="padding: 4px;">
                     <span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>
@@ -60,7 +68,7 @@
 
            {% for card in cards %}
               {% if card.column.id == column.id %}
-                <li id="{{card.id}}" data-order="{{ card.order }}" class="uk-margin uk-card uk-card-small uk-card-default">
+                <li id="{{card.id}}" data-order="{{ card.order }}" class="uk-margin uk-card uk-card-small uk-card-default cardflt" data-owner="{{card.owner}}" data-watchers="[{% for watcher in card.watchers.all %}{{watcher}}, {%endfor%}]">
                   <div class="uk-card-header"
                     {% if card.type == "IN" %}
                       style="border-left: 4px solid red;"

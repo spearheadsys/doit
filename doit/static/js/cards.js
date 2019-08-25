@@ -237,3 +237,4 @@ function doit_submit_form(formdata) {
 //
 // END submit form for editcard via ajax
 //
+
