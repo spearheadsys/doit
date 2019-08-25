@@ -237,3 +237,14 @@ function doit_submit_form(formdata) {
 //
 // END submit form for editcard via ajax
 //
+
+
+function filter_owners(owner) {
+    var owner = owner
+    console.log("filtering on user " + owner)
+    $('li').filter('li[data-owner=owner]').toggle
+    //console.log(filtered)
+    //$('li').filter('li[data-owner={{request.user}}]').toggle()
+
+    //set active class to this filter
+}
