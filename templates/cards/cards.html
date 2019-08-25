@@ -28,13 +28,14 @@
       }
     });
   }
+
 </script>
 
 <div class="uk-padding-small">
     
   <ul class="uk-subnav uk-subnav-pill">
-    <li id="filter-mine"><a href="#" onclick="$('li').filter('li[data-owner={{request.user}}]').toggle();$('#filter-mine').toggleClass('uk-active')">Mine</a></li>
-    <li id="filter-watching"><a href="#" onclick="$('li').filter('li[data-watchers*={{request.user}}]').toggle();$('#filter-watching').toggleClass('uk-active')">Watching</a></li>
+    <li id="filter-mine"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('.cardflt[data-owner!={{request.user}}]').toggle();$('#filter-mine').toggleClass('uk-active')">Mine</a></li>
+    <li id="filter-watching"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('li[data-watchers*={{request.user}}]').toggle();$('#filter-watching').toggleClass('uk-active')">Watching</a></li>
   </ul>
 
   <div class="uk-child-width-expand@s uk-grid-small uk-flex-nowrap" uk-grid>
@@ -47,7 +48,7 @@
             <!-- DONE COLUMN AND CARDS -->
             {% if column.usage.name == "Done" %}
               {% for card in numbers %}
-              <li id={{card.id}} class="uk-margin uk-card-default" data-owner="{{card.owner}}">
+              <li id={{card.id}} class="uk-margin uk-card-default cardflt" data-owner="{{card.owner}}">
                 <div class="uk-card uk-card-default uk-card-body uk-card-small">{{card.title}}</div>
                 <div class="uk-card-footer" style="padding: 4px;">
                     <span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>
@@ -67,7 +68,7 @@
 
            {% for card in cards %}
               {% if card.column.id == column.id %}
-                <li id="{{card.id}}" data-order="{{ card.order }}" class="uk-margin uk-card uk-card-small uk-card-default" data-owner="{{card.owner}}" data-watchers="[{% for watcher in card.watchers.all %}{{watcher}}, {%endfor%}]">
+                <li id="{{card.id}}" data-order="{{ card.order }}" class="uk-margin uk-card uk-card-small uk-card-default cardflt" data-owner="{{card.owner}}" data-watchers="[{% for watcher in card.watchers.all %}{{watcher}}, {%endfor%}]">
                   <div class="uk-card-header"
                     {% if card.type == "IN" %}
                       style="border-left: 4px solid red;"
