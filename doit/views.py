@@ -24,7 +24,6 @@ from collections import namedtuple
 # GLOBALS
 doitVersion = settings.DOIT_VERSION
 today_date = timezone.now()
-today_date.strftime("%Y-%m-%d")
 
 
 # user login
@@ -207,24 +206,18 @@ def home(request):
 
         startperiod = (today_date - timezone.timedelta(days=7))
         # TODO: we have users that are only looking at stuff, they appear with 0 minutes
-        # we should remove them: maybe add is_working to profile?
+        # we should remove them: maybe add is_working, is_active to profile?
         operators = UserProfile.objects.filter(user__is_active=True, is_operator=True)
-        Operator = namedtuple("Operator", ("operator", "date", "minutes"))
+        Operator = namedtuple("Operator", ("operator", "minutes"))
         total_minutes_per_op = []
-
         # TODO: this is useful as a lib somewhere
-        # def daterange(start_date, end_date):
-        #     for n in range(int((end_date - start_date).days)):
-        #         yield start_date + timedelta(n)
-
-        start_date = startperiod
-        end_date = today_date
         for operator in operators:
             events = Comment.objects.filter(
                 owner=operator.user,
-                created_time__range=(start_date, today_date),
+                # created_time__range=(startperiod, today_date),
+                created_time__gte=(startperiod),
                 minutes__gt=0).aggregate(Sum('minutes'))
-            total_minutes_per_op.append(Operator(operator, today_date.strftime("%Y-%m-%d"), events['minutes__sum']))
+            total_minutes_per_op.append(Operator(operator, events['minutes__sum']))
 
         # ---
         open_card_list = Card.objects.filter(closed=False).values_list('owner', flat=True)
