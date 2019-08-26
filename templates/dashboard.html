@@ -732,7 +732,7 @@ window.chartColors = {
 var color = Chart.helpers.color;
 var ctx = document.getElementById('worklogchart').getContext('2d');
 var myChart = new Chart(ctx, {
-    type: 'polarArea',
+    type: 'line',
     data: {
         labels: [{% for operator in total_minutes_per_op %} '{{operator.operator.user}}', {% endfor %}],
         datasets: [{
