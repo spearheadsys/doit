@@ -235,7 +235,7 @@ def home(request):
         # ---
 
         # ---
-        top_tags = Card.tags.most_common()[:10]
+        top_tags = Card.tags.most_common()[:5]
         # print type(top_tags)
         # ---
 

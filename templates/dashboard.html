@@ -816,7 +816,7 @@ var myChart = new Chart(ctx, {
 var color = Chart.helpers.color;
 var ctx = document.getElementById('toptagschart').getContext('2d');
 var myChart = new Chart(ctx, {
-    type: 'pie',
+    type: 'doughnut',
     data: {
         labels: [{% for tag in top_tags %} '{{tag}}', {% endfor %}],
         datasets: [{
@@ -838,11 +838,11 @@ var myChart = new Chart(ctx, {
     options: {
       title: {
         display: true,
-        text: 'Top 10 card tags'
+        text: 'Top 5 card tags'
       },
       responsive: true,
       legend: {
-        display: false
+        display: true
     },
    }
 });
