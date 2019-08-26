@@ -217,7 +217,8 @@ def home(request):
                 # created_time__range=(startperiod, today_date),
                 created_time__gte=(startperiod),
                 minutes__gt=0).aggregate(Sum('minutes'))
-            total_minutes_per_op.append(Operator(operator, events['minutes__sum']))
+            if events['minutes__sum'] != None:
+                total_minutes_per_op.append(Operator(operator, events['minutes__sum']))
 
         # ---
         open_card_list = Card.objects.filter(closed=False).values_list('owner', flat=True)
