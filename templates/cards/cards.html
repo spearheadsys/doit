@@ -34,8 +34,8 @@
 <div class="uk-padding-small">
     
   <ul class="uk-subnav uk-subnav-pill">
-    <li id="filter-mine"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('.cardflt[data-owner!={{request.user}}]').toggle();$('#filter-mine').toggleClass('uk-active')">Mine</a></li>
-    <li id="filter-watching"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('li[data-watchers*={{request.user}}]').toggle();$('#filter-watching').toggleClass('uk-active')">Watching</a></li>
+    <li id="filter-mine"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('.cardflt[data-owner!=\x22{{request.user|escapejs}}\x22]').toggle();$('#filter-mine').toggleClass('uk-active')">Mine</a></li>
+    <li id="filter-watching"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('li[data-watchers*=\x22{{request.user|escapejs}}\x22]').toggle();$('#filter-watching').toggleClass('uk-active')">Watching</a></li>
   </ul>
 
   <div class="uk-child-width-expand@s uk-grid-small uk-flex-nowrap" uk-grid>
