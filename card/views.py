@@ -1425,16 +1425,18 @@ def mailpost(request):
         print("domain > ", domain)
         print("user > ", user)
 
-        if user and user.is_active:
-            column_type_queue = Columntype.objects.all().filter(name="Queue")
-            try:
-                board_columns = Column.objects.filter(board=str(user.profile_user.company.default_board.id))
-            except:
-                # TODO: define somewhere a catch-all board for creating cards for users without a default board
-                board_columns = Column.objects.filter(board=1)
-            queue_column = board_columns.get(usage=column_type_queue)
-            whatami = ContentType.objects.get(model="Card")
-            if existing_card:
+        whatami = ContentType.objects.get(model="Card")
+
+        # check if a card exists and if so forgo all other checks
+        # except maybe for (new) watchers
+        if existing_card:
+            if user and user.is_active:
+                column_type_queue = Columntype.objects.all().filter(name="Queue")
+                try:
+                    board_columns = Column.objects.filter(board=str(user.profile_user.company.default_board.id))
+                except:
+                    board_columns = Column.objects.filter(board=1)
+                queue_column = board_columns.get(usage=column_type_queue)
                 comment_object = Comment.objects.create(
                     owner=user,
                     comment=body_html_stripped,
@@ -1454,7 +1456,6 @@ def mailpost(request):
                         watchers.append(watcher)
                     except ObjectDoesNotExist:
                         randpass = User.objects.make_random_password()
-                        print("watcher does not exist but allow_auto_contact_creation == true")
                         # create the contact here
                         user = User.objects.create_user(
                             str(i[1]).lower(),
@@ -1470,18 +1471,17 @@ def mailpost(request):
                         watcher = User.objects.get(email=str(i[1]).lower())
                         watchers.append(watcher)
                         message = """
-                                    ## Please do not reply to this email ##
+                                                    ## Please do not reply to this email ##
 
-                                    Below are your account details for your Spearhead DoIT account.
+                                                    Below are your account details for your Spearhead DoIT account.
 
-                                    Username: %s
-                                    Password: %s
-                                    URL: %s
+                                                    Username: %s
+                                                    Password: %s
+                                                    URL: %s
 
-                                    # This is a message from Spearhead DoIT. Please do not reply to
-                                    this message, instead use the above link. 
+                                                    # This is a message from Spearhead DoIT.
 
-                                    """
+                                                    """
                         formatted_message = message % (
                             user.email,
                             randpass,
@@ -1496,94 +1496,6 @@ def mailpost(request):
                     for w in watchers:
                         w.Watchers.add(existing_card)
                         w.save()
-            else:
-                #
-                # ---- This is not an existing Card ---- #
-                #
-                card = Card.objects.create(
-                    created_by_id=user.id,
-                    board_id=1,
-                    column_id=str(queue_column.id),
-                    title=subject,
-                    description=body_html,
-                    estimate="240")
-                card.save()
-                user.Watchers.add(card)
-                # TODO: check watchers (external contacts) - turn this into a function maybe
-                for i in getaddresses(cc):
-                    randpass = User.objects.make_random_password()
-                    domain = i[1].split('@')[1]
-                    try:
-                        domain_in_company = Organization.objects.get(email_domains__domain__icontains=domain)
-                    except ObjectDoesNotExist:
-                        domain_in_company = False
-
-                    if domain_in_company:
-                        try:
-                            watcher = User.objects.get(email=str(i[1]).lower())
-                        except ObjectDoesNotExist:
-                            randpass = User.objects.make_random_password()
-
-                            print("watcher does not exist but allow_auto_contact_creation == true")
-                            # create the contact here
-                            user = User.objects.create_user(
-                                str(i[1]).lower(),
-                                str(i[1]).lower(),
-                                randpass
-                            )
-                            user.save()
-                            profile = UserProfile.objects.create(
-                                user=user,
-                                company=company,
-                                is_customer=True)
-                            profile.save()
-                            watcher = User.objects.get(email=str(i[1]).lower())
-                            watchers.append(watcher)
-                            message = """
-                                        ## Please do not reply to this email ##
-
-                                        Below are your account details for your Spearhead DoIT account.
-
-                                        Username: %s
-                                        Password: %s
-                                        URL: %s
-
-                                        # This is a message from Spearhead DoIT. Please do not reply to
-                                        this message, instead use the above link. 
-
-                                        """
-                            formatted_message = message % (
-                                user.email,
-                                randpass,
-                                "https://doit.spearhead.systems/")
-                            send_mail(
-                                'Your new DoIT account is ready',
-                                formatted_message,
-                                doit_myemail,
-                                [user.email],
-                                fail_silently=False)
-                        if watchers:
-                            for w in watchers:
-                                w.Watchers.add(card)
-                                w.save()
-                # now we can save the m2m relations to watchers
-                if watchers:
-                    for w in watchers:
-                        w.Watchers.add(card)
-                        w.save()
-                # attachments
-                for key in request.FILES:
-                    file = request.FILES[key]
-                    mime = file.content_type
-                    Attachment.objects.create(
-                        name=file.name,
-                        content=file,
-                        uploaded_by=user,
-                        card=card,
-                        mimetype=mime,
-                    )
-                print("hitting this sendmail 001 >>>")
-                lib.sendmail_card_created(card.id, user)
         else:
             # user not found, create him, card and add as watcher
             randpass = User.objects.make_random_password()
@@ -1631,7 +1543,9 @@ def mailpost(request):
                 column_id=str(queue_column.id),
                 title=subject,
                 description=body_html,
-                estimate="240")
+                estimate="240",
+                csat='0'
+            )
             card.save()
             user.Watchers.add(card)
             # TODO: check watchers (external contacts) - turn this into a function maybe
@@ -1708,6 +1622,5 @@ def mailpost(request):
                 )
             print("hitting this sendmail 002 >>>")
             lib.sendmail_card_created(card.id, user)
-
 
     return HttpResponse('OK')
