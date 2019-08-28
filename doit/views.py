@@ -224,8 +224,12 @@ def home(request):
         open_card_list = Card.objects.filter(closed=False).values_list('owner', flat=True)
         group_by_owner_card_list = {}
         for value in open_card_list:
-            user = User.objects.get(id=value)
-            group_by_owner_card_list[str(user)] = Card.objects.filter(closed=False, owner=value).count()
+            try:
+                user = User.objects.get(id=value)
+                group_by_owner_card_list[str(user)] = Card.objects.filter(closed=False, owner=value).count()
+            except:
+                pass
+                # group_by_owner_card_list[str(user)] = Card.objects.filter(closed=False, owner=value).count()
         # ---
 
         # ---
