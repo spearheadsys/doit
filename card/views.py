@@ -1424,12 +1424,13 @@ def mailpost(request):
         print("parsed_sender_email > ", parsed_sender_email)
         print("domain > ", domain)
         print("user > ", user)
+        print("card > ", existing_card)
 
         whatami = ContentType.objects.get(model="Card")
 
         # check if a card exists and if so forgo all other checks
         # except maybe for (new) watchers
-        if existing_card:
+        if existing_card is not None:
             if user and user.is_active:
                 column_type_queue = Columntype.objects.all().filter(name="Queue")
                 try:
@@ -1459,7 +1460,6 @@ def mailpost(request):
                         # create the contact here
                         user = User.objects.create_user(
                             str(i[1]).lower(),
-                            str(i[1]).lower(),
                             randpass
                         )
                         user.save()
@@ -1471,15 +1471,15 @@ def mailpost(request):
                         watcher = User.objects.get(email=str(i[1]).lower())
                         watchers.append(watcher)
                         message = """
-                                                    ## Please do not reply to this email ##
+                                    ## Please do not reply to this email ##
 
-                                                    Below are your account details for your Spearhead DoIT account.
+                                    Below are your account details for your Spearhead DoIT account.
 
-                                                    Username: %s
-                                                    Password: %s
-                                                    URL: %s
+                                    Username: %s
+                                    Password: %s
+                                    URL: %s
 
-                                                    # This is a message from Spearhead DoIT.
+                                    # This is a message from Spearhead DoIT.
 
                                                     """
                         formatted_message = message % (
@@ -1496,131 +1496,246 @@ def mailpost(request):
                     for w in watchers:
                         w.Watchers.add(existing_card)
                         w.save()
-        else:
-            # user not found, create him, card and add as watcher
-            randpass = User.objects.make_random_password()
-            user = User.objects.create_user(
-                str(parsed_sender_email).lower(),
-                str(parsed_sender_email).lower(),
-                randpass
-            )
-            profile = UserProfile.objects.create(
-                user=user,
-                is_customer=True)
-            profile.save()
-            message = """
-                        ## Please do not reply to this email ##
-
-                        Below are your account details for your Spearhead DoIT account.
-
-                        Username: %s
-                        Password: %s
-                        URL: %s
-
-                        # This is a message from Spearhead DoIT. Please do not reply to
-                        this message, instead use the above link. 
-
-                        """
-            formatted_message = message % (
-                user.email,
-                randpass,
-                "https://doit.spearhead.systems/")
-            send_mail(
-                'Your new DoIT account is ready',
-                formatted_message,
-                doit_myemail,
-                [user.email],
-                fail_silently=False)
-            column_type_queue = Columntype.objects.all().filter(name="Queue")
-            board_columns = Column.objects.filter(board=1)
-            queue_column = board_columns.get(usage=column_type_queue)
-            whatami = ContentType.objects.get(model="Card")
-
-            # new card
-            card = Card.objects.create(
-                created_by_id=user.id,
-                board_id=1,
-                column_id=str(queue_column.id),
-                title=subject,
-                description=body_html,
-                estimate="240",
-                csat='0'
-            )
-            card.save()
-            user.Watchers.add(card)
-            # TODO: check watchers (external contacts) - turn this into a function maybe
-            randpass = User.objects.make_random_password()
-            for i in getaddresses(cc):
-                domain = i[1].split('@')[1]
-                try:
-                    domain_in_company = Organization.objects.get(email_domains__domain__icontains=domain)
-                except ObjectDoesNotExist:
-                    domain_in_company = False
-
-                if domain_in_company:
+                # attachments
+                for key in request.FILES:
+                    file = request.FILES[key]
+                    mime = file.content_type
                     try:
-                        watcher = User.objects.get(email=str(i[1]).lower())
-                    except ObjectDoesNotExist:
-                        randpass = User.objects.make_random_password()
-
-                        print("watcher does not exist but allow_auto_contact_creation == true")
-                        # create the contact here
-                        user = User.objects.create_user(
-                            str(i[1]).lower(),
-                            str(i[1]).lower(),
-                            randpass
+                        Attachment.objects.create(
+                            name=file.name,
+                            content=file,
+                            uploaded_by=user,
+                            card=card,
+                            mimetype=mime,
                         )
-                        user.save()
-                        profile = UserProfile.objects.create(
-                            user=user,
-                            is_customer=True)
-                        profile.save()
-                        watcher = User.objects.get(email=str(i[1]).lower())
-                        watchers.append(watcher)
-                        message = """
-                                    ## Please do not reply to this email ##
+                    except:
+                        pass
+                lib.sendmail_card_created(card.id, User.objects.get(id=1))
+            else:
+                # A user does not exist or is no longer active:
+                # we create the card, let the sender know we created the card without watchers and spearhead.support
+                # will get in touch
 
-                                    Below are your account details for your Spearhead DoIT account.
+                column_type_queue = Columntype.objects.all().filter(name="Queue")
+                board_columns = Column.objects.filter(board=1)
+                queue_column = board_columns.get(usage=column_type_queue)
+                # new card
+                card = Card.objects.create(
+                    created_by_id=1,
+                    board_id=1,
+                    column_id=str(queue_column.id),
+                    title=subject,
+                    description=body_html,
+                    estimate="240",
+                    csat='0'
+                )
+                card.save()
 
-                                    Username: %s
-                                    Password: %s
-                                    URL: %s
+                # attachments
+                for key in request.FILES:
+                    file = request.FILES[key]
+                    mime = file.content_type
+                    Attachment.objects.create(
+                        name=file.name,
+                        content=file,
+                        uploaded_by=User.objects.get(id=1),
+                        card=card,
+                        mimetype=mime,
+                    )
+                message = """
+                                ## Please do not reply to this email ##
+                                
+                                Dear Sender,
+                                
+                                We were unable to find an existing account for you in our systems. We have created
+                                your request and forwarded it to our team which will get back to you shortly.
 
-                                    # This is a message from Spearhead DoIT. Please do not reply to
-                                    this message, instead use the above link. 
+                                # This is a message from Spearhead DoIT.
 
-                                    """
-                        formatted_message = message % (
-                            user.email,
-                            randpass,
-                            "https://doit.spearhead.systems/")
-                        send_mail(
-                            'Your new DoIT account is ready',
-                            formatted_message,
-                            doit_myemail,
-                            [user.email],
-                            fail_silently=False)
+                                """
+                send_mail(
+                    'DoIT #doit' + str(card.id) + " " + card.title,
+                    message,
+                    doit_myemail,
+                    [parsed_sender_email, doit_myemail],
+                    fail_silently=False)
+                lib.sendmail_card_created(card.id, User.objects.get(id=1))
+        else:
+            # the card does not exist .. we do not yet know if the user exists
+            if user and user.is_active:
+                if existing_card is not None:
+                    column_type_queue = Columntype.objects.all().filter(name="Queue")
+                    try:
+                        board_columns = Column.objects.filter(board=str(user.profile_user.company.default_board.id))
+                    except:
+                        board_columns = Column.objects.filter(board=1)
+                    queue_column = board_columns.get(usage=column_type_queue)
+                    comment_object = Comment.objects.create(
+                        owner=user,
+                        comment=body_html_stripped,
+                        public=True,
+                        minutes=0,
+                        overtime=False,
+                        billable=False,
+                        content_type=whatami,
+                        object_id=int(existing_card.id)
+                    )
+                    comment_object.save()
+                    # TODO: check watchers (external contacts) - turn this into a function maybe
+                    randpass = User.objects.make_random_password()
+                    for i in getaddresses(cc):
+                        try:
+                            watcher = User.objects.get(email=str(i[1]).lower())
+                            watchers.append(watcher)
+                        except ObjectDoesNotExist:
+                            randpass = User.objects.make_random_password()
+                            # create the contact here
+                            user = User.objects.create_user(
+                                str(i[1]).lower(),
+                                randpass
+                            )
+                            user.save()
+                            profile = UserProfile.objects.create(
+                                user=user,
+                                is_customer=True
+                            )
+                            profile.save()
+                            watcher = User.objects.get(email=str(i[1]).lower())
+                            watchers.append(watcher)
+                            message = """
+                                           ## Please do not reply to this email ##
+    
+                                           Below are your account details for your Spearhead DoIT account.
+    
+                                           Username: %s
+                                           Password: %s
+                                           URL: %s
+    
+                                           # This is a message from Spearhead DoIT.
+    
+                                           """
+                            formatted_message = message % (
+                                user.email,
+                                randpass,
+                                "https://doit.spearhead.systems/")
+                            send_mail(
+                                'Your new DoIT account is ready',
+                                formatted_message,
+                                doit_myemail,
+                                [user.email],
+                                fail_silently=False)
                     if watchers:
                         for w in watchers:
-                            w.Watchers.add(card)
+                            w.Watchers.add(existing_card)
                             w.save()
-            # now we can save the m2m relations to watchers
-            if watchers:
-                for w in watchers:
-                    w.Watchers.add(card)
-                    w.save()
-            # attachments
-            for key in request.FILES:
-                file = request.FILES[key]
-                mime = file.content_type
-                Attachment.objects.create(
-                    name=file.name,
-                    content=file,
-                    uploaded_by=user,
-                    card=card,
-                    mimetype=mime,
+
+                    # attachments
+                    for key in request.FILES:
+                        file = request.FILES[key]
+                        mime = file.content_type
+                        Attachment.objects.create(
+                            name=file.name,
+                            content=file,
+                            uploaded_by=user,
+                            card=card,
+                            mimetype=mime,
+                        )
+                    lib.sendmail_card_created(card.id, user)
+                else:
+                    # card doesnt exist:
+                    column_type_queue = Columntype.objects.all().filter(name="Queue")
+                    board_columns = Column.objects.filter(board=1)
+                    queue_column = board_columns.get(usage=column_type_queue)
+                    # new card
+                    card = Card.objects.create(
+                        created_by_id=1,
+                        board_id=1,
+                        column_id=str(queue_column.id),
+                        title=subject,
+                        description=body_html,
+                        estimate="240",
+                        csat='0'
+                    )
+                    card.save()
+
+                    # attachments
+                    for key in request.FILES:
+                        file = request.FILES[key]
+                        mime = file.content_type
+                        Attachment.objects.create(
+                            name=file.name,
+                            content=file,
+                            uploaded_by=User.objects.get(id=1),
+                            card=card,
+                            mimetype=mime,
+                        )
+                    message = """
+                                                ## Please do not reply to this email ##
+
+                                                Dear Sender,
+
+                                                We were unable to find an existing account for you in our systems. We have created
+                                                your request and forwarded it to our team which will get back to you shortly.
+
+                                                # This is a message from Spearhead DoIT.
+
+                                                """
+                    send_mail(
+                        'DoIT #doit' + str(card.id) + " " + card.title,
+                        message,
+                        doit_myemail,
+                        [parsed_sender_email, doit_myemail],
+                        fail_silently=False)
+                    lib.sendmail_card_created(card.id, User.objects.get(id=1))
+            else:
+                # the user does not exist
+                # A user does not exist or is no longer active:
+                # we create the card, let the sender know we created the card without watchers and spearhead.support
+                # will get in touch
+
+                column_type_queue = Columntype.objects.all().filter(name="Queue")
+                board_columns = Column.objects.filter(board=1)
+                queue_column = board_columns.get(usage=column_type_queue)
+                # new card
+                card = Card.objects.create(
+                    created_by_id=1,
+                    board_id=1,
+                    column_id=str(queue_column.id),
+                    title=subject,
+                    description=body_html,
+                    estimate="240",
+                    csat='0'
                 )
-            print("hitting this sendmail 002 >>>")
-            lib.sendmail_card_created(card.id, user)
+                card.save()
+
+                # attachments
+                for key in request.FILES:
+                    file = request.FILES[key]
+                    mime = file.content_type
+                    Attachment.objects.create(
+                        name=file.name,
+                        content=file,
+                        uploaded_by=User.objects.get(id=1),
+                        card=card,
+                        mimetype=mime,
+                    )
+                message = """
+                            ## Please do not reply to this email ##
+
+                            Dear Sender,
+
+                            We were unable to find an existing account for you in our systems. We have created
+                            your request and forwarded it to our team which will get back to you shortly.
+
+                            # This is a message from Spearhead DoIT.
+
+                            """
+                send_mail(
+                    'DoIT #doit' + str(card.id) + " " + card.title,
+                    message,
+                    doit_myemail,
+                    [parsed_sender_email, doit_myemail],
+                    fail_silently=False)
+                lib.sendmail_card_created(card.id, User.objects.get(id=1))
 
     return HttpResponse('OK')
