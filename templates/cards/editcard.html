@@ -312,7 +312,9 @@
       <div id="middle-column" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
        <div class="uk-card uk-card-default uk-card-hover uk-card-body uk-background-muted">
         <div>
+
           {{ card.description|safe|linebreaks }}
+
         </div>
         </div>
       <br>
@@ -348,7 +350,12 @@
             <a class="target-scroll-on-load" id="target-scroll-on-load"></a>
             <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post">
               {% csrf_token %}
-              {{comment_form.comment}}
+<!--              {{comment_form.comment}}-->
+              <input id="x" type="hidden" name="comment">
+              <!-- trix test       -->
+                <trix-editor autofocus input="x"></trix-editor>
+              <!-- trix test       -->
+
               <div class="comment-actions">
                 <span>Billable?</span>
                 {{ comment_form.billable }}
@@ -364,6 +371,8 @@
             </form>
           </span>
         </div>
+
+
 
       </div>
     <div class="uk-divider-icon"></div>
