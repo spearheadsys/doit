@@ -234,6 +234,11 @@ function doit_submit_form(formdata) {
     });
 };
 
+// disable trix image uploads ..
+document.addEventListener("trix-file-accept", function(event) {
+  event.preventDefault()
+})
+
 //
 // END submit form for editcard via ajax
 //
