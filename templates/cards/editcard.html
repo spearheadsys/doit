@@ -112,7 +112,7 @@
                 <a class="uk-button-small uk-button-default" href="#" onclick="send_reminder()"
               type="submit">Add Reminder</a>
 
-                <a aria-controls="collapseReminder" aria-expanded="false"
+                <a aria-controls="collapseReminder" aria-expanded="true"
                 class="uk-button-small uk-button-secondary"
                  data-toggle="collapse" href="#collapseReminders"
                   onclick="get_reminders({{ card.id }})">View Reminders
@@ -124,7 +124,7 @@
             <!-- TODO: get via ajax the result (class) and the message itself -->
             <div class="hidden alert alert-success" id="reminder-mess-success" role="alert">The reminder was posted succesfully.</div>
             <div class="hidden alert alert-danger" id="reminder-mess-failed" role="alert">The reminder was not posted. Please try again.</div>
-            <div class="collapse reminder-body" id="collapseReminders"></div>
+            <div class="uk-card" id="collapseReminders"></div>
             <!--=== END Collapsable REMINDERS  ===-->
           </div>
         </li>
@@ -147,7 +147,7 @@
             </form>
             <div class="hidden alert alert-success" id="task-mess-success" role="alert">The task was posted succesfully.</div>
             <div class="hidden alert alert-danger" id="task-mess-failed" role="alert">The task was not posted. Please try again.</div>
-            <div class="collapse worklogs-body" id="collapseTasks"></div>
+            <div class="uk-card" id="collapseTasks"></div>
           </div>
         </li>
 
