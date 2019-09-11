@@ -7,73 +7,59 @@
 
 {% load static %}
 {{addOrganizationForm.media}}
-<nav class="navbar board">
-	<a href="" data-toggle="modal" data-target="#addOrganizationModal">Add Organization</a>&nbsp;
-</nav>
+
+<div class="uk-padding-small uk-child-width-1-4@m" uk-grid>
+    {% for company, details in companies.items %}
+    <div>
+        <div class="uk-card uk-card-default">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    {% if org.logo %}
+                    <div class="uk-width-auto">
+                        <img class="uk-border-circle" width="40" height="40" src="/media/{{ org.logo }}">
+                    </div>
+                    {% endif %}
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">{{company}}</h3>
+                        <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">{{company.created_time}}</time></p>
+                    </div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                <p>{{company.description}}</p>
+            </div>
+            <div class="uk-card-footer">
+               {% if company.owner %}<span uk-icon="user" uk-tooltip="title: {{company.owner}} is owner"></span>{% endif %}
+                <span uk-icon="clock" uk-tooltip="title: SLA {{company.sla_response_time}}"></span>
+
+                {% if details.contacts %}
+                <a href="#" uk-icon="users" uk-tooltip="title: Company Contacts (click)"></a>
+                     <div uk-drop="mode: click">
+                        <div class="uk-card uk-card-body uk-card-default">
+                            {% for contact in details.contacts %}
+                                {{contact.user}}<br/>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <span class="uk-badge" uk-tooltip="title: Open Cards">{{details.open_cards}}</span>
+                <span class="uk-badge" uk-tooltip="title: Closed Cards">{{details.closed_cards}}</span>
+                <span uk-icon="settings" uk-tooltip="title: Company Settings"></span>
+                <a href="delete_organization/{{company.id}}" uk-icon="trash" uk-tooltip="title: Delete {{company}}" style="color: red;" onclick="return confirm('This is a non-recoverable operation! Are you sure?')"></a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
 <!-- Begin page content -->
 <div class="container">
 
-  <div>
-    <p>TODO; show users that do not have a company assigned!</p>
-    <p>TODO; show organizations without email domains!</p>
-    <p>TODO; show organizations without SLA!</p>
-    <p>TODO; show/add/edit associated email domains per company!</p>
-    <p>TODO; show or even better prevent using same email domain for multiple companies!</p>
-
-  </div>
 
 
-  <div><!-- tabs container -->
-    <!-- Nav tabs -->
-      <!-- this is lame, the company name MUST begin with a CAPITAL letter -->
-    <ul class="nav nav-tabs" role="tablist">
-        {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-            <li role="presentation" {% if letter == "A" %} class="active" {% endif %}>
-                <a href="#letter-{{ letter }}" aria-controls="profile" role="tab" data-toggle="tab">{{ letter }}</a></li>
-        {% endfor %}
-    </ul>
 
-    <!-- Tab panes -->
-    <div class="tab-content">
-      {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-          <div role="tabpanel"
-              {% if letter == "A" %} class="tab-pane active" {% else %} class="tab-pane" {% endif %}
-          id="letter-{{ letter }}">
-              {% for org in org_list %}
-                {% if org|make_list|first in letter %}
-                      <div class="col-md-1" style="border: 1px solid #BFBFCE; padding: 5px; width: auto; margin: 4px;">
-                          {% if org.logo %}
-                              <img src="/media/{{ org.logo }}" /><br>
-                          {% endif %}
-                          Company Name: {{ org.name }} <br>
-                          Owner: {{ org.owner }} <br>
-                          Priority: {{ org.priority }} <br>
-                          Included hours: <br>
-                          Used: hours <br>
-                          SLA name: <br>
-                          SLA Response time: {{org.sla_response_time}} <br>
-                          <a href="/contacts/" style="text-decoration: underline">Contacts</a>:
-                          <ul>
-                              {% for i in user_list %}
-                                  {% if i.company.id == org.id %}
-                                      <li><a href="/profile?id={{i.id}}">{{ i.user.first_name }} {{ i.user.last_name }}</a></li>
-                                  {% endif %}
-                              {% endfor %}
-                          </ul>
-                          Add:
-                          <ul>
-                              <li><a href="/contacts/addcontact/{{org.id}}">Contact (Watchers)</a></li>
-                          <//ul>
-                          <ul>
-
-                          </ul>
-                      </div>
-                  {% endif %}
-              {% endfor %}
-          </div>
-      {% endfor %}
-  </div><!-- end tab content -->
-</div><!-- end tabs container -->
 
     <!-- AddOrg Modal -->
     <div class="modal fade" id="addOrganizationModal" tabindex="-1" role="dialog" aria-labelledby="addOrganizationLabel" aria-hidden="true">

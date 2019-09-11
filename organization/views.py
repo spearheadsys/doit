@@ -8,9 +8,11 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from forms import AddOrganizationsForm
 from organization.models import Organization
+from comment.models import Comment
 from datetime import date, timedelta
-from card.models import Worklog
+from card.models import Worklog, Card
 from contact.models import UserProfile
+from django.contrib.contenttypes.models import ContentType
 # verions
 from django.conf import settings
 import json
@@ -39,6 +41,7 @@ class EmailDomainAutocomplete(autocomplete.Select2QuerySetView):
 # @user_passes_test(lambda u: u.is_superuser)
 # Create your views here.
 def organizations(request):
+    # TODO: lazy load orgs in paginated mannger
     if request.user.profile_user.is_customer:
         return HttpResponse("You do not have permissions to view this page.")
     current_url = resolve(request.path_info).url_name
@@ -50,6 +53,12 @@ def organizations(request):
                  if active_user.user.is_active]
     boards = Board.objects.filter(archived=False)
     addOrganizationForm = AddOrganizationsForm()
+
+    companies = {}
+    for company in org_list:
+        companies[company] = {'contacts': UserProfile.objects.filter(company=company),
+                              'open_cards': Card.objects.filter(company=company,closed=False).count(),
+                              'closed_cards': Card.objects.filter(company=company,closed=True).count()}
 
     # worked hours this month
     today_date = date.today()
@@ -66,7 +75,7 @@ def organizations(request):
         'active_url': current_url,
         'site_description': "",
         'org_list': org_list,
-        # 'contract_list': contract_list,
+        'companies': companies,
         'user_list': user_list,
         'doitVersion': doitVersion,
         'boards': boards,
@@ -76,9 +85,6 @@ def organizations(request):
 
 @login_required
 def change_organization(request):
-    # >>> for i in orgs:
-    # ...     cards_count = Card.objects.all().filter(closed=False, company=i).count()
-    # ...     print(cards_count, i)
     current_url = resolve(request.path_info).url_name
     if request.is_ajax() or request.method == 'POST':
         form = AddOrganizationsForm(request.POST)
@@ -139,6 +145,25 @@ def add_organization(request):
             'site_description': "",
         }
         return render_to_response('cases/addorganization.html', context_dict, context)
+
+
+def delete_organization(request, company=None):
+    """ Delete an Organization object."""
+    # who can delete organization? Just superusers!
+    if request.user.profile_user.is_superuser:
+        organization = Organization.objects.get(id=company)
+        # delete all organization contacts
+        for i in UserProfile.objects.filter(company=company):
+            user = User.objects.get(id=i.user.id)
+            user.delete()
+            i.delete()
+        # delete comments
+        cards = Card.objects.filter(company=company)
+        for i in cards:
+            i.delete()
+        # delete the org last because we need the card m2m reverse to ge the comments
+        organization.delete()
+    return HttpResponseRedirect('/organizations/')
 
 
 @login_required
