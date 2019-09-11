@@ -214,27 +214,28 @@
 
   <!-- end middle column -->
     <!-- third column-->
-    <div class="uk-width-1-5">
-      <div style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto >
-        {% for i in tracker%}
-          <div >
-            <div class="marker">{{i.created_time}}</div>
-            <div class="timeline-content">
-              <h6>
-                 {%if i.owner.profile_user.picture %}
-                  <img class="user-picture" src="/media/{{i.owner.profile_user.picture}}"> {{i.owner.first_name}} {{i.owner.last_name}}
-                {% else %}
-                  <span uk-icon="icon: user;"></span> {{i.owner.first_name}} {{i.owner.last_name}}
-                {% endif %}
-              </h6>
-              <span>{{i.action}} <i class="timeline-text-green">{{i.created_time | naturaltime}}</i></span>
-              <p>{{i.updated_fields}}</p>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-      <div class="uk-divider-icon"></div>
-    </div>
+<!--    TODO: disable tracking uintil we fix issue -->
+<!--    <div class="uk-width-1-5">-->
+<!--      <div style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto >-->
+<!--        {% for i in tracker%}-->
+<!--          <div >-->
+<!--            <div class="marker">{{i.created_time}}</div>-->
+<!--            <div class="timeline-content">-->
+<!--              <h6>-->
+<!--                 {%if i.owner.profile_user.picture %}-->
+<!--                  <img class="user-picture" src="/media/{{i.owner.profile_user.picture}}"> {{i.owner.first_name}} {{i.owner.last_name}}-->
+<!--                {% else %}-->
+<!--                  <span uk-icon="icon: user;"></span> {{i.owner.first_name}} {{i.owner.last_name}}-->
+<!--                {% endif %}-->
+<!--              </h6>-->
+<!--              <span>{{i.action}} <i class="timeline-text-green">{{i.created_time | naturaltime}}</i></span>-->
+<!--              <p>{{i.updated_fields}}</p>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        {% endfor %}-->
+<!--      </div>-->
+<!--      <div class="uk-divider-icon"></div>-->
+<!--    </div>-->
     <!-- end third column-->
 </div>
 <!--END NEW -->
