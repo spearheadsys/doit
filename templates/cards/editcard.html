@@ -174,22 +174,15 @@
             <div>
           <div class="uk-panel uk-panel-scrollable">
             <ul class="uk-list" id="attachmentshere">
-              <div uk-lightbox>
+              <div >
               {% for i in attachments %}
-
-
                 {% if 'image' in i.mimetype %}
-
                   <li>
                     <a href="/media/{{i}}" target="_blank">
                       <span uk-icon="image"></span>
                       <span>{{i.name}}</span>
                     </a>
                   </li>
-
-
-
-
                 {% elif 'video' in i.mimetype %}
                   <li>
                     <a href="/media/{{i}}" target="_blank">
@@ -197,9 +190,6 @@
                       <span>{{i.name}}</span>
                     </a>
                   </li>
-
-
-
                 {% else %}
                   <li>
                     <a href="/media/{{i}}" target="_blank">
@@ -208,7 +198,6 @@
                     </a>
                   </li>
                 {% endif %}
-
               {% endfor %}
               </div>
             </ul>
@@ -313,9 +302,7 @@
       <div id="middle-column" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
        <div class="uk-card uk-card-default uk-card-hover uk-card-body uk-background-muted">
         <div>
-
           {{ card.description|safe|linebreaks }}
-
         </div>
         </div>
       <br>
