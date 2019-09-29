@@ -865,6 +865,7 @@ def editCard(request, card=None):
                 'card': card,
                 'editcard_form': form,
                 'boards': boards,
+                'SITE_URL': SITE_URL,
             }
             return HttpResponse(render_to_string(form.errors, context_dict, RequestContext(request)))
 
@@ -910,6 +911,7 @@ def editCard(request, card=None):
             'comments': comments,
             'addreminder_form': addreminder_form,
             'boards': boards,
+            'SITE_URL': SITE_URL,
 
         }
         return render(request, 'cards/editcard.html', context_dict)
@@ -962,6 +964,7 @@ def editCard(request, card=None):
                 'comments': comments,
                 'addreminder_form': addreminder_form,
                 'attachment_form': attachment_form,
+                'SITE_URL': SITE_URL,
             }
             return render(request, 'cards/editcard-ext.html', context_dict)
             # if superuser or operator
@@ -1007,6 +1010,7 @@ def editCard(request, card=None):
                 'addreminder_form': addreminder_form,
                 'attachment_form': attachment_form,
                 'boards': boards,
+                'SITE_URL': SITE_URL,
             }
             return render(request, 'cards/editcard-ext.html', context_dict)
     elif request.user.profile_user.company == instance.company:
@@ -1050,6 +1054,7 @@ def editCard(request, card=None):
             'comments': comments,
             'addreminder_form': addreminder_form,
             'attachment_form': attachment_form,
+            'SITE_URL': SITE_URL,
         }
         return render(request, 'cards/editcard-ext.html', context_dict)
     else:
