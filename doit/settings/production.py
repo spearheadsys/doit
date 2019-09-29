@@ -1,7 +1,7 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from .base import *
 
-SITE_URL = "https://doit.spearhead.systems"
+SITE_URL = "https://doit.spearhead.systems/"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
