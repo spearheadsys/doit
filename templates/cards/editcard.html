@@ -365,7 +365,8 @@
               <script>
                 document.addEventListener("trix-file-accept", function(event) {
                   (function() {
-                    var HOST = "http://127.0.0.1:8000/"
+                    //var HOST = "http://127.0.0.1:8000/"
+                    var HOST = {{SITE_URL}}
 
                     addEventListener("trix-attachment-add", function(event) {
                       if (event.attachment.file) {

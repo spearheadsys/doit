@@ -50,6 +50,7 @@ import re
 # GLOBALS
 doitVersion = settings.DOIT_VERSION
 doit_myemail = settings.DOIT_MYEMAIL
+SITE_URL = settings.SITE_URL
 
 
 @login_required
