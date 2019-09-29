@@ -131,7 +131,26 @@
         </li>
 
         <li>
-          <a class="uk-accordion-title" href="#"><h4 class="uk-heading-bullet">Tasks</h4></a>
+          <a class="uk-accordion-title" href="#"><h4 class="uk-heading-bullet">Tasks <span class="uk-badge">
+          </span></h4></a>
+          <script type="text/javascript">
+
+              function get_tasks_count(cardid) {
+                var open_tasks = 0;
+                  $.get( "/cards/gettasks/", { card: cardid }, function( data ) {
+                    $.each(data, function(i) {
+                      if(!data[i].done) {
+                        open_tasks = open_tasks +1;
+                      }
+                  });
+                });
+               return open_tasks;
+              };
+
+              console.log(get_tasks_count({{card.id}}));
+
+
+            </script>
           <div class="uk-accordion-content" id="tasks">
             <form action="/cards/addtask/" id="add_task_form" method="post" >
               <!-- csrf token here -->
@@ -339,11 +358,54 @@
             <a class="target-scroll-on-load" id="target-scroll-on-load"></a>
             <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post">
               {% csrf_token %}
-<!--              {{comment_form.comment}}-->
               <input id="x" type="hidden" name="comment">
-              <!-- trix test       -->
-                <trix-editor autofocus input="x"></trix-editor>
-              <!-- trix test       -->
+              <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
+              <trix-editor autofocus input="x"></trix-editor>
+
+              <script>
+                document.addEventListener("trix-file-accept", function(event) {
+                  (function() {
+                    var HOST = "http://127.0.0.1:8000/"
+
+                    addEventListener("trix-attachment-add", function(event) {
+                      if (event.attachment.file) {
+                        uploadAttachment(event.attachment)
+                      }
+                    })
+
+                    function uploadAttachment(attachment) {
+                      //var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                      var file = attachment.file;
+                      var form = new FormData;
+                      var endpoint = "/attachments/addattachments/";
+                      form.append("Content-Type", file.type);
+                      form.append("image[image]", file);
+                      form.append("card", {{card.id}})
+
+                      xhr = new XMLHttpRequest;
+                      xhr.open("POST", endpoint, true);
+                      //xhr.setRequestHeader("X-CSRF-Token", csrfToken);
+
+                      xhr.upload.onprogress = function(event) {
+                        var progress = event.loaded / event.total * 100;
+                        return attachment.setUploadProgress(progress);
+                      };
+
+                      xhr.onload = function() {
+                        if (this.status >= 200 && this.status < 300) {
+                          var data = JSON.parse(this.responseText);
+                          return attachment.setAttributes({
+                            url: HOST + 'media/' + data.url,
+                          });
+                        }
+                      };
+
+                      return xhr.send(form);
+                    };
+
+                  })();
+                })
+              </script>
 
               <div class="comment-actions">
                 <span>Billable?</span>

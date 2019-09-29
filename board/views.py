@@ -218,6 +218,11 @@ def editBoard(request, board=None):
             form.save()
             # or should we redirect to the edited board?
             redirect_url = "/boards/"
+            if instance.archived:
+                pass
+                # TODO: get all cards and close them
+                # optionally add a closed by arhiching comment!
+                # additionally reopen them once the board is re-opened
             return HttpResponseRedirect(redirect_url)
         else:
             print form.errors

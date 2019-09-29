@@ -123,15 +123,14 @@ def home(request):
 
         myoverduecards = []
         for i in cards:
-            if str(i.column.usage) != "Backlog":
-                if i.is_overdue:
-                    myoverduecards.append(i)
+            if i.is_overdue:
+                myoverduecards.append(i)
         myoverduecards.sort(key=lambda c: c.due_date
             if (c and c.due_date)
             else timezone.now())
         mycardsoverduetoday = []
         for i in cards:
-            if str(i.column.usage) != "Backlog" and i.due_date:
+            if i.due_date:
                 if i.is_overdue:
                     mycardsoverduetoday.append(i)
         alloverduecards = 0
@@ -270,6 +269,24 @@ def home(request):
     else:
         return render(request, 'login.html', {})
 
+
+
+@login_required
+def my_vue_cards(request):
+    if request.user.is_authenticated():
+        u = User.objects.get(username=request.user)
+        cards = Card.objects.all().filter(closed=False, owner=u)
+        mycards = []
+        for i in cards:
+            if str(i.column.usage) != "Backlog":
+                mycards.append(i)
+            mycards.sort(key=lambda c: c.due_date
+            if (c and c.due_date)
+            else timezone.now())
+
+        return JsonResponse({
+            "open_cards": len(mycards),
+        })
 
 def open_cards_ajax(request):
     draw = request.GET['draw']
@@ -483,6 +500,29 @@ def open_incidents_ajax(request):
         "recordsFiltered": filtered_count,
         "data": objects,
     })
+
+
+@login_required
+def my_vue_overdue(request):
+    if request.user.is_authenticated():
+        u = User.objects.get(username=request.user)
+        # Note: If user != superuser we limit to company or owned/watched cards only!
+        all_records = Card.objects.all().filter(closed=False, owner=u).distinct()
+        myoverdue = []
+        for i in all_records:
+            if i.is_overdue:
+                myoverdue.append(i)
+
+        # for i in all_records:
+        #     if str(i.column.usage) != "Backlog":
+        #         myoverdue.append(i)
+        #     myoverdue.sort(key=lambda c: c.due_date
+        #     if (c and c.due_date)
+        #     else timezone.now())
+
+        return JsonResponse({
+            "overdue_cards": len(myoverdue),
+        })
 
 
 def overdue_cards_ajax(request):

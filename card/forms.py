@@ -35,8 +35,8 @@ class CardsForm(forms.ModelForm):
         model = Card
         # exclude = ['modified_time']
         fields = (
-            'title',
-            'description',
+            # 'title',
+            # 'description',
             'column',
             'priority',
             'type',

@@ -15,11 +15,23 @@
   <!-- Begin page content -->
   <div class="container">
     <div id="cdetails">
+      <div class="uk-alert-warning" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <h3>Notice!</h3>
+        <p>Attaching files is not yet supported on this page. You can however add them immediately after you save this page.<br> Thank you for your patience and understanding as we development.</p>
+      </div>
       <br>
       <form id="addcard_form" method="POST"
           action="/cards/addcard/" role="form">
                   {% csrf_token %}
-                  {{ addcardform.as_p}}
+          <input id="description" type="hidden" name="description">
+          <input type="text" name="title" style="width: 86%; border: 0px; font-size: 16pt; background-color: lightgrey; padding: 5px;" required="True" placeholder="Enter card title" id="id_title" maxlength="255">
+          <br><br>
+          <!-- trix test       -->
+              <trix-editor autofocus input="description"></trix-editor>
+          <!-- trix test       -->
+        <br><br>
+        {{ addcardform.as_p}}
           <br><br>
           <input type="submit" class="btn btn-primary"
               name="submit" value="Save Card" />

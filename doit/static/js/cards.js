@@ -146,6 +146,21 @@ function get_tasks(cardid) {
     });
 };
 
+//function get_tasks_count(cardid) {
+//    $.get( "/cards/gettasks/", { card: cardid }, function( data ) {
+//      var open_tasks = 0;
+//          $.each(data, function(i) {
+//            if(data[i].done) {
+//              return true;
+//          } else {
+//              open_tasks++;
+//          };
+//        };
+//        )};
+//    )};
+
+
+
 //<!-- tasklist tab in editcard modal -->
 $(document).on('change' , '.task-checkbox' , function(){
     if(this.checked) {
@@ -235,9 +250,9 @@ function doit_submit_form(formdata) {
 };
 
 // disable trix image uploads ..
-document.addEventListener("trix-file-accept", function(event) {
-  event.preventDefault()
-})
+
+
+
 
 //
 // END submit form for editcard via ajax

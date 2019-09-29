@@ -5,7 +5,7 @@ from doit.views import user_login, user_logout, profile
 from django.conf.urls import include, url
 from doit.views import home
 from doit.views import getCardsCreatedToday, getWlogsCreatedToday, getTodaysTasks, emailviewer, closed_cards_ajax, \
-    overdue_cards_ajax, open_incidents_ajax, open_cards_ajax, settings_view
+    overdue_cards_ajax, open_incidents_ajax, open_cards_ajax, settings_view, my_vue_cards, my_vue_overdue
 from django.contrib import admin
 admin.autodiscover()
 
@@ -20,6 +20,8 @@ urlpatterns = [
     url(r'^overdue_cards_ajax', overdue_cards_ajax, name='overdue_cards_ajax'),
     url(r'^open_incidents_ajax', open_incidents_ajax, name='open_incidents_ajax'),
     url(r'^open_cards_ajax', open_cards_ajax, name='open_cards_ajax'),
+    url(r'^my_vue_cards', my_vue_cards, name='my_vue_cards'),
+    url(r'^my_vue_overdue', my_vue_overdue, name='my_vue_overdue'),
 
     url(r'^settings', settings_view, name='settings_view'),
 

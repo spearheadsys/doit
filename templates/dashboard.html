@@ -6,8 +6,10 @@
 {% endblock menu %}
 
 {% block main-content %}
+{% load static %}
 {% load humanize %}
 {% load cards_extras %}
+
 
 <!-- new uikit -->
 {% if user.profile_user.is_customer is not True %}
@@ -137,7 +139,7 @@
     <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
       <h3 class="uk-card-title uk-text-center">My Cards</h3>
       <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#mycards-modal"uk-toggle>{{mycards|length}}</a>
+        <a id="my_vue_cards" v-cloak class="uk-text-danger" href="#mycards-modal"uk-toggle>[[ my_open_cards ]]</a>
       </h1>
     </div>
   </div>
@@ -159,7 +161,7 @@
     <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
       <h3 class="uk-card-title uk-text-center">My Overdue Cards</h3>
       <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#myoverduecards-modal" uk-toggle>{{myoverduecards|length}}</a>
+        <a id="my_vue_overdue" v-cloak class="uk-text-danger" href="#myoverduecards-modal" uk-toggle>[[ my_overdue_cards ]]</a>
       </h1>
     </div>
   </div>
@@ -710,6 +712,8 @@
 {% endblock main-content %}
 
 {% block footer %}
+
+<script src="{% static "js/vue-dashboard.js" %}"></script>
 
 <!-- worklog bar chartjs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>

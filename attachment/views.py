@@ -39,11 +39,13 @@ def addattachments(request):
     u = User.objects.get(username=request.user)
     up = u.profile_user
     if request.is_ajax() or request.method == 'POST':
+        print("POST IS AJAZXXXX??????")
         card = request.POST['card']
         related_card = Card.objects.get(id=card)
         # uploaded_file = request.FILES
         for filename, uploaded_file in request.FILES.iteritems():
             f = uploaded_file.content_type
+            print("FILENAME >>>>>> ", file)
             if up.is_customer:
                 if u.profile_user.company == related_card.company:
                     if u.profile_user.is_org_admin or u in related_card.watchers.all():
