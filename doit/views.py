@@ -108,9 +108,10 @@ def home(request):
         customerowncards = []
         for i in allcards:
             if str(i.column.usage) != "Backlog" and u in i.watchers.all():
+                print("customerowncards >>>> ", u)
                 customerowncards.append(i)
         allcustomercards = 0
-        if u.profile_user.company:
+        if u.profile_user.company and u.profile_user.is_org_admin:
             for i in allcards:
                 if str(i.column.usage) != "Backlog" and i.company == u.profile_user.company:
                     allcustomercards += 1
@@ -310,7 +311,7 @@ def open_cards_ajax(request):
         if not all_records:
             all_records = 0
     # if we hit the else it means is_customer
-    else:
+    elif request.user.profile_user.is_org_admin:
         try:
             company = request.user.profile_user.company.id
         except:
@@ -318,6 +319,24 @@ def open_cards_ajax(request):
         if company:
             all_records = Card.objects.all().filter(
                 Q(watchers__in=[request.user]) | Q(company=request.user.profile_user.company.id)
+            ).filter(closed=False).exclude(column__usage__exact=backlog).distinct()
+            records_total = all_records.count()
+            if not all_records:
+                all_records = 0
+        else:
+            all_records = Card.objects.all().filter(closed=False).filter(
+                ~Q(column__usage__exact=backlog) &
+                Q(watchers__in=[request.user.id])
+            ).distinct()
+            records_total = all_records.count()
+    else:
+        try:
+            company = request.user.profile_user.company.id
+        except:
+            company = None
+        if company:
+            all_records = Card.objects.all().filter(
+                Q(watchers__in=[request.user])
             ).filter(closed=False).exclude(column__usage__exact=backlog).distinct()
             records_total = all_records.count()
             if not all_records:
@@ -650,7 +669,7 @@ def closed_cards_ajax(request):
             all_records = 0
     # Note: If users != operator we limit to company
     # if we hit the else it means is_customer
-    else:
+    elif request.user.profile_user.is_org_admin:
         # if no company
         try:
             company = request.user.profile_user.company.id
@@ -670,6 +689,13 @@ def closed_cards_ajax(request):
             total_count = all_records.count()
             if not all_records:
                 all_records = 0
+    else:
+        all_records = Card.objects.all().filter(
+            Q(watchers__in=[request.user])
+        ).filter(closed=True).distinct()
+        total_count = all_records.count()
+        if not all_records:
+            all_records = 0
     objects = []
     if all_records != 0:
         if global_search:
