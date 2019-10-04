@@ -1047,6 +1047,21 @@ div:hover > ul {
     float: left;
 }
 
+
+/* vuejs stuff */
 [v-cloak] {
   display: none;
+}
+
+/* trix-toolbar stuff */
+trix-toolbar {
+  position: -webkit-sticky;
+	position: sticky;
+	top: -0.1rem;
+	font-family: sans-serif;
+	background-color: #fff;
+	z-index: 10;
+	padding: 1em 0;
+	white-space: nowrap;
+	display: block;
 }
