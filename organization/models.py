@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 
 class Organization(models.Model):
     """ An Organization. """
+
+    class Meta:
+        ordering = ['name']
+
     name = models.CharField(max_length=255)
     billing_address = models.CharField(max_length=255, blank=True, null=True)
     billing_zip_code = models.CharField(max_length=24, blank=True, null=True)
