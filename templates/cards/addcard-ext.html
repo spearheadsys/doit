@@ -11,6 +11,22 @@
 {% load humanize %}
 {% load static %}
 {{ addcardform.media }}
+
+<!-- DISABLE trix file uploads here -->
+<!-- Todo figure out how to store attachments to a card that does not yet exist -->
+<style>
+trix-toolbar [data-trix-action='attachFiles'],
+trix-toolbar [data-trix-button-group='file-tools'] {
+  display: none;
+}
+</style>
+
+<script>
+document.addEventListener("trix-file-accept", function(event) {
+  event.preventDefault()
+})
+</script>
+
 <!-- Begin page content -->
 <div class="uk-container">
 
