@@ -327,7 +327,11 @@ Is there something more specific you'd like to know?
 
     <div class="uk-width-expand">
       <div id="middle-column" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
-       <div class="uk-card uk-card-default uk-card-hover uk-card-body uk-background-muted">
+        <div class="uk-padding-small">
+          <span>{{card.created_by.first_name}} on</span>
+          <span>{{card.created_time}} said:</span>
+        </div>
+       <div class="uk-card uk-card-default uk-card-body">
         <div>
           {{ card.description|safe|linebreaks }}
         </div>
@@ -342,6 +346,11 @@ Is there something more specific you'd like to know?
               <span>{{comment.created_time}} said:</span>
             </div>
             <div class="uk-card uk-card-default uk-card-hover uk-card-body {% if comment.public is False %} uk-background-muted{% endif %}">
+              {% if comment.public is False %}
+                <div uk-tooltip="title: This is a private note"><span class="uk-padding-small uk-position-top-right uk-background-muted" style="color: red;" uk-icon="lock"></span></div>
+              {% else %}
+                <div uk-tooltip="title: This comment is public"><span class="uk-padding-small uk-position-top-right uk-background-muted" style="color: green;" uk-icon="unlock"></span></div>
+              {% endif %}
               <article class="uk-comment">
                 <header class="uk-comment-header uk-grid-medium uk-flex-middle {% cycle 'uk-align-right' 'uk-align-left' %}" uk-grid>
                   {% if comment.owner.profile_user.picture %}
