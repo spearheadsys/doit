@@ -19,7 +19,12 @@ import json
 from dal import autocomplete
 from board.models import Board
 from organization.models import EmailDomain
+import collections
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 doitVersion = settings.DOIT_VERSION
+
+
 
 
 class EmailDomainAutocomplete(autocomplete.Select2QuerySetView):
@@ -41,42 +46,42 @@ class EmailDomainAutocomplete(autocomplete.Select2QuerySetView):
 # @user_passes_test(lambda u: u.is_superuser)
 # Create your views here.
 def organizations(request):
-    # TODO: lazy load orgs in paginated mannger
+
+
     if request.user.profile_user.is_customer:
         return HttpResponse("You do not have permissions to view this page.")
-    current_url = resolve(request.path_info).url_name
-    org_list = Organization.objects.all().filter(active=True)
-    # for i in org_list:
-    #     print i
-    # contract_list = Contract.objects.all().filter(active=True)
-    user_list = [active_user for active_user in UserProfile.objects.select_related().all()
-                 if active_user.user.is_active]
+    # current_url = resolve(request.path_info).url_name
+    org_list = Organization.objects.all().filter(active=True).order_by('name')
+    # user_list = [active_user for active_user in UserProfile.objects.select_related().all()
+    #              if active_user.user.is_active]
     boards = Board.objects.filter(archived=False)
     addOrganizationForm = AddOrganizationsForm()
-
-    companies = {}
+    companiesdict = collections.OrderedDict()
     for company in org_list:
-        companies[company] = {'contacts': UserProfile.objects.filter(company=company),
-                              'open_cards': Card.objects.filter(company=company,closed=False).count(),
-                              'closed_cards': Card.objects.filter(company=company,closed=True).count()}
+        companiesdict[company] = {'contacts': UserProfile.objects.filter(company=company),
+                              'open_cards': Card.objects.filter(company=company, closed=False).count(),
+                              'closed_cards': Card.objects.filter(company=company, closed=True).count()}
 
-    # worked hours this month
-    today_date = date.today()
-    #TODO - get the compant id we want here
-    this_month_minutes = Worklog.objects.all().filter(
-        created_time__month=today_date.month,
-        card__company=1
-    )
+    # TODO: lazy load orgs in paginated mannger
+
+    p = Paginator(tuple(companiesdict.items()), 20)
+    page = request.GET.get('page', 1)
+
+    try:
+        companies = p.page(page)
+    except PageNotAnInteger:
+        companies = p.page('page')
+    except EmptyPage:
+        companies = p.page(p.num_pages)
 
     context_dict = {
-        'site_title': "Organizations | Spearhead Systems",
-        'page_name': "Organizations",
+        'site_title': "Organizations | DoIT Spearhead Systems",
         'addOrganizationForm': addOrganizationForm,
-        'active_url': current_url,
+        # 'active_url': current_url,
         'site_description': "",
-        'org_list': org_list,
+        # 'org_list': org_list,
         'companies': companies,
-        'user_list': user_list,
+        # 'user_list': user_list,
         'doitVersion': doitVersion,
         'boards': boards,
     }
