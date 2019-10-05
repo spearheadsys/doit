@@ -7,11 +7,21 @@
 
 {% load static %}
 {{addOrganizationForm.media}}
+<!-- Todo: add company search form-->
+<div>
+  <div class="uk-navbar-item uk-hidden">
+    <form class="uk-search uk-search-navbar uk-muted">
+        <a href="#" uk-search-icon class="uk-search-icon-flip"></a>
+        <input class="uk-search-input" type="search" placeholder="Search by company name...">
+    </form>
+  </div>
 
-<div class="uk-padding-small uk-child-width-1-4@m" uk-grid>
+</div>
+
+<div class="js-filter uk-padding-small uk-child-width-1-4@m " uk-grid>
     {% for company, details in companies.object_list %}
     <div>
-        <div class="uk-card uk-card-default">
+        <div class="uk-card uk-card-default tag-blue">
             <div class="uk-card-header">
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                     {% if org.logo %}
