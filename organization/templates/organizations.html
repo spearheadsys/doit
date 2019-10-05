@@ -9,7 +9,7 @@
 {{addOrganizationForm.media}}
 
 <div class="uk-padding-small uk-child-width-1-4@m" uk-grid>
-    {% for company, details in companies.items %}
+    {% for company, details in companies.object_list %}
     <div>
         <div class="uk-card uk-card-default">
             <div class="uk-card-header">
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="uk-card-body">
-                <p>{{company.description}}</p>
+                <p>{{company.description|slice:":105"}}</p>
             </div>
             <div class="uk-card-footer">
                {% if company.owner %}<span uk-icon="user" uk-tooltip="title: {{company.owner}} is owner"></span>{% endif %}
@@ -51,6 +51,22 @@
         </div>
     </div>
     {% endfor %}
+    <div class="uk-container-muted uk-align-center">
+      <ul class="uk-pagination">
+        <li>
+          {% if companies.has_previous %}
+            <a href="?page={{ companies.previous_page_number }}"><span class="uk-margin-small-right" uk-pagination-previous></span> Previous</a>
+          {% endif %}
+        </li>
+        <li>Page {{ companies.number }} of {{ companies.paginator.num_pages }}.</li>
+        <li>
+          {% if companies.has_next %}
+            <a href="?page={{ companies.next_page_number }}">Next <span class="uk-margin-small-left" uk-pagination-next></span></a>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+
 </div>
 
 
