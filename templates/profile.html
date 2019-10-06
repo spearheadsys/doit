@@ -6,11 +6,10 @@
 {% block main-content %}
 {% load static %}
 
-<div class="uk-padding-small" xmlns="http://www.w3.org/1999/html">
+<div class="uk-padding-small">
 
   <ul uk-tab>
-    <li class="uk-active"><a href="#">My Profile
-      <span uk-tooltip="title: Editing will soon be enabled." uk-icon="icon: question; ratio: .5"></span></a>
+    <li class="uk-active"><a href="#">My Profile</a>
     </li>
     {% if user.profile_user.is_org_admin %}
     <li><a href="#">Company Settings <span uk-tooltip="title: Coming shortly." uk-icon="icon: question; ratio: .5"></span></a></li>
@@ -29,36 +28,37 @@
         <div class="uk-card uk-card-default uk-width-1-2@m">
           <div class="uk-card-header">
               <div class="uk-grid-small uk-flex-middle" uk-grid>
-                  <span class="uk-position-top-right uk-padding-small" uk-icon="icon: question" uk-tooltip="title: If you require editing of fields that are not editable here, please contact us."></span>
+                  <span class="uk-position-top-right uk-padding-small" uk-icon="icon: question" uk-tooltip="title: You can currently change you picture and password."></span>
                   <div class="uk-width-auto">
-
-                    <img class="uk-border-circle" width="40" height="40" src="{% if userprofile and userprofile.picture %}/media/{{ user.profile_user.picture }}{% else %}<span uk-icon='icon: user;'></span>{% endif %}">
-
-                    <br>
-                    <span class="js-upload" uk-form-custom>
-                      <input type="file">
-                      <button class="uk-button uk-button-link" type="button" tabindex="-1">Change</button>
-                    </span>
+                    <form id="picture-change" enctype="multipart/form-data" method="post" action="picture/" >
+                      {% csrf_token %}
+                      <img class="uk-border-circle" width="40" height="40" src="{% if userprofile and userprofile.picture %}/media/{{ user.profile_user.picture }}{% else %}<span uk-icon='icon: user;'></span>{% endif %}">
+                      <br>
+                       <span class="js-upload">
+                        <input type="file" name="mug" />
+                        <input name="userid" type="hidden" value="{{user.id}}">
+                        <button class="uk-button uk-button-link" tabindex="-1">Change</button>
+                      </span>
+                    </form>
 
                   </div>
                   <div class="uk-width-expand">
-                      <h3 class="uk-card-title uk-margin-remove-bottom">{{user.first_name}} {{user.last_name}}</h3>
-                      <p class="uk-text-meta uk-margin-remove-top"><time>Joined: {{user.date_joined}}</time></p>
+                    <h3 class="uk-card-title uk-margin-remove-bottom">{{user.first_name}} {{user.last_name}}</h3>
+                    <p class="uk-text-meta uk-margin-remove-top"><time>Joined: {{user.date_joined}}</time></p>
                   </div>
               </div>
           </div>
           <div class="uk-card-body">
-            <p>Username: {{ user.username }}</p>
+            <p >Username: {{ user.username }}</p>
             <p>Email: {{ user.email }}</p>
             {%if user.profile_user.company %}
-              <p>Company: {{ user.profile_user.company }}</input>
+              <p>Company: {{ user.profile_user.company }}</p>
             {% endif %}
-            <p>Timezone: {{ userprofileform.timezone }}</p>
+            <p>Timezone: {{ userprofile.timezone }}</p>
 
           </div>
           <div class="uk-card-footer">
-<!--              <a href="password" class="uk-button uk-button-text uk-button-small">Change password</a>-->
-              <button uk-toggle="target: #change_password_modal" type="button" class="uk-button uk-button-text uk-button-small">Change password</button>
+            <button uk-toggle="target: #change_password_modal" type="button" class="uk-button uk-button-text uk-button-small">Change password</button>
           </div>
           <div id="change_password_modal" class="" uk-modal>
             <div class="uk-modal-dialog uk-modal-body uk-width-auto">
@@ -72,9 +72,9 @@
 
         </div>
 
-        <form id="edituserprofile_form" method="POST" action="/profile/" role="form">
-          {% csrf_token %}
-        </form>
+<!--        <form autocomplete="false" id="edituserprofile_form" autocomplete="off" method="POST" action="/profile/" role="form">-->
+<!--          {% csrf_token %}-->
+<!--        </form>-->
       </div>
 
     </li>

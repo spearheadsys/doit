@@ -49,7 +49,6 @@ class EditCustomerProfileForm(forms.ModelForm):
             'timezone': forms.TextInput(
                 attrs={
                     'class': 'uk-input',
-                    'disabled': ''
                 }
             ),
 

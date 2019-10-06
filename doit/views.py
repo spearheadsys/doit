@@ -19,6 +19,8 @@ from doit.forms import EditUserForm, EditCustomerProfileForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum, Count
 from collections import namedtuple
+import os
+from django.views.decorators.csrf import csrf_exempt
 
 
 # GLOBALS
@@ -269,7 +271,6 @@ def home(request):
         return render(request, 'dashboard.html', context_dict)
     else:
         return render(request, 'login.html', {})
-
 
 
 @login_required
@@ -940,3 +941,26 @@ def profile(request):
             }
 
     return render(request, 'profile.html', context_dict)
+
+
+@login_required
+@csrf_exempt # TODO: add csrf token
+def profile_change_picture(request, user=None):
+    if request.is_ajax() or request.method == 'POST':
+        submitting_user = request.POST['userid']
+        user = User.objects.get(id=submitting_user)
+        picture = request.FILES.get('mug')
+        u = request.user
+        if user != user:
+            return HttpResponse("You cannot change another users picture.")
+        userprofile = UserProfile.objects.get(user=u)
+        previous_picture = userprofile.picture.delete(save=True)
+        path = 'customer_images/%s' % picture
+        new_up_path = settings.MEDIA_ROOT + str(path)
+        destination = open(new_up_path, 'wb+')
+        for chunk in picture.chunks():
+            destination.write(chunk)
+        destination.close()
+        userprofile.picture = picture
+        userprofile.save()
+    return HttpResponseRedirect('/profile/')
