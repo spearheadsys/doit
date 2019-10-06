@@ -6,7 +6,8 @@ from contact.views import change_password
 from django.conf.urls import include, url
 from doit.views import home
 from doit.views import getCardsCreatedToday, getWlogsCreatedToday, getTodaysTasks, emailviewer, closed_cards_ajax, \
-    overdue_cards_ajax, open_incidents_ajax, open_cards_ajax, settings_view, my_vue_cards, my_vue_overdue
+    overdue_cards_ajax, open_incidents_ajax, open_cards_ajax, settings_view, my_vue_cards, my_vue_overdue, \
+    profile_change_picture
 from django.contrib import admin
 admin.autodiscover()
 
@@ -36,9 +37,12 @@ urlpatterns = [
     # login / logout
     url(r'^login/$', user_login, name='login'),
     url(r'^logout/$', user_logout, name='logout'),
+
     # profile
     url(r'^profile/$', profile, name='profile'),
     url(r'^profile/password/$', change_password, name='change_password'),
+    url(r'^profile/picture/$', profile_change_picture, name='profile_change_picture'),
+
     # admindocs
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # admin page
