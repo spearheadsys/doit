@@ -4,11 +4,9 @@ from contact.models import UserProfile
 # from dal import autocomplete
 
 class EditUserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
-
     class Meta:
         model = User
-        fields = ('username', 'email', 'password')
+        fields = ('username', 'email')
         widgets = {
             'username': forms.TextInput(
                 attrs={
@@ -27,7 +25,6 @@ class EditUserForm(forms.ModelForm):
         labels = {
             'username': '',
             'email': '',
-            'password': ''
         }
 
     def __init__(self, *args, **kwargs):
@@ -41,9 +38,15 @@ class EditUserForm(forms.ModelForm):
 class EditCustomerProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ("picture", "timezone", "company")
+        fields = ("picture", "timezone")
         widgets = {
             'email': forms.TextInput(
+                attrs={
+                    'class': 'uk-input',
+                    'disabled': ''
+                }
+            ),
+            'timezone': forms.TextInput(
                 attrs={
                     'class': 'uk-input',
                     'disabled': ''

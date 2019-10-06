@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from doit.views import user_login, user_logout, profile
+from contact.views import change_password
 from django.conf.urls import include, url
 from doit.views import home
 from doit.views import getCardsCreatedToday, getWlogsCreatedToday, getTodaysTasks, emailviewer, closed_cards_ajax, \
@@ -37,6 +38,7 @@ urlpatterns = [
     url(r'^logout/$', user_logout, name='logout'),
     # profile
     url(r'^profile/$', profile, name='profile'),
+    url(r'^profile/password/$', change_password, name='change_password'),
     # admindocs
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # admin page

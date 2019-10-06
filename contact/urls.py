@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from contact.views import contacts, addcontact, editcontact, deletecontact
+from contact.views import contacts, addcontact, editcontact, deletecontact, change_password
 
 urlpatterns = [
     url(r'^$', contacts, name='contacts'),

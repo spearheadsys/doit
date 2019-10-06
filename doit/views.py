@@ -824,105 +824,119 @@ def profile(request):
         up = None
 
     boards = Board.objects.filter(archived=False)
-    if request.user.profile_user.is_customer:
-        userform = EditUserForm(
-            initial={
-                'username': request.user,
-                'email': request.user.email,
-
+    if request.is_ajax() or request.method == 'POST':
+        form = EditUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form.errors)
+            context_dict = {
+                'site_title': "Profile | Spearhead Systems",
+                'page_name': "Profile",
+                'user': u,
+                'userprofile': up,
             }
-        )
-        userprofileform = EditCustomerProfileForm(
-            initial={
-                'picture': request.user.profile_user.picture,
-                'company': request.user.profile_user.company,
+            return render(request, 'profile.html', context_dict)
+    else:
+        if request.user.profile_user.is_customer:
+            userform = EditUserForm(
+                initial={
+                    'username': request.user,
+                    'email': request.user.email,
+
+                }
+            )
+            userprofileform = EditCustomerProfileForm(
+                initial={
+                    'picture': request.user.profile_user.picture,
+                    'company': request.user.profile_user.company,
 
 
+                }
+            )
+            context_dict = {
+                'site_title': "Profile | Spearhead Systems",
+                'page_name': "Profile",
+                'user': u,
+                'userprofile': up,
+                'doitVersion': doitVersion,
+                'userform': userform,
+                'userprofileform': userprofileform,
             }
-        )
-        context_dict = {
-            'site_title': "Profile | Spearhead Systems",
-            'page_name': "Profile",
-            'user': u,
-            'userprofile': up,
-            'doitVersion': doitVersion,
-            'userform': userform,
-            'userprofileform': userprofileform,
-        }
-    elif request.user.profile_user.is_org_admin:
-        userform = EditUserForm(
-            initial={
-                'username': request.user,
-                'email': request.user.email,
+        elif request.user.profile_user.is_org_admin:
+            userform = EditUserForm(
+                initial={
+                    'username': request.user,
+                    'email': request.user.email,
 
-            }
-        )
-        userprofileform = EditCustomerProfileForm(
-            initial={
-                'picture': request.user.profile_user.picture,
-                'company': request.user.profile_user.company,
+                }
+            )
+            userprofileform = EditCustomerProfileForm(
+                initial={
+                    'picture': request.user.profile_user.picture,
+                    'company': request.user.profile_user.company,
 
+                }
+            )
+            context_dict = {
+                'site_title': "Profile | Spearhead Systems",
+                'page_name': "Profile",
+                'user': u,
+                'userprofile': up,
+                'doitVersion': doitVersion,
+                'userform': userform,
+                'userprofileform': userprofileform,
+                'boards': boards,
             }
-        )
-        context_dict = {
-            'site_title': "Profile | Spearhead Systems",
-            'page_name': "Profile",
-            'user': u,
-            'userprofile': up,
-            'doitVersion': doitVersion,
-            'userform': userform,
-            'userprofileform': userprofileform,
-            'boards': boards,
-        }
-    elif request.user.profile_user.is_operator:
-        userform = EditUserForm(
-            initial={
-                'username': request.user,
-                'email': request.user.email,
+        elif request.user.profile_user.is_operator:
+            userform = EditUserForm(
+                initial={
+                    'username': request.user,
+                    'email': request.user.email,
 
-            }
-        )
-        userprofileform = EditCustomerProfileForm(
-            initial={
-                'picture': request.user.profile_user.picture,
-                'company': request.user.profile_user.company,
+                }
+            )
+            userprofileform = EditCustomerProfileForm(
+                initial={
+                    'picture': request.user.profile_user.picture,
+                    'company': request.user.profile_user.company,
 
+                }
+            )
+            context_dict = {
+                'site_title': "Profile | Spearhead Systems",
+                'page_name': "Profile",
+                'user': u,
+                'userprofile': up,
+                'doitVersion': doitVersion,
+                'userform': userform,
+                'userprofileform': userprofileform,
+                'boards': boards,
             }
-        )
-        context_dict = {
-            'site_title': "Profile | Spearhead Systems",
-            'page_name': "Profile",
-            'user': u,
-            'userprofile': up,
-            'doitVersion': doitVersion,
-            'userform': userform,
-            'userprofileform': userprofileform,
-            'boards': boards,
-        }
-    elif request.user.profile_user.is_superuser:
-        userform = EditUserForm(
-            initial={
-                'username': request.user,
-                'email': request.user.email,
+        elif request.user.profile_user.is_superuser:
+            userform = EditUserForm(
+                initial={
+                    'username': request.user,
+                    'email': request.user.email,
 
-            }
-        )
-        userprofileform = EditCustomerProfileForm(
-            initial={
-                'picture': request.user.profile_user.picture,
-                'company': request.user.profile_user.company,
+                }
+            )
+            userprofileform = EditCustomerProfileForm(
+                initial={
+                    'picture': request.user.profile_user.picture,
+                    'company': request.user.profile_user.company,
 
+                }
+            )
+            context_dict = {
+                'site_title': "Profile | Spearhead Systems",
+                'page_name': "Profile",
+                'user': u,
+                'userprofile': up,
+                'doitVersion': doitVersion,
+                'userform': userform,
+                'userprofileform': userprofileform,
+                'boards': boards,
             }
-        )
-        context_dict = {
-            'site_title': "Profile | Spearhead Systems",
-            'page_name': "Profile",
-            'user': u,
-            'userprofile': up,
-            'doitVersion': doitVersion,
-            'userform': userform,
-            'userprofileform': userprofileform,
-            'boards': boards,
-        }
 
     return render(request, 'profile.html', context_dict)

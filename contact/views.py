@@ -7,10 +7,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from contact.forms import ContactForm, UserProfileForm
+from doit.forms import EditCustomerProfileForm
 from organization.models import Organization
 from django.shortcuts import render
 from contact.models import UserProfile
 from board.models import Board
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.shortcuts import render, redirect
 
 
 # Create your views here.
@@ -181,3 +186,57 @@ def deletecontact(request, contact=None):
     profile.delete()
     user.delete()
     return HttpResponseRedirect('/contacts/')
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+
+            return render(request,'profile/pass_ok.html')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'profile/change_password.html', {
+        'form': form
+    })
+
+def change_picture(request, contact=None):
+    """ """
+    instance = User.objects.get(id=contact)
+    if request.method == 'POST':
+        form = ContactForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            # EDIT CONTACT TRACKER
+            # TODO: get this working
+            # eureka (changed_data att of forms!)
+            # ctype = ContentType.objects.get_for_model(instance)
+            # tracker = Tracker.objects.create(
+            #     created_time=datetime.now(),
+            #     content_type=ctype,
+            #     object_id=instance.id,
+            #     updated_fields=str(" updated ") + str(form.changed_data),
+            #     owner=request.user,
+            #     action=action_text
+            # )
+            # tracker.save()
+            # END EDIT CONTACT TRACKER
+        return HttpResponseRedirect('/contacts/')
+    else:
+        contact = User.objects.get(id=contact)
+        add_contact_form = ContactForm(instance=instance)
+        profile_instance = UserProfile.objects.get(user=instance)
+        add_userprofile_form = UserProfileForm(instance=profile_instance)
+        boards = Board.objects.filter(archived=False)
+        context_dict = {
+            'site_title': "Contacts | Spearhead Systems",
+            'page_name': "Edit a Contact",
+            'add_contact_form': add_contact_form,
+            'add_userprofile_form': add_userprofile_form,
+            'contact': contact,
+            'boards': boards,
+        }
+        return render(request, 'contacts/editcontact.html', context_dict)
