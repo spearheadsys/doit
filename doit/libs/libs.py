@@ -6,6 +6,8 @@ import operator
 from django.template import loader
 from django.conf import settings
 
+from board.models import Board
+
 doit_myemail = settings.DOIT_MYEMAIL
 today_date = datetime.datetime.now()
 today_date = today_date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -120,3 +122,6 @@ DoIT
             fail_silently=False, html_message=html_message)
 
 
+def board_per_user(user):
+    all_boards = Board.objects.all().filter(owner=user)
+    return all_boards

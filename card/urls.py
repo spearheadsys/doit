@@ -5,7 +5,7 @@ from card.views import cards, addcard, update_card_order, addColumn, \
     get_users, get_watchers, mailpost, calendar, add_reminder, \
     get_reminders, delete_reminder, closecard, reopencard, \
     TagAutocomplete, WatcherAutocomplete, CompanyAutocomplete, OwnerAutocomplete, \
-    movecardtoboard
+    movecardtoboard, get_reminders_count
 
 
 # we are at /cards/ here
@@ -25,6 +25,7 @@ urlpatterns = [
 
     url(r'addreminder/', add_reminder, name='add_reminder'),
     url(r'getreminders/', get_reminders, name='get_reminders'),
+    url(r'getreminderscount/', get_reminders_count, name='get_reminders_count'),
     url(r'deletereminder/', delete_reminder, name='delete_reminder'),
     url(r'addtask/', addtask, name='add task'),
     url(r'gettasks/', get_tasks, name='get tasks'),

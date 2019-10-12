@@ -91,6 +91,22 @@ class Card(models.Model):
     #     perc = (float(self.age()) / float(self.sla_response_time())) * 100
     #     return float("%0.2f" % perc)
 
+    def has_open_tasks(self):
+        card = self
+        ctype = ContentType.objects.get_for_model(Card)
+        tasks = Task.objects.filter(
+            content_type__pk=ctype.id,
+            object_id=card.id,
+            done=False)
+        return tasks.count()
+
+    def has_open_reminders(self):
+        card = self
+        reminders = Reminder.objects.filter(
+            card=card.id,
+            notified=False)
+        return reminders.count()
+
     def age(self):
         from datetime import timedelta
         today = timezone.now()

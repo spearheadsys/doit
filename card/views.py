@@ -482,7 +482,22 @@ def get_reminders(request):
             co_json['owner'] = str(
                 UserProfile.objects.get(user_id=co.owner_id).picture)
             results.append(co_json)
+        print("reminders >>>>> ", results)
     return HttpResponse(json.dumps(results, indent=4, sort_keys=True, default=str), content_type='application/json')
+
+@login_required
+@staff_member_required
+def get_reminders_count(request):
+    if request.is_ajax() or request.method == 'GET':
+        q = request.GET.get('card', '')
+        card = Card.objects.get(id=q)
+        u = User.objects.get(username=request.user)
+        reminders = Reminder.objects.filter(
+            card=card.id,
+            notified=False
+        )
+    print(reminders.count())
+    return HttpResponse(json.dumps(reminders.count()), content_type='application/json')
 
 
 @login_required
@@ -1352,16 +1367,15 @@ def get_tasks(request):
 
 @login_required
 def get_task_count(request):
-    context = RequestContext(request)
     if request.is_ajax() or request.method == 'GET':
         q = request.GET.get('card', '')
         card = Card.objects.get(id=q)
         ctype = ContentType.objects.get_for_model(card)
         tasks = Task.objects.filter(
             content_type__pk=ctype.id,
-            object_id=card.id)
-        results = [tasks.count()]
-        data = json.dumps(results)
+            object_id=card.id,
+            done=False)
+        data = json.dumps(tasks.count())
     return HttpResponse(data, content_type='application/json')
 
 
