@@ -209,17 +209,28 @@ def editBoard(request, board=None):
     """
     current_url = resolve(request.path_info).url_name
     instance = Board.objects.get(id=board)
-    # request.is_ajax() or
     if request.method == 'POST':
         board = str(instance.id)
-        # xhr = request.GET.has_key('xhr')
+        # Todo: if board is previously arhived, we should reopen all cards!
         form = EditBoardForm(request.POST, instance=instance)
         if form.is_valid():
             form.save()
             # or should we redirect to the edited board?
             redirect_url = "/boards/"
             if instance.archived:
-                pass
+
+                # allcolumnsofthisboard = Column.objects.all().filter(board=board)
+                columnDone = Columntype.objects.get(name="Done")
+                # columndoneofthisboard = Column.objects.all().filter(board=board).filter(usage=columnDone)
+                allcardsofthisboard = Card.objects.all().filter(board=board).filter(closed=False)
+
+                for card in allcardsofthisboard:
+                    print(card, card.column)
+                    # Do not move to Done column - it will be hard to reopen on unarchiving the board
+                    # card.column = columndoneofthisboard
+                    card.closed = True
+                    card.save()
+
                 # TODO: get all cards and close them
                 # optionally add a closed by arhiching comment!
                 # additionally reopen them once the board is re-opened
