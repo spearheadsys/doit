@@ -24,6 +24,31 @@ var open_tasks = new Vue({
 	}
 })
 
+// open tasks
+var example1 = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#example-1',
+	data: {
+		open_tasks: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/cards/gettasks?card=' + cardid, function (response) {
+				this.open_tasks = response;
+				if(this.open_tasks.done){
+						var checked = "checked";
+				} else {
+						checked = '';
+				}
+			}.bind(this));
+		}
+	},
+	created: function () {
+		this.loadData();
+	},
+})
+
+
 // reminders
 var reminders = new Vue({
 	delimiters: ['[[', ']]'],
@@ -35,7 +60,6 @@ var reminders = new Vue({
 		loadData: function () {
 			$.get('/cards/getreminderscount?card=' + cardid, function (response) {
 				this.open_reminders = response;
-				console.log(response)
 			}.bind(this));
 		}
 	},

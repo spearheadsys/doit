@@ -16,7 +16,7 @@ trix-attachment-remove fires when an attachment is removed from the document. Yo
 Is there something more specific you'd like to know?
 -->
 
-<div class="uk-padding-small ">
+<div class="uk-padding-small">
   <div class="uk-grid-small" uk-grid>
     <div class="uk-width-1-4" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
 
@@ -151,10 +151,21 @@ Is there something more specific you'd like to know?
                 <span id="opentasks" v-cloak >[[open_tasks]]</span>
               </span>
             {% endif %}
+
             </span>
           </a>
 
           <div class="uk-accordion-content" id="tasks">
+
+<!--              <ul id="example-1">-->
+<!--                <li v-for="task in open_tasks" v-if="!task.done">-->
+<!--                  <input name="task" value="[[ task.id ]]" type="checkbox" class="task-item task-checkbox" data-date="[[ task.created_time]]">&nbsp;<span>[[ task.task ]]</span>-->
+<!--                </li>-->
+<!--                <li v-else>-->
+<!--                  <input name="task" value="[[ task.id ]]" checked type="checkbox" class="task-item task-checkbox" data-date="[[ task.created_time]]">&nbsp;<span>[[ task.task ]]</span>-->
+<!--                </li>-->
+<!--              </ul>-->
+
             <form action="/cards/addtask/" id="add_task_form" method="post" >
               <!-- csrf token here -->
               {% csrf_token %}
@@ -580,6 +591,7 @@ Is there something more specific you'd like to know?
 <!-- todo: get this working using uikit-->
  <script type="text/javascript">
 var cardid = "{{card.id}}";
+var card = "{{card.id}}";
 </script>
 <script src="{% static "js/vue-editcard.js" %}">
 </script>
