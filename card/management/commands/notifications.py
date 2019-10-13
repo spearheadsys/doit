@@ -38,7 +38,7 @@ class Command(BaseCommand):
                 print("REMINDER - NOW - REMINDER TIME")
                 print(i.card.id, now.strftime("%Y-%m-%d %H:%M"), i.reminder_time.strftime("%Y-%m-%d %H:%M"))
                 if i.card.closed:
-                    break
+                    continue
 
                 if i.reminder_time.strftime("%Y-%m-%d %H:%M") == now.strftime("%Y-%m-%d %H:%M"):
                     plaintext = get_template('emails/reminder.txt')
