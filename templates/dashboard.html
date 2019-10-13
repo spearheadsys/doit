@@ -128,7 +128,7 @@
     <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
       <h3 class="uk-card-title uk-text-center">All Open Incidents</h3>
       <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#incidents" onclick="UIkit.accordion('#dashboard-accordion').toggle(0);" uk-scroll>{{incidents}}</a>
+        <a class="uk-text-danger" href="#incidents" onclick="UIkit.accordion('#dashboard-accordion').toggle(0);" uk-scroll>{{incidents|length}}</a>
       </h1>
     </div>
   </div>
@@ -516,22 +516,38 @@
         <h2 class="uk-modal-title">My Overdue Boards</h2>
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
-        <ul class="uk-list-striped">
-          {% for card in cardswithoutduedate %}
-          <li>
-            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}} </li>
-          {% endfor %}
-        </ul>
+        <table class="uk-table uk-table-striped">
+          <thead>
+              <tr>
+                  <th>Board</th>
+                  <th>Customer</th>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Created</th>
+              </tr>
+          </thead>
+          <tbody>
+            {% for card in cardswithoutduedate %}
+              <tr>
+                  <td>{{card.board}}</td>
+                  <td>{{card.company}}</td>
+                  <td><a href="/cards/editcard/{{card.id}}">{{card.id}}</a></td>
+                  <td>{{card}}</td>
+                  <td>{{card.created_time}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     <div class="uk-modal-footer uk-text-right">
-        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
     </div>
   </div>
 </div>
   <!-- end cardswithoutduedate-modal  -->
 
   <!-- cardswatcher-modal-->
-<div id="cardswatcher-modal" uk-modal>
+<div id="cardswatcher-modal" class="uk-modal-container" uk-modal>
   <div class="uk-modal-dialog">
     <button class="uk-modal-close-default" type="button" uk-close></button>
     <div class="uk-modal-header">
@@ -539,16 +555,33 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
         <ul class="uk-list-striped">
-          {% for card in cardswatcher %}
-          <li>
-            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}} 
-            <span class="uk-text-warning">{{card.due_date}}</span>
-          </li>
-          {% endfor %}
-        </ul>
+          <table class="uk-table uk-table-striped">
+            <thead>
+                <tr>
+                    <th>Board</th>
+                    <th>Customer</th>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Created</th>
+                    <th>Due</th>
+                </tr>
+            </thead>
+            <tbody>
+               {% for card in cardswatcher %}
+                <tr>
+                    <td>{{card.board}}</td>
+                    <td>{{card.company}}</td>
+                    <td><a href="/cards/editcard/{{card.id}}">{{card.id}}</a></td>
+                    <td>{{card}}</td>
+                    <td>{{card.created_time}}</td>
+                    <td>{{card.due_date}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
       </div>
     <div class="uk-modal-footer uk-text-right">
-        <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+        <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
     </div>
   </div>
 </div>

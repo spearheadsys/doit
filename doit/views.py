@@ -90,9 +90,18 @@ def home(request):
         cards = Card.objects.all().filter(closed=False, owner=u)
         boards = Board.objects.all().filter(archived=False)
         allcards = Card.objects.all().filter(closed=False)
-        incidents = Card.objects.all().filter(closed=False, type="IN")
-        myincidents = Card.objects.all().filter(closed=False, type="IN", owner=u)
+        allincidents = Card.objects.all().filter(closed=False, type="IN")
+        allmyincidents = Card.objects.all().filter(closed=False, type="IN", owner=u)
         myboards = Board.objects.all().filter(archived=False, owner=u)
+
+        incidents = []
+        for i in allincidents:
+            if str(i.column.usage) != "Backlog":
+                incidents.append(i)
+        myincidents = []
+        for i in allmyincidents:
+            if str(i.column.usage) != "Backlog":
+                myincidents.append(i)
         cardswatcher = []
         for i in allcards:
             if u in i.watchers.all():
@@ -126,7 +135,7 @@ def home(request):
 
         myoverduecards = []
         for i in cards:
-            if i.is_overdue:
+            if i.is_overdue and str(i.column.usage) != "Backlog":
                 myoverduecards.append(i)
         myoverduecards.sort(key=lambda c: c.due_date
             if (c and c.due_date)
@@ -134,7 +143,7 @@ def home(request):
         mycardsoverduetoday = []
         for i in cards:
             if i.due_date:
-                if i.is_overdue:
+                if i.is_overdue and str(i.column.usage) != "Backlog":
                     mycardsoverduetoday.append(i)
         alloverduecards = 0
         for i in allcards:
@@ -252,7 +261,7 @@ def home(request):
             'myoverduecards': myoverduecards,
             'mycardsoverduetoday': mycardsoverduetoday,
             'alloverduecards': alloverduecards,
-            'incidents': incidents.count(),
+            'incidents': incidents,
             'myincidents': myincidents,
             'myoverdueboards': myoverdueboards,
             'alloverdueboards': alloverdueboards,
@@ -530,7 +539,7 @@ def my_vue_overdue(request):
         all_records = Card.objects.all().filter(closed=False, owner=u).distinct()
         myoverdue = []
         for i in all_records:
-            if i.is_overdue:
+            if i.is_overdue and str(i.column.usage) != "Backlog":
                 myoverdue.append(i)
 
         # for i in all_records:
