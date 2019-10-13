@@ -30,20 +30,22 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['reminders']:
+            print("WORKING ON reminders")
             reminders = Reminder.objects.all().filter(notified=False).filter()
             for i in reminders:
+                print("LOOPING through reminders!")
                 now = timezone.now()
+                print("REMINDER - NOW - REMINDER TIME")
+                print(i.card.id, now.strftime("%Y-%m-%d %H:%M"), i.reminder_time.strftime("%Y-%m-%d %H:%M"))
                 if i.card.closed:
                     break
 
                 if i.reminder_time.strftime("%Y-%m-%d %H:%M") == now.strftime("%Y-%m-%d %H:%M"):
                     plaintext = get_template('emails/reminder.txt')
                     html = get_template('emails/reminder.html')
-                    d = Context(
-                        {
-                            'card': i.card,
+                    d = {
+                            'card': i.card
                         }
-                    )
                     subject, from_email, to = 'DoIT Reminder', doit_myemail, [
                         str(i.card.owner.email)]
                     text_content = plaintext.render(d)
