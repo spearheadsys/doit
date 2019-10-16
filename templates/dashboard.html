@@ -8,12 +8,138 @@
 {% block main-content %}
 {% load static %}
 {% load humanize %}
-{% load cards_extras %}
+
 
 
 <!-- new uikit -->
 {% if user.profile_user.is_customer is not True %}
-<div class="uk-padding-small" uk-grid>
+<!-- first row -->
+<div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-bottom" uk-grid>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+          uk-tooltip="You are the owner on these Incidents.">
+      <h3 class="uk-card-title uk-text-center">My Incidents</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#myincidents-modal" uk-toggle>{{myincidents|length}}</a>
+      </h1>
+    </div>
+  </div>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+          uk-tooltip="Some of your Cards are overdue.">
+      <h3 class="uk-card-title uk-text-center ">My Overdue Cards</h3>
+      <h1 class="uk-text-center">
+        <a id="my_vue_overdue" v-cloak class="uk-text-danger" href="#myoverduecards-modal" uk-toggle>[[ my_overdue_cards ]]</a>
+      </h1>
+    </div>
+  </div>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+          uk-tooltip="These Cards are assigned to you.">
+      <h3 class="uk-card-title uk-text-center">My Cards</h3>
+      <h1 class="uk-text-center">
+        <a id="my_vue_cards" v-cloak class="uk-text-warning" href="#mycards-modal"uk-toggle>[[ my_open_cards ]]</a>
+      </h1>
+    </div>
+  </div>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+        uk-tooltip="These are your overdue Boards.">
+      <h3 class="uk-card-title uk-text-center">My Overdue Boards</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-danger" href="#myoverdueboard-modal" uk-toggle>{{myoverdueboards|length}}</a>
+      </h1>
+    </div>
+  </div>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+          uk-tooltip="These Cards do not have an owner.">
+      <h3 class="uk-card-title uk-text-center">Cards without owner</h3>
+      <h1 class="uk-text-center">
+        <a class="uk-text-warning" href="#noowner-modal" uk-toggle>{{noowner.count}}</a>
+      </h1>
+    </div>
+  </div>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+         uk-tooltip="These Cards are not associated with a Company.">
+      <h3 class="uk-card-title uk-text-center">Cards without company</h3>
+      <h1 class="uk-text-center">
+        <a class="" href="#cardswithoutcompany-modal" uk-toggle>{{cardswithoutcompany|length}}</a>
+      </h1>
+    </div>
+  </div>
+</div>
+<!-- second row -->
+<div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+        uk-tooltip="These are all the open Incidents.">
+      <p class="uk-text-center">All Open Incidents</p>
+      <h1 class="uk-text-danger uk-text-center">
+        <a class="uk-text-danger" href="#incidents" onclick="UIkit.accordion('#dashboard-accordion').toggle(0);" uk-scroll>{{incidents|length}}</a>
+      </h1>
+    </div>
+  </div>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+        uk-tooltip="These are all the overdue Cards.">
+      <p class="uk-text-center">All Overdue Cards</p>
+      <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1);" uk-scroll>{{alloverduecards}}</a></h1>
+    </div>
+  </div>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+         uk-tooltip="These Cards have not been prioriotized.">
+      <p class="uk-text-center">My Backlog Cards</p>
+      <h1 class="uk-text-center">
+        <a  href="#mybacklog-modal" uk-toggle>{{mybacklogcards|length}}</a>
+      </h1>
+    </div>
+  </div>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+        uk-tooltip="These Boards are all overdue.">
+      <p class="uk-text-center">All Overdue Boards</p>
+      <h1 class="uk-text-danger uk-text-center">
+        <a class="uk-text-danger" href="#alloverdueboards-modal" uk-toggle>{{alloverdueboards|length}}</a>
+      </h1>
+    </div>
+  </div>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+        uk-tooltip="These Cards have not been prioriotized.">
+      <p class="uk-text-center">All Backlog Cards</p>
+      <h1 class="uk-text-danger uk-text-center">
+        <a href="#backlog-modal" uk-toggle>{{backlogcards|length}}</a>
+      </h1>
+    </div>
+  </div>
+   <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+        uk-tooltip="These Cards do not have a due date.">
+      <p class="uk-text-center">Cards Without Due Date</p>
+      <h1 class="uk-text-danger uk-text-center">
+        <a class="uk-text-danger" href="#cardswithoutduedate-modal" uk-toggle>{{cardswithoutduedate|length}}</a>
+      </h1>
+    </div>
+  </div>
+</div>
+<!-- fourth row -->
+<div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-left uk-text-center uk-padding-remove-top" uk-grid>
+  <div>
+    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
+        uk-tooltip="You are a watched on these Cards.">
+      <p class="uk-text-center">Cards I'm Watching</p>
+      <h1 class="uk-text-danger uk-text-center">
+        <a class="uk-text-danger" href="#cardswatcher-modal" uk-toggle>{{cardswatcher|length}}</a>
+      </h1>
+    </div>
+  </div>
+</div>
+
+<!-- Charts.js-->
+<!-- <div class="uk-padding-small" uk-grid>
     <div class="uk-visible@s uk-width-expand">
         <div class="uk-card uk-card-default uk-card-body">
           <canvas id="worklogchart"></canvas>
@@ -29,238 +155,21 @@
         <canvas id="toptagschart"></canvas>
       </div>
     </div>
-</div>
+</div> -->
 
-<!--<div class="uk-padding-small" uk-grid>-->
-<!--    <div class="uk-visible@s uk-width-expand">-->
-
-<!--      <div class="uk-card uk-card-default">-->
-<!--          <div class="uk-card-header">-->
-<!--              <h3 class="uk-card-title">Priorities</h3>-->
-<!--          </div>-->
-<!--          <div class="uk-card-body">You own 23 cards and 0 projects.</div>-->
-<!--          <div class="uk-card-footer">-->
-<!--            <dl class="uk-description-list">-->
-<!--              <dt>Description term</dt>-->
-<!--              <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>-->
-<!--              <dt>Description term</dt>-->
-<!--              <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</dd>-->
-<!--              <dt>Description term</dt>-->
-<!--              <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</dd>-->
-<!--          </dl>-->
-<!--          </div>-->
-<!--      </div>-->
-
-<!--    </div>-->
-<!--</div>-->
-
-
-<div class="uk-child-width-1-6@m uk-grid-small uk-grid-match uk-padding" uk-grid>
-  {% if noowner %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body" style="background-color: #F08080;">
-      <h3 class="uk-card-title uk-text-center">Cards without owner</h3>
-      <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#noowner-modal" uk-toggle>{{noowner.count}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-         uk-tooltip="These Accounts have not had any activity for the past 14 days!">
-      <h3 class="uk-card-title uk-text-center">Accounts without activity</h3>
-      <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#neglected-modal" uk-toggle> - </a>
-      </h1>
-    </div>
-  </div>
-
-  {% if cardswithoutcompany %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-         uk-tooltip="These Cards are not associated with a Company!">
-      <h3 class="uk-card-title uk-text-center">Cards without Company</h3>
-      <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#cardswithoutcompany-modal" uk-toggle>{{cardswithoutcompany|length}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if backlogcards %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">Cards in the Backlog</h3>
-      <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#backlog-modal" uk-toggle>{{backlogcards|length}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if mybacklogcards %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-         uk-tooltip="These Cards have not been prioriotized!">
-      <h3 class="uk-card-title uk-text-center">My Backlog Cards</h3>
-      <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#mybacklog-modal" uk-toggle>{{mybacklogcards|length}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if myincidents %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">My Open Incidents</h3>
-      <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#myincidents-modal"uk-toggle>{{myincidents|length}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if incidents %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">All Open Incidents</h3>
-      <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#incidents" onclick="UIkit.accordion('#dashboard-accordion').toggle(0);" uk-scroll>{{incidents|length}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if mycards %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">My Cards</h3>
-      <h1 class="uk-text-center">
-        <a id="my_vue_cards" v-cloak class="uk-text-danger" href="#mycards-modal"uk-toggle>[[ my_open_cards ]]</a>
-      </h1>
-    </div>
-  </div>
-  {% else %}
-
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">You have no Cards</h3>
-      <h6 class="uk-text-center">You're all caught up!
-        {% if allcards %}
-        Can you give us hand with some of <a href="#allcards" uk-scroll>these cards</a>.
-        {% endif %}
-      </h6>
-    </div>
-  </div>
-  {% endif %}
-  {% if myoverduecards %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">My Overdue Cards</h3>
-      <h1 class="uk-text-center">
-        <a id="my_vue_overdue" v-cloak class="uk-text-danger" href="#myoverduecards-modal" uk-toggle>[[ my_overdue_cards ]]</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-  {% if alloverduecards %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-      {% if myoverduecards > 2 %} style="background-color: #F08080;" {% endif %}
-    >
-      <h3 class="uk-card-title uk-text-center">All Overdue Cards</h3>
-      <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1);" uk-scroll>{{alloverduecards}}</a></h1>
-    </div>
-  </div>
-  {% endif %}
-  {% if myoverdueboards %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-      {% if myoverdueboards > 2 %} style="background-color: #F08080;" {% endif %}
-    >
-      <h3 class="uk-card-title uk-text-center">My Overdue Boards</h3>
-      <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#myoverdueboard-modal" uk-toggle>{{myoverdueboards|length}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if alloverdueboards %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-      {% if alloverdueboards > 2 %} style="background-color: #F08080;" {% endif %}
-    >
-      <h3 class="uk-card-title uk-text-center">All Overdue Boards</h3>
-      <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#alloverdueboards-modal" uk-toggle>{{alloverdueboards|length}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-  <div class="uk-hidden">
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">My Card SLA Breaches</h3>
-      <h1 class="uk-text-danger uk-text-center"> - </h1>
-    </div>
-  </div>
-
-  <div class="uk-hidden">
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">All Card SLA Breaches</h3>
-      <h1 class="{% if alloverdueboards > 0 %}uk-text-danger{% endif %} uk-text-center"> - </h1>
-    </div>
-  </div>
-
-  <div class="uk-hidden">
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">My Cards Overdue Today</h3>
-      <h1 class="{% if mycardsoverduetoday > 0 %}uk-text-danger{% endif %} uk-text-center"> - </h1>
-    </div>
-  </div>
-
-  <div class="uk-hidden">
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">Cards overdue in 5 days</h3>
-      <h1 class="uk-text-center"> - </h1>
-    </div>
-  </div>
-
-  {% if cardswithoutduedate %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body" style="background-color: #F08080;">
-      <h3 class="uk-card-title uk-text-center">Cards Without Due Date</h3>
-      <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#cardswithoutduedate-modal" uk-toggle>{{cardswithoutduedate|length}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if cardswatcher %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">Cards I'm Watching</h3>
-      <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#cardswatcher-modal" uk-toggle>{{cardswatcher|length}}</a>
-      </h1>
-    </div>
-  </div>
-  {% endif %}
-
-</div>
+<!--  TODO:
+    - add priorities based on formula (sla, prio, etc.)
+    - add accounts without activity
+    - SLA Breaches
+    - Overdue today, tomorrow in 5 in two weeks, etc.
+    -
+-->
 {% endif %}
 <!-- end uikit -->
 
 
-
-
 {% if user.profile_user.is_customer is True %}
-<div class="uk-child-width-1-6@m uk-grid-small uk-grid-match uk-padding-small" uk-grid>
+<div class="uk-child-width-1-4@m uk-grid-small uk-grid-match uk-padding-small" uk-grid>
   <div uk-sticky="animation: uk-animation-slide-top; offset: 80">
     <a class="uk-button uk-button-primary uk-button-small" href="cards/addcard">Submit a request</a>
   </div>
@@ -425,11 +334,15 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
         <ul class="uk-list-striped">
-          {% for card in noowner %}
-          <li><a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card.title|safe}}
-            <span class="uk-text-warning">{{card.due_date}}</span>
-          </li>
-          {% endfor %}
+          {% if noowner %}
+            {% for card in noowner %}
+            <li><a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card.title|safe}}
+              <span class="uk-text-warning">{{card.due_date}}</span>
+            </li>
+            {% endfor %}
+          {% else %}
+            <p>Hooray! All cards are assigned!</p>
+          {% endif %}
         </ul>
       </div>
     <div class="uk-modal-footer uk-text-right">
@@ -448,11 +361,15 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
         <ul class="uk-list-striped">
-          {% for card in myoverduecards %}
-          <li><a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card.title|safe}}
-            <span class="uk-text-warning">{{card.due_date}}</span>
-          </li>
-          {% endfor %}
+          {% if myoverduecards %}
+            {% for card in myoverduecards %}
+            <li><a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card.title|safe}}
+              <span class="uk-text-warning">{{card.due_date}}</span>
+            </li>
+            {% endfor %}
+          {% else %}
+            <p>Hooray! No overdue cards.</p>
+          {% endif %}
         </ul>
       </div>
     <div class="uk-modal-footer uk-text-right">
@@ -587,7 +504,7 @@
 </div>
   <!-- end cardswatcher-modal  -->
 
-  <!-- myincidents-modal-->
+<!-- myincidents-modal-->
 <div id="myincidents-modal" uk-modal>
   <div class="uk-modal-dialog">
     <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -596,12 +513,16 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
         <ul class="uk-list-striped">
-          {% for card in myincidents %}
-          <li>
-            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
-            <span class="uk-text-warning">{{card.due_date}}</span>
-          </li>
-          {% endfor %}
+          {% if myincidents %}
+            {% for card in myincidents %}
+            <li>
+              <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
+              <span class="uk-text-warning">{{card.due_date}}</span>
+            </li>
+            {% endfor %}
+          {% else %}
+            <p>Hooray! No assigned incidents!</p>
+          {% endif %}
         </ul>
       </div>
     <div class="uk-modal-footer uk-text-right">
@@ -609,10 +530,10 @@
     </div>
   </div>
 </div>
-  <!-- end myincidents-modal  -->
+<!-- end myincidents-modal  -->
 
 {% if customerowncards %}
-  <!-- myincidents-modal-->
+<!-- customerowncars-modal-->
 <div id="customerowncards-modal" uk-modal>
   <div class="uk-modal-dialog">
     <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -634,7 +555,7 @@
     </div>
   </div>
 </div>
-  <!-- end myincidents-modal  -->
+  <!-- end customerowncars-modal  -->
 {% endif %}
 
 {% if backlogcards %}
@@ -690,8 +611,7 @@
 {% endif %}
 
 
-{% if cardswithoutcompany %}
-  <!-- myincidents-modal-->
+<!-- cardswithoutcompany-modal-->
 <div id="cardswithoutcompany-modal" uk-modal>
   <div class="uk-modal-dialog">
     <button class="uk-modal-close-default" type="button" uk-close></button>
@@ -700,12 +620,16 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
         <ul class="uk-list-striped">
-          {% for card in cardswithoutcompany %}
-          <li>
-            <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
-            <span class="uk-text-warning">{{card.due_date}}</span>
-          </li>
-          {% endfor %}
+          {% if cardswithoutcompany %}
+            {% for card in cardswithoutcompany %}
+            <li>
+              <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
+              <span class="uk-text-warning">{{card.due_date}}</span>
+            </li>
+            {% endfor %}
+          {% else %}
+            <p>Hooray! All cards are assigned to a company!</p>
+          {% endif %}
         </ul>
       </div>
     <div class="uk-modal-footer uk-text-right">
@@ -713,8 +637,8 @@
     </div>
   </div>
 </div>
-  <!-- end myincidents-modal  -->
-{% endif %}
+<!-- end cardswithoutcompany-modal  -->
+
 
   <!-- mycards-modal-->
 <div id="mycards-modal" uk-modal>
