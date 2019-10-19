@@ -1,4 +1,30 @@
 
+// my_incidents
+var my_incidents = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#my_incidents',
+	data: {
+		my_incidents: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/cards/my_incidents', function (response) {
+				this.my_incidents = response.my_incidents;
+			}.bind(this));
+		}
+	},
+	created: function () {
+		this.loadData();
+
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 20000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	}
+})
+
 // my_cards
 var my_open = new Vue({
 	delimiters: ['[[', ']]'],

@@ -554,6 +554,20 @@ def my_vue_overdue(request):
         })
 
 @login_required
+def my_incidents(request):
+    if request.user.is_authenticated():
+        u = User.objects.get(username=request.user)
+        # Note: If user != superuser we limit to company or owned/watched cards only!
+        all_records = Card.objects.all().filter(closed=False, owner=u, type="IN").distinct()
+        my_incidents = []
+        for i in all_records:
+            my_incidents.append(i)
+
+        return JsonResponse({
+            "my_incidents": len(my_incidents),
+        })
+
+@login_required
 def cards_without_owner(request):
     if request.user.is_authenticated() and request.user.profile_user.is_operator:
         u = User.objects.get(username=request.user)

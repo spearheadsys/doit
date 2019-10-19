@@ -20,7 +20,7 @@
           uk-tooltip="You are the owner on these Incidents.">
       <h3 class="uk-card-title uk-text-center">My Incidents</h3>
       <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#myincidents-modal" uk-toggle>{{myincidents|length}}</a>
+        <a id="my_incidents" v-cloak class="uk-text-danger" href="#myincidents-modal" uk-toggle>[[my_incidents]]</a>
       </h1>
     </div>
   </div>
@@ -102,7 +102,7 @@
         uk-tooltip="These Boards are all overdue.">
       <p class="uk-text-center">All Overdue Boards</p>
       <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#alloverdueboards-modal" uk-toggle>{{alloverdueboards|length}}</a>
+        <a class="uk-text-warning" href="#alloverdueboards-modal" uk-toggle>{{alloverdueboards|length}}</a>
       </h1>
     </div>
   </div>
@@ -120,7 +120,7 @@
         uk-tooltip="These Cards do not have a due date.">
       <p class="uk-text-center">Cards Without Due Date</p>
       <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#cardswithoutduedate-modal" uk-toggle>{{cardswithoutduedate|length}}</a>
+        <a class="uk-text" href="#cardswithoutduedate-modal" uk-toggle>{{cardswithoutduedate|length}}</a>
       </h1>
     </div>
   </div>
@@ -131,8 +131,8 @@
     <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
         uk-tooltip="You are a watched on these Cards.">
       <p class="uk-text-center">Cards I'm Watching</p>
-      <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-danger" href="#cardswatcher-modal" uk-toggle>{{cardswatcher|length}}</a>
+      <h1 class="uk-text-center">
+        <a class="uk-text-secondary" href="#cardswatcher-modal" uk-toggle>{{cardswatcher|length}}</a>
       </h1>
     </div>
   </div>
