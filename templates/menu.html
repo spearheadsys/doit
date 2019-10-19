@@ -10,80 +10,76 @@
               <span class="uk-navbar-item uk-logo" href="#">DoIT</span>
               {% if user.profile_user.is_operator %}
               <li>
-                <a class="uk-text-large" href="/">
+                <a href="/">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: home"></span>
-                  Dashboard
+                  <span class="uk-text-large">Dashboard</span>
                 </a>
               </li>
               <li>
-
                 <a class="uk-text-large" href="/boards">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: grid"></span>
-                  Boards
+                  <span class="uk-text-large">Boards</span>
                 </a>
-                <div class="uk-navbar-dropdown" >
-                    <ul class="uk-nav uk-navbar-dropdown-nav"">
+                <div class="uk-navbar-dropdown uk-width-1-3" >
+                    <ul class="uk-nav uk-navbar-dropdown-nav">
                       {% for board in boards %}
                          <li><span class="uk-margin-small-right">
-                           <a href="/cards/addcard/?board={{board.id}}&company={{board.company_id}}" class="uk-link uk-icon" uk-icon="icon: plus-circle; ratio: 0.8;"></a>
-                           <a href="/cards/?board={{board.id}}" class="uk-link">{{board.name}}</a></span></li>
+                           <a href="/cards/addcard/?board={{board.id}}&company={{board.company_id}}" class="uk-link uk-icon" uk-icon="icon: plus-circle; ratio: 1;"></a>
+                           <a href="/cards/?board={{board.id}}" class="uk-link uk-text-large">{{board.name}}</a></span></li>
                        {% endfor %}
 
                     </ul>
                 </div>
-
-
-
               </li>
               <li>
                 <a class="uk-text-large" href="/organizations">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: users"></span>
-                  Customers
+                  <span class="uk-text-large">Customers</span>
                 </a>
               </li>
               <li>
                 <a class="uk-text-large" href="/reports">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: file-text"></span>
-                  Reports
+                  <span class="uk-text-large">Reports</span>
                 </a>
               </li>
               <li>
                 <a class="uk-text-large" href="/profile">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: user"></span>
-                  Profile
+                  <span class="uk-text-large">Profile</span>
                 </a>
               </li>
               <li>
                 <a class="uk-text-large" href="/logout">
                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: sign-out"></span>
-                  Sign out
+                  <span class="uk-text-large">Sign out</span>
                 </a>
               </li>
               {% else %}
               <li>
                 <a class="uk-text-large" href="/">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: home"></span>
-                  Dashboard
+                  <span class="uk-text-large">Dashboard</span>
                 </a>
               </li>
               {% if user.profile_user.is_org_admin %}
                 <li>
                   <a class="uk-text-large" href="/reports">
                     <span class="uk-icon uk-margin-small-right" uk-icon="icon: file-text"></span>
-                    Reports
+                    <span class="uk-text-large">Reports</span>
                   </a>
                 </li>
               {% endif %}
               <li>
                 <a class="uk-text-large" href="/profile">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: user"></span>
-                  Profile
+                  <span class="uk-text-large">Profile</span>
                 </a>
               </li>
               <li>
                 <a class="uk-text-large" href="/logout">
                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: sign-out"></span>
-                  Sign out
+                  <span class="uk-text-large">Sign out</span>
                 </a>
               </li>
               {% endif %}
@@ -101,65 +97,65 @@
               <li>
                 <a class="uk-text-large" href="/">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: home"></span>
-                  Dashboard
+                  <span class="uk-text-large">Dashboard</span>
                 </a>
               </li>
               <li>
                 <a class="uk-text-large" href="/boards">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: grid"></span>
-                  Boards
+                  <span class="uk-text-large">Boards</span>
                 </a>
 
               </li>
               <li>
                 <a class="uk-text-large" href="/organizations">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: users"></span>
-                  Customers
+                  <span class="uk-text-large">Customers</span>
                 </a>
               </li>
               <li>
                 <a class="uk-text-large" href="/reports">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: user"></span>
-                  Reports
+                  <span class="uk-text-large">Reports</span>
                 </a>
               </li>
               <li>
                 <a class="uk-text-large" href="/profile">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: user"></span>
-                  Profile
+                  <span class="uk-text-large">Profile</span>
                 </a>
               </li>
               <li>
                 <a class="uk-text-large" href="/logout">
                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: sign-out"></span>
-                  Sign out
+                  <span class="uk-text-large">Sign out</span>
                 </a>
               </li>
               {% else %}
               <li>
                 <a class="uk-text-large" href="/">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: home"></span>
-                  Dashboard
+                  <span class="uk-text-large">Dashboard</span>
                 </a>
               </li>
               {% if user.profile_user.is_org_admin %}
                 <li>
                   <a class="uk-text-large" href="/reports">
                     <span class="uk-icon uk-margin-small-right" uk-icon="icon: file-text"></span>
-                    Reports
+                    <span class="uk-text-large">Reports</span>
                   </a>
                 </li>
               {% endif %}
               <li>
                 <a class="uk-text-large" href="/profile">
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: user"></span>
-                  Profile
+                  <span class="uk-text-large">Profile</span>
                 </a>
               </li>
               <li>
                 <a class="uk-text-large" href="/logout">
                    <span class="uk-icon uk-margin-small-right" uk-icon="icon: sign-out"></span>
-                  Sign out
+                  <span class="uk-text-large">Sign out</span>
                 </a>
               </li>
               {% endif %}
@@ -171,40 +167,40 @@
 
   {% if page_name == "Boards" %}
   <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/boards/">Boards</a></li>
-    <li><a href="/boards/archived/">Archived Boards</a></li>
-    <li><a href="/boards/addboard/">Add a board</a></li>
+    <li><a href="/boards/" class="uk-text-large">Boards</a></li>
+    <li><a href="/boards/archived/" class="uk-text-large">Archived Boards</a></li>
+    <li><a href="/boards/addboard/" class="uk-text-large">Add a board</a></li>
   </ul>
   {% endif %}
 
   {% if page_name == "Organizations" %}
   <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/organizations/">Companies</a></li>
-    <li><a href="/organizations/addboard/" data-toggle="modal" data-target="#addOrganizationModal">Add Company</a></li>
+    <li><a href="/organizations/" class="uk-text-large">Companies</a></li>
+    <li><a href="/organizations/addboard/" data-toggle="modal" data-target="#addOrganizationModal" class="uk-text-large">Add Company</a></li>
   </ul>
   {% endif %}
 
   
   {% if page_name == "Cards" %}
   <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/">Dashboard</a></li>
-    <li><a href="/boards/">Boards</a></li>
-    <li><a href="/boards/editboard/{{boardname.id}}">Edit board</a></li>
+    <li><a href="/" class="uk-text-large">Dashboard</a></li>
+    <li><a href="/boards/" class="uk-text-large">Boards</a></li>
+    <li><a href="/boards/editboard/{{boardname.id}}" class="uk-text-large">Edit board</a></li>
   </ul>
   {% endif %}
 
  {% if page_name == "Edit Card" %}
   <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/boards/">Boards</a></li>
-    <li><a href="/cards/?board={{card.board.id}}">{{card.board}}</a></li>
-    <li class="uk-text-lead">#{{card.id}} / {{card}}</li>
+    <li><a href="/boards/" class="uk-text-large">Boards</a></li>
+    <li><a href="/cards/?board={{card.board.id}}" class="uk-text-large">{{card.board}}</a></li>
+    <li class="uk-text-lead" class="uk-text-large">#{{card.id}} / {{card}}</li>
   </ul>
   {% endif %}
 
   {% if page_name == "Profile" %}
   <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/">Dashboard</a></li>
-    <li><a href="/profile" class="uk-active">{{page_name}}</a></li>
+    <li><a href="/" class="uk-text-large">Dashboard</a></li>
+    <li><a href="/profile" class="uk-active" class="uk-text-large">{{page_name}}</a></li>
   </ul>
   {% endif %}
 
