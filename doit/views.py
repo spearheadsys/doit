@@ -553,6 +553,47 @@ def my_vue_overdue(request):
             "overdue_cards": len(myoverdue),
         })
 
+@login_required
+def cards_without_owner(request):
+    if request.user.is_authenticated() and request.user.profile_user.is_operator:
+        u = User.objects.get(username=request.user)
+        # Note: If user != superuser we limit to company or owned/watched cards only!
+        all_records = Card.objects.all().filter(closed=False, owner=None).distinct()
+        cards_without_owner = []
+        for i in all_records:
+            cards_without_owner.append(i)
+
+        # for i in all_records:
+        #     if str(i.column.usage) != "Backlog":
+        #         myoverdue.append(i)
+        #     myoverdue.sort(key=lambda c: c.due_date
+        #     if (c and c.due_date)
+        #     else timezone.now())
+
+        return JsonResponse({
+            "cards_without_owner": len(cards_without_owner),
+        })
+
+@login_required
+def cards_without_company(request):
+    if request.user.is_authenticated() and request.user.profile_user.is_operator:
+        u = User.objects.get(username=request.user)
+        # Note: If user != superuser we limit to company or owned/watched cards only!
+        all_records = Card.objects.all().filter(closed=False, company=None).distinct()
+        cards_without_company = []
+        for i in all_records:
+            cards_without_company.append(i)
+
+        # for i in all_records:
+        #     if str(i.column.usage) != "Backlog":
+        #         myoverdue.append(i)
+        #     myoverdue.sort(key=lambda c: c.due_date
+        #     if (c and c.due_date)
+        #     else timezone.now())
+
+        return JsonResponse({
+            "cards_without_company": len(cards_without_company),
+        })
 
 def overdue_cards_ajax(request):
     draw = request.GET['draw']

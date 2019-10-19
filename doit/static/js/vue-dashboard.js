@@ -50,3 +50,56 @@ var my_overdue = new Vue({
 		clearInterval(this.interval);
 	}
 })
+
+// cards without owner
+var cards_without_owner = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#cards_without_owner',
+	data: {
+		cards_without_owner: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/cards/cards_without_owner', function (response) {
+				this.cards_without_owner = response.cards_without_owner;
+			}.bind(this));
+		}
+	},
+	created: function () {
+		this.loadData();
+
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 20000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	}
+})
+
+
+//  cards_without_company
+var cards_without_company = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#cards_without_company',
+	data: {
+		cards_without_company: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/cards/cards_without_company', function (response) {
+				this.cards_without_company = response.cards_without_company;
+			}.bind(this));
+		}
+	},
+	created: function () {
+		this.loadData();
+
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 20000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	}
+})

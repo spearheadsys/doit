@@ -53,10 +53,10 @@
   </div>
   <div>
     <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-          uk-tooltip="These Cards do not have an owner.">
-      <h3 class="uk-card-title uk-text-center">Cards without owner</h3>
+          uk-tooltip="Some of your Cards are overdue.">
+      <h3 class="uk-card-title uk-text-center ">Cards without owner</h3>
       <h1 class="uk-text-center">
-        <a class="uk-text-warning" href="#noowner-modal" uk-toggle>{{noowner.count}}</a>
+        <a id="cards_without_owner" v-cloak class="uk-text-warning" href="#noowner-modal" uk-toggle>[[ cards_without_owner ]]</a>
       </h1>
     </div>
   </div>
@@ -65,7 +65,7 @@
          uk-tooltip="These Cards are not associated with a Company.">
       <h3 class="uk-card-title uk-text-center">Cards without company</h3>
       <h1 class="uk-text-center">
-        <a class="" href="#cardswithoutcompany-modal" uk-toggle>{{cardswithoutcompany|length}}</a>
+        <a id="cards_without_company" v-cloak class="uk-text-warning" href="#cardswithoutcompany-modal" uk-toggle>[[cards_without_company]]</a>
       </h1>
     </div>
   </div>
@@ -136,26 +136,27 @@
       </h1>
     </div>
   </div>
-</div>
 
-<!-- Charts.js-->
-<!-- <div class="uk-padding-small" uk-grid>
-    <div class="uk-visible@s uk-width-expand">
-        <div class="uk-card uk-card-default uk-card-body">
-          <canvas id="worklogchart"></canvas>
+  {% if user.profile_user.is_operator %}
+  <div class="uk-width-expand">
+    <span class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+       <p class="uk-text">Minutes per operator</p>
+
+        <div class="uk-flex">
+          {% for operator in total_minutes_per_op %}
+            <div class="uk-text-small">
+              <div class="uk-card uk-card-small uk-card-body uk-margin-left">
+                <span class="uk-text-success">{{operator.operator.user}}</span>
+                <span class="uk-text-emphasis">{{operator.minutes}}</span>
+              </div>
+            </div>
+          {% endfor %}
         </div>
     </div>
-    <div class="uk-width-expand">
-        <div class="uk-visible@s uk-card uk-card-default uk-card-body">
-          <canvas id="opencardchart"></canvas>
-        </div>
-    </div>
-    <div class="uk-width-expand">
-      <div class="uk-visible@s uk-card uk-card-default uk-card-body">
-        <canvas id="toptagschart"></canvas>
-      </div>
-    </div>
-</div> -->
+  </div>
+  {% endif %}
+
+</div>
 
 <!--  TODO:
     - add priorities based on formula (sla, prio, etc.)
@@ -671,145 +672,6 @@
 {% block footer %}
 
 <script src="{% static "js/vue-dashboard.js" %}"></script>
-
-<!-- worklog bar chartjs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
-<script>
-window.chartColors = {
-	barnred: 'rgb(124, 10, 2)',
-	carminered: 'rgb(150, 0, 24)',
-	usflagred: 'rgb(191,10,48)',
-	burgundyred: 'rgb(75, 192, 192)',
-	ferarired: 'rgb(255,40,0)',
-	hibiscusred: 'rgb(180,55,87)',
-	vermilion: 'rgb(126,25,27)',
-	candyapple: 'rgb(255, 8, 0)',
-	raspberry: 'rgb(210,31,60)',
-	imperial: 'rgb(237, 41, 57)',
-	scarlet: 'rgb(255, 36, 0)',
-
-};
-
-var color = Chart.helpers.color;
-var ctx = document.getElementById('worklogchart').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: [{% for operator in total_minutes_per_op %} '{{operator.operator.user}}', {% endfor %}],
-        datasets: [{
-          data: [{% for minutes in total_minutes_per_op %} {{minutes.minutes|default_if_none:"0"}}, {% endfor %}],
-          backgroundColor: [
-						color(chartColors.barnred).alpha(0.5).rgbString(),
-						color(chartColors.carminered).alpha(0.5).rgbString(),
-						color(chartColors.usflagred).alpha(0.5).rgbString(),
-						color(chartColors.hibiscusred).alpha(0.5).rgbString(),
-						color(chartColors.ferarired).alpha(0.5).rgbString(),
-						color(chartColors.vermilion).alpha(0.5).rgbString(),
-						color(chartColors.raspberry).alpha(0.5).rgbString(),
-						color(chartColors.imperial).alpha(0.5).rgbString(),
-						color(chartColors.candyapple).alpha(0.5).rgbString(),
-						color(chartColors.scarlet).alpha(0.5).rgbString(),
-						color(chartColors.burgundyred).alpha(0.5).rgbString(),
-						color(chartColors.ferarired).alpha(0.5).rgbString(),
-						color(chartColors.vermilion).alpha(0.5).rgbString(),
-						color(chartColors.candyapple).alpha(0.5).rgbString(),
-					],
-        }],
-    },
-    options: {
-      title: {
-        display: true,
-        text: 'Worklog minutes for last 7 days'
-      },
-      responsive: true,
-      legend: {
-        display: false
-    },
-   }
-});
-</script>
-<!-- end worklog bar chartjs -->
-
-<!-- opencardchart bar chartjs -->
-<script>
-var color = Chart.helpers.color;
-var ctx = document.getElementById('opencardchart').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: [{% for owner in group_by_owner_card_list %} '{{owner}}', {% endfor %}],
-        datasets: [{
-          data: [{% for minutes in group_by_owner_card_list.values %} {{minutes|default_if_none:"0"}}, {% endfor %}],
-          backgroundColor: [
-						color(chartColors.barnred).alpha(0.5).rgbString(),
-						color(chartColors.carminered).alpha(0.5).rgbString(),
-						color(chartColors.usflagred).alpha(0.5).rgbString(),
-						color(chartColors.hibiscusred).alpha(0.5).rgbString(),
-						color(chartColors.ferarired).alpha(0.5).rgbString(),
-						color(chartColors.vermilion).alpha(0.5).rgbString(),
-						color(chartColors.carminered).alpha(0.5).rgbString(),
-						color(chartColors.usflagred).alpha(0.5).rgbString(),
-						color(chartColors.candyapple).alpha(0.5).rgbString(),
-						color(chartColors.ferarired).alpha(0.5).rgbString(),
-						color(chartColors.burgundyred).alpha(0.5).rgbString(),
-						color(chartColors.ferarired).alpha(0.5).rgbString(),
-						color(chartColors.vermilion).alpha(0.5).rgbString(),
-						color(chartColors.candyapple).alpha(0.5).rgbString(),
-					],
-        }],
-    },
-    options: {
-      title: {
-        display: true,
-        text: 'Open cards per user'
-      },
-      responsive: true,
-      legend: {
-        display: false
-    },
-   }
-});
-</script>
-<!-- end opencardchart -->
-
-<!-- toptags chart -->
-<script>
-var color = Chart.helpers.color;
-var ctx = document.getElementById('toptagschart').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-        labels: [{% for tag in top_tags %} '{{tag}}', {% endfor %}],
-        datasets: [{
-          data: [{% for tag in top_tags.values %} {{tag.num_times}}, {% endfor %}],
-          backgroundColor: [
-						color(chartColors.barnred).alpha(0.5).rgbString(),
-						color(chartColors.carminered).alpha(0.5).rgbString(),
-						color(chartColors.raspberry).alpha(0.5).rgbString(),
-						color(chartColors.hibiscusred).alpha(0.5).rgbString(),
-						color(chartColors.ferarired).alpha(0.5).rgbString(),
-						color(chartColors.vermilion).alpha(0.5).rgbString(),
-						color(chartColors.imperial).alpha(0.5).rgbString(),
-						color(chartColors.usflagred).alpha(0.5).rgbString(),
-						color(chartColors.candyapple).alpha(0.5).rgbString(),
-						color(chartColors.scarlet).alpha(0.5).rgbString(),
-					],
-        }],
-    },
-    options: {
-      title: {
-        display: true,
-        text: 'Top 5 card tags'
-      },
-      responsive: true,
-      legend: {
-        display: true
-    },
-   }
-});
-</script>
-<!-- end toptags chart -->
-
 
 {% include "footer.html" %}
 
