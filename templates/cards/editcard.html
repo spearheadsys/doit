@@ -22,10 +22,13 @@ Is there something more specific you'd like to know?
 
     <div class="uk-width-auto uk-padding-small uk-padding-remove-top">
       <!-- TODO: get worklogs per card (except non-billable  -->
-      {% if card.priority.title == "Major" %}<span class="uk-label uk-label-danger">Major</span>{% endif %}
-      {% if card.closed %}<span class="uk-label uk-label-success">Closed</span>{% endif %}
-      {% if card.is_overdue %}<span class="uk-label uk-label-warning">Overdue</span>{% endif %}
-      {% if card.type == "IN" %}<span class="uk-label uk-label-danger">INCIDENT</span>{% endif %}
+      {% if card.closed %}<span class="uk-label uk-label-success">Closed</span>
+      {% else %}
+        {% if card.priority.title == "Major" %}<span class="uk-label uk-label-danger">Major</span>{% endif %}
+        {% if card.is_overdue %}<span class="uk-label uk-label-warning">Overdue</span>{% endif %}
+        {% if card.type == "IN" %}<span class="uk-label uk-label-danger">INCIDENT</span>{% endif %}
+      {% endif %}
+
     </div>
 
       <ul uk-accordion="multiple: false">
