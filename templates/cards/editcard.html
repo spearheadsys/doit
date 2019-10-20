@@ -20,6 +20,14 @@ Is there something more specific you'd like to know?
   <div class="uk-grid-small" uk-grid>
     <div class="uk-width-1-4" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
 
+    <div class="uk-width-auto uk-padding-small uk-padding-remove-top">
+      <!-- TODO: get worklogs per card (except non-billable  -->
+      {% if card.priority.title == "Major" %}<span class="uk-label uk-label-danger">Major</span>{% endif %}
+      {% if card.is_closed %}<span class="uk-label uk-label-success">Closed</span>{% endif %}
+      {% if card.is_overdue %}<span class="uk-label uk-label-warning">Overdue</span>{% endif %}
+      {% if card.type == "IN" %}<span class="uk-label uk-label-danger">INCIDENT</span>{% endif %}
+    </div>
+
       <ul uk-accordion="multiple: false">
         <li>
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Card details</span></a>
@@ -303,30 +311,18 @@ Is there something more specific you'd like to know?
 
         </li>
 
-<!--        TODO: Disable history tracking until we fix mixup-->
-<!--       <li>-->
-<!--        <a class="uk-accordion-title" href="#"><h4 class="uk-heading-bullet">History</h4></a>-->
-<!--        <div class="uk-accordion-content" uk-overflow-auto id="history">-->
-
-<!--          {% for i in tracker%}-->
-<!--            <div >-->
-<!--              <div class="marker">{{i.created_time}}</div>-->
-<!--              <div class="timeline-content">-->
-<!--                <h6>-->
-<!--                  {%if i.owner.profile_user.picture %}-->
-<!--                    <img class="user-picture" src="/media/{{i.owner.profile_user.picture}}"> {{i.owner.first_name}} {{i.owner.last_name}}-->
-<!--                  {% else %}-->
-<!--                    <span uk-icon="icon: user;"></span>  {{i.owner.first_name}} {{i.owner.last_name}}-->
-<!--                  {% endif %}-->
-<!--                </h6>-->
-<!--                <span>{{i.action}} <i class="timeline-text-green">{{i.created_time | naturaltime}}</i></span>-->
-<!--                <p>{{i.updated_fields}}</p>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          {% endfor %}-->
-
-<!--        </div>-->
-<!--       </li>-->
+        <!-- <li>
+          <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Knowledge Base</span></a>
+          <div class="uk-accordion-content" id="kb">
+            <ul>
+              <li>item 1</li>
+              <li>item 2</li>
+              <li>item 3</li>
+              <li>item 4</li>
+              <li>item 5</li>
+            </ul>
+          </div>
+        </li> -->
 
       </ul>
     </div>
@@ -348,7 +344,12 @@ Is there something more specific you'd like to know?
         <div>
         {% for comment in comments %}
           <div>
-            <div class="uk-padding-small">
+            <div class="uk-padding-small uk-text-small {% cycle 'uk-text-right' 'uk-text-left' %}">
+              {% if comment.owner.profile_user.picture %}
+                <span class="uk-width-auto">
+                  <img class="uk-border-circle uk-margin-right" src="/media/{{ comment.owner.profile_user.picture }}" width="32" height="32" alt="{{comment.owner}}">
+                </span>
+              {% endif %}
               <span>{{comment.owner.first_name}} on</span>
               <span>{{comment.created_time}} said:</span>
             </div>
@@ -358,14 +359,11 @@ Is there something more specific you'd like to know?
               {% else %}
                 <div uk-tooltip="title: This comment is public"><span class="uk-padding-small uk-position-top-right uk-background-muted" style="color: green;" uk-icon="unlock"></span></div>
               {% endif %}
+              {% if comment.minutes > 0 %}
+                <div uk-tooltip="title: {{comment.minutes}} min {%if comment.billable %}  billable {% else %} non billable {% endif %}"><span class="uk-padding-small uk-position-bottom-right uk-background-muted" uk-icon="clock"></span></div>
+              {% endif %}
+
               <article class="uk-comment">
-                <header class="uk-comment-header uk-grid-medium uk-flex-middle {% cycle 'uk-align-right' 'uk-align-left' %}" uk-grid>
-                  {% if comment.owner.profile_user.picture %}
-                    <div class="uk-width-auto">
-                      <img class="uk-border-pill uk-margin-right" src="/media/{{ comment.owner.profile_user.picture }}" width="52" height="52" alt="">
-                    </div>
-                  {% endif %}
-                </header>
                 <div class="uk-comment-body">
                     <p>{{comment|safe|escape|linebreaks}}</p>
                 </div>
