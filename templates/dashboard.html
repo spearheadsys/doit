@@ -671,7 +671,9 @@
 
 {% block footer %}
 
+{% if user.profile_user.is_customer is not True %}
 <script src="{% static "js/vue-dashboard.js" %}"></script>
+{%endif%}
 
 {% include "footer.html" %}
 
