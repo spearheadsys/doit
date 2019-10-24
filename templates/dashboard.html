@@ -9,67 +9,34 @@
 {% load static %}
 {% load humanize %}
 
-
-
 <!-- new uikit -->
 {% if user.profile_user.is_customer is not True %}
 <!-- first row -->
-<div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-bottom" uk-grid>
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-          uk-tooltip="You are the owner on these Incidents.">
-      <h3 class="uk-card-title uk-text-center">My Incidents</h3>
-      <h1 class="uk-text-center">
-        <a id="my_incidents" v-cloak class="uk-text-danger" href="#myincidents-modal" uk-toggle>[[my_incidents]]</a>
-      </h1>
-    </div>
-  </div>
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-          uk-tooltip="Some of your Cards are overdue.">
-      <h3 class="uk-card-title uk-text-center ">My Overdue Cards</h3>
-      <h1 class="uk-text-center">
-        <a id="my_vue_overdue" v-cloak class="uk-text-danger" href="#myoverduecards-modal" uk-toggle>[[ my_overdue_cards ]]</a>
-      </h1>
-    </div>
-  </div>
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-          uk-tooltip="These Cards are assigned to you.">
-      <h3 class="uk-card-title uk-text-center">My Cards</h3>
-      <h1 class="uk-text-center">
-        <a id="my_vue_cards" v-cloak class="uk-text-warning" href="#mycards-modal"uk-toggle>[[ my_open_cards ]]</a>
-      </h1>
-    </div>
-  </div>
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-        uk-tooltip="These are your overdue Boards.">
-      <h3 class="uk-card-title uk-text-center">My Overdue Boards</h3>
-      <h1 class="uk-text-center">
-        <a class="uk-text-danger" href="#myoverdueboard-modal" uk-toggle>{{myoverdueboards|length}}</a>
-      </h1>
-    </div>
-  </div>
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-          uk-tooltip="Some of your Cards are overdue.">
-      <h3 class="uk-card-title uk-text-center ">Cards without owner</h3>
-      <h1 class="uk-text-center">
-        <a id="cards_without_owner" v-cloak class="uk-text-warning" href="#noowner-modal" uk-toggle>[[ cards_without_owner ]]</a>
-      </h1>
-    </div>
-  </div>
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-         uk-tooltip="These Cards are not associated with a Company.">
-      <h3 class="uk-card-title uk-text-center">Cards without company</h3>
-      <h1 class="uk-text-center">
-        <a id="cards_without_company" v-cloak class="uk-text-warning" href="#cardswithoutcompany-modal" uk-toggle>[[cards_without_company]]</a>
-      </h1>
-    </div>
-  </div>
+<div class="uk-flex uk-flex-wrap uk-flex-around uk-padding-small uk-background-muted">
+  <span v-if="my_incidents" class="uk-label uk-label-danger" id="my_incidents" v-cloak href="#myincidents-modal" style="cursor: pointer;" uk-toggle>Incidents [[my_incidents]]</span>
+  <span v-if="my_overdue_cards" class="uk-label uk-label-danger " id="my_vue_overdue" v-cloak href="#myoverduecards-modal" style="cursor: pointer;" uk-toggle>My Overdue Cards [[ my_overdue_cards ]]</span>
+  <span v-if="my_open_cards" class="uk-label uk-label-warning " id="my_vue_cards" v-cloack href="#mycards-modal" style="cursor: pointer;" uk-toggle>My Open Cards [[ my_open_cards ]]</span>
+
+ <span class="uk-label uk-label-warning" id="my_vue_overdue_bards" v-cloack href="#myoverdueboard-modal" style="cursor: pointer;" uk-toggle>My Overdue Boards {{myoverdueboards|length}}</span>
+  <!-- <span class="uk-label-dangerl">My Overdue Boards
+    <a class="uk-text-lead" href="#myoverdueboard-modal" uk-toggle>{{myoverdueboards|length}}</a>
+  </span> -->
+
+  <span v-if="cards_without_owner" class="uk-label uk-label-warning " href="#noowner-modal" id="cards_without_owner" v-cloack href="#noowner-modal" style="cursor: pointer;" uk-toggle>Cards Without Owner [[ cards_without_owner ]]</span>
+
+  <span v-if="cards_without_company" class="uk-label uk-label-warning " href="#noowner-modal" id="cards_without_company" v-cloack href="#cardswithoutcompany-modal" style="cursor: pointer;" uk-toggle>Cards Without Company [[ cards_without_company ]]</span>
+
 </div>
+
+<!-- <div class="uk-flex uk-flex-wrap uk-flex-around uk-padding-small uk-background-muted">
+  <span class="uk-label uk-label-warning">My Backlog {{incidents|length}}</span>
+  <span class="uk-label uk-label-warning">My Queue {{incidents|length}}</span>
+  <span class="uk-label uk-label-warning">Cards in Working {{incidents|length}}</span>
+  <span class="uk-label uk-label-warning">Waiting {{incidents|length}}</span>
+  <span class="uk-label uk-label-success">Done {{incidents|length}}</span>
+</div> -->
+
+
 <!-- second row -->
 <div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
   <div>
@@ -156,7 +123,7 @@
   </div>
   {% endif %}
 
-</div>
+
 
 <!--  TODO:
     - add priorities based on formula (sla, prio, etc.)
