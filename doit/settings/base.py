@@ -187,4 +187,8 @@ SUMMERNOTE_CONFIG = {
 # Set this to your outgoing address. Remeber to configure SPF/DKIM/DMARC accordingly
 DOIT_MYEMAIL = 'help@spearhead.systems'
 DOIT_VERSION = '0.0.4'
+# set this to whatever default board you want for cards
+# emails received will use this board as a default
 DOIT_DEFAULT_BOARD = '1'
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1000000000
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1000000000
