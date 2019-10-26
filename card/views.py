@@ -1700,6 +1700,23 @@ def mailpost(request):
                     is_customer=True
                 )
                 profile.save()
+
+                column_type_queue = Columntype.objects.all().filter(name="Queue")
+                board_columns = Column.objects.filter(board=doit_default_board)
+                queue_column = board_columns.get(usage=column_type_queue)
+                board = Board.objects.get(id=doit_default_board)
+                # new card
+                card = Card.objects.create(
+                    created_by_id=user.id,
+                    board_id=board.id,
+                    column_id=str(queue_column.id),
+                    title=subject,
+                    description=body_html,
+                    estimate="240",
+                    csat='0'
+                )
+
+                card.save()
                 watcher = User.objects.get(email=parsed_sender_email.lower())
                 watchers.append(watcher)
                 message = """
