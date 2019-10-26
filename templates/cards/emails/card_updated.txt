@@ -2,7 +2,7 @@
 
 A Card has been been updated.
 
-Card title: {{card.title}
+Card title: {{card.title}}
 Comment: {{comment}}
 
 For more details view https://doit.spearhead.systems/cards/editcard/%d
