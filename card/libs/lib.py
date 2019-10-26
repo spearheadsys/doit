@@ -1,10 +1,13 @@
 from card.models import Card, Board
 from contact.models import UserProfile
 from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
 import pytz
 from django.template.loader import get_template
 from bs4 import BeautifulSoup
 from django.conf import settings
+
 
 doit_myemail = settings.DOIT_MYEMAIL
 
@@ -19,65 +22,90 @@ def convert_to_localtime(uid, utctime):
 
 def sendmail_card_created(cardid, card_creator):
     plaintext = get_template('cards/emails/card_created.txt')
-    html = get_template('cards/emails/card_created.html')
+    # html = get_template('cards/emails/card_created.html')
 
     if cardid:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
-        soup_description = BeautifulSoup(card.description)
-        for watcher in watchers:
-            watchers_message = """
-                ## Please do not write below this line ##
-                
-                A new Card has been created in which you participate.
-                
-                Card title: %s
-                Description : %s
-                
-                For more details view https://doit.spearhead.systems/cards/editcard/%d
-                
-                # This is a message from Spearhead DoIT. 
-                
-                https://doit.spearhead.systems
-                """
-            watchers_formatted_message = watchers_message % (
-                card.title,
-                soup_description.get_text(),
-                card.id)
+        soup_description = BeautifulSoup(card.description, "lxml")
+        #
+        # We are not sending to watchers anymore, too many bounces and loops
+        #
+        # for watcher in watchers:
+        #     watchers_message = """
+        #         ## Please do not write below this line ##
+        #
+        #         A new Card has been created in which you participate.
+        #
+        #         Card title: %s
+        #         Description : %s
+        #
+        #         For more details view https://doit.spearhead.systems/cards/editcard/%d
+        #
+        #         # This is a message from Spearhead DoIT.
+        #
+        #         https://doit.spearhead.systems
+        #         """
+        #     watchers_formatted_message = watchers_message % (
+        #         card.title,
+        #         soup_description.get_text(),
+        #         card.id)
+        #     send_mail(
+        #         'DoIT #doit' + str(card.id) + " " + card.title,
+        #         watchers_formatted_message,
+        #         doit_myemail,
+        #         [watcher.email],
+        #         fail_silently=True)
+        content = {
+            'card': card,
+            'description': soup_description.get_text(),
+        }
+        try:
             send_mail(
                 'DoIT #doit' + str(card.id) + " " + card.title,
-                watchers_formatted_message,
+                plaintext.render(content),
+                doit_myemail,
+                [card.owner.email],
+                fail_silently=True)
+        except AttributeError:
+            pass
+
+        # TODO: temporary notify support of cards created via customer portal
+        if card_creator.profile_user.is_customer:
+            text_content = plaintext.render(content)
+            send_mail(
+                'DoIT #doit' + str(card.id) + " " + card.title,
+                plaintext.render(content),
+                doit_myemail,
+                ["doit@spearhead.systems"],
+                fail_silently=True)
+
+
+def sendmail_card_updated(cardid, comment, card_creator):
+    plaintext = get_template('cards/emails/card_created.txt')
+
+    if cardid and comment:
+        card = Card.objects.get(id=cardid)
+        watchers = card.watchers.all()
+        soup_description = BeautifulSoup(card.description)
+        soup_comment = BeautifulSoup(comment.comment)
+        content = {
+            'card': card,
+            'description': soup_description.get_text(),
+            'comment': soup_comment.get_text(),
+        }
+        for watcher in watchers:
+            send_mail(
+                'DoIT #doit' + str(card.id) + " " + card.title,
+                plaintext.render(content),
                 doit_myemail,
                 [watcher.email],
                 fail_silently=True)
         try:
             # now send to the owner
-            message = """
-                ## Please do not write below this line ##
-
-                A new Card has been created and you have been assigned ownership.
-
-                Details:
-                Card title: %s
-                Description: %s
-                Due date: %s
-                Priority: %s
-
-                For more details view https://doit.spearhead.systems/cards/editcard/%d
-
-                # This is a message from Spearhead DoIT. 
-
-                https://doit.spearhead.systems
-                """
-            formatted_message = message % (
-                card.title,
-                soup_description.get_text(),
-                card.due_date,
-                card.priority,
-                card.id)
             send_mail(
                 'DoIT #doit' + str(card.id) + " " + card.title,
-                formatted_message,
+                plaintext.render(content),
                 doit_myemail,
                 [card.owner.email],
                 fail_silently=True)
@@ -89,10 +117,11 @@ def sendmail_card_created(cardid, card_creator):
         if card_creator.profile_user.is_customer:
             send_mail(
                 'DoIT #doit' + str(card.id) + " " + card.title,
-                formatted_message,
+                plaintext.render(content),
                 doit_myemail,
-                ["help@spearhead.systems"],
+                ["doit@spearhead.systems"],
                 fail_silently=True)
+
 
 def doit_tracker(objid):
     print 'we got an id >>>'

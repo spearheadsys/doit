@@ -187,3 +187,4 @@ SUMMERNOTE_CONFIG = {
 # Set this to your outgoing address. Remeber to configure SPF/DKIM/DMARC accordingly
 DOIT_MYEMAIL = 'help@spearhead.systems'
 DOIT_VERSION = '0.0.4'
+DOIT_DEFAULT_BOARD = '1'

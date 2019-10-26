@@ -1,10 +1,15 @@
-## Please do not reply to this email ##
+## Please do not write below this line ##
 
-A new Card has been created in which you participate.
+A new Card has been created and you have been assigned ownership.
 
-Card title: %s
-Description: %s
+Card title: {{card.title}}
+Description: {{ description }}
+Company: {{card.company}}
+Due date: {{card.due_date}}
+Priority: {{card.priority}}
 
-For more details view https://doit.spearhead.systems/cards/editcard/%d
+For more details view https://doit.spearhead.systems/cards/editcard/{{card.id}}
 
-# This is email is a service from Spearhead Systems, delivered by DoIT.
+# This is a message from Spearhead DoIT.
+
+https://doit.spearhead.systems

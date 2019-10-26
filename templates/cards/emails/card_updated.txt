@@ -1,0 +1,12 @@
+## Please do not write below this line ##
+
+A Card has been been update.
+
+Card title: {{card.title}
+Comment: {{comment}}
+
+For more details view https://doit.spearhead.systems/cards/editcard/%d
+
+# This is a message from Spearhead DoIT.
+
+https://doit.spearhead.systems

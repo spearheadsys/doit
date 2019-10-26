@@ -51,7 +51,7 @@ import re
 doitVersion = settings.DOIT_VERSION
 doit_myemail = settings.DOIT_MYEMAIL
 SITE_URL = settings.SITE_URL
-
+doit_default_board = settings.DOIT_DEFAULT_BOARD
 
 @login_required
 @staff_member_required
@@ -1492,35 +1492,15 @@ def mailpost(request):
             user = User.objects.get(email=str(parsed_sender_email.lower()))
         except ObjectDoesNotExist:
             user = None
-
         if user:
             try:
                 company = user.profile_user.company
             except ObjectDoesNotExist:
                 company = None
-
-        # print("#--------- emails>>>>>> ")
-        # print("sender_from >> ", sender_from)
-        # print("sender >> ", sender)
-        # print("cc > ", cc)
-        # print("parsed_sender > ", parsed_sender)
-        # print("parsed_sender_email > ", parsed_sender_email)
-        # print("domain > ", domain)
-        # print("user > ", user)
-        # print("card > ", existing_card)
-
         whatami = ContentType.objects.get(model="Card")
 
-        # check if a card exists and if so forgo all other checks
-        # except maybe for (new) watchers
         if existing_card is not None:
             if user.is_active is not False:
-                column_type_queue = Columntype.objects.all().filter(name="Queue")
-                try:
-                    board_columns = Column.objects.filter(board=str(user.profile_user.company.default_board.id))
-                except:
-                    board_columns = Column.objects.filter(board=1)
-                queue_column = board_columns.get(usage=column_type_queue)
                 comment_object = Comment.objects.create(
                     owner=user,
                     comment=body_html_stripped,
@@ -1594,7 +1574,7 @@ def mailpost(request):
                         )
                     except:
                         pass
-                lib.sendmail_card_created(existing_card.id, user)
+                lib.sendmail_card_updated(existing_card.id, comment_object, user)
             else:
                 # this means that the card exists but our user is not.active
                 message = """
@@ -1616,14 +1596,21 @@ def mailpost(request):
         else:
             # the card does not exist , check if the user exists
             if user.is_active is not False:
-                column_type_queue = Columntype.objects.all().filter(name="Queue")
-                default_board = user.profile_user.default_board
-                board_columns = Column.objects.filter(board=default_board)
-                queue_column = board_columns.get(usage=column_type_queue)
+
+                if hasattr(user.profile_user.company, 'default_board'):
+                    column_type_queue = Columntype.objects.all().filter(name="Queue")
+                    board_columns = Column.objects.filter(board=user.profile_user.company.default_board)
+                    board = user.profile_user.company.default_board
+                    queue_column = board_columns.get(usage=column_type_queue)
+                else:
+                    column_type_queue = Columntype.objects.all().filter(name="Queue")
+                    board_columns = Column.objects.filter(board=doit_default_board)
+                    queue_column = board_columns.get(usage=column_type_queue)
+
                 # new card
                 card = Card.objects.create(
-                    created_by_id=user,
-                    board_id=default_board.id,
+                    created_by_id=user.id,
+                    board_id=board.id,
                     column_id=str(queue_column.id),
                     title=subject,
                     description=body_html,
@@ -1631,23 +1618,7 @@ def mailpost(request):
                     csat='0'
                 )
                 card.save()
-                column_type_queue = Columntype.objects.all().filter(name="Queue")
-                try:
-                    board_columns = Column.objects.filter(board=str(user.profile_user.company.default_board.id))
-                except:
-                    board_columns = Column.objects.filter(board=1)
-                queue_column = board_columns.get(usage=column_type_queue)
-                comment_object = Comment.objects.create(
-                    owner=user,
-                    comment=body_html_stripped,
-                    public=True,
-                    minutes=0,
-                    overtime=False,
-                    billable=False,
-                    content_type=whatami,
-                    object_id=int(existing_card.id)
-                )
-                comment_object.save()
+
                 # add sender as watcher
                 watcher = User.objects.get(email=str(parsed_sender_email).lower())
                 watchers.append(watcher)
@@ -1697,7 +1668,7 @@ def mailpost(request):
                             fail_silently=False)
                 if watchers:
                     for w in watchers:
-                        w.Watchers.add(existing_card)
+                        w.Watchers.add(card)
                         w.save()
 
                 # attachments
