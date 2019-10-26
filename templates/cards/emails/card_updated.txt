@@ -1,6 +1,6 @@
 ## Please do not write below this line ##
 
-A Card has been been update.
+A Card has been been updated.
 
 Card title: {{card.title}
 Comment: {{comment}}

@@ -82,7 +82,7 @@ def sendmail_card_created(cardid, card_creator):
 
 
 def sendmail_card_updated(cardid, comment, card_creator):
-    plaintext = get_template('cards/emails/card_created.txt')
+    plaintext = get_template('cards/emails/card_updated.txt')
 
     if cardid and comment:
         card = Card.objects.get(id=cardid)
