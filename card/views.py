@@ -1753,7 +1753,7 @@ def mailpost(request):
                 # new card
                 card = Card.objects.create(
                     created_by_id=1,
-                    board_id=board,
+                    board_id=board.id,
                     column_id=str(queue_column.id),
                     title=subject,
                     description=body_html,
