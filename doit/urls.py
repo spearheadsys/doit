@@ -7,7 +7,7 @@ from django.conf.urls import include, url
 from doit.views import home
 from doit.views import getCardsCreatedToday, getWlogsCreatedToday, getTodaysTasks, emailviewer, closed_cards_ajax, \
     overdue_cards_ajax, open_incidents_ajax, open_cards_ajax, settings_view, my_vue_cards, my_vue_overdue, \
-    profile_change_picture, cards_without_owner, cards_without_company, my_incidents, all_my_open_cards
+    profile_change_picture, cards_without_owner, cards_without_company, my_incidents, all_my_open_cards, my_overdue_cards_list
 from django.contrib import admin
 admin.autodiscover()
 
@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^my_vue_cards', my_vue_cards, name='my_vue_cards'),
     url(r'^cards/all_my_open_cards', all_my_open_cards, name='all_my_open_cards'),
     url(r'^my_vue_overdue', my_vue_overdue, name='my_vue_overdue'),
+    url(r'^cards/my_overdue_cards_list', my_overdue_cards_list, name='my_overdue_cards_list'),
     url(r'^cards/cards_without_owner', cards_without_owner, name='cards_without_owner'),
     url(r'^cards/cards_without_company', cards_without_company, name='cards_without_company'),
     url(r'^cards/my_incidents', my_incidents, name='my_incidents'),

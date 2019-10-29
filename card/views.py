@@ -549,15 +549,21 @@ def deleteCard(request, card=None):
     """
     Delete a card.
     """
-    current_url = resolve(request.path_info).url_name
-    print("in the delete card")
     if request.user.profile_user.is_superuser or request.user.profile_user.is_operator:
-        print("deleting > ", card)
         # delete all attachments
+        for a in Attachment.objects.filter(card=card):
+            a.delete()
         # delete all comments
+        for c in Comment.objects.filter(object_id=card):
+            c.delete()
         # delete all reminders
+        for r in Reminder.objects.filter(card=card):
+            r.delete()
         # delete all tasks
+        for t in Task.objects.filter(object_id=card):
+            t.delete()
         # delete the card
+        Card.objects.get(id=card).delete()
     # Todo: to where you came from
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

@@ -74,7 +74,7 @@ var all_my_open_cards = new Vue({
 
 		setInterval(function () {
 			this.loadData();
-		}.bind(this), 2000);
+		}.bind(this), 20000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -86,6 +86,39 @@ var all_my_open_cards = new Vue({
 		}
 })
 
+// my_overdue_cards_list
+var my_overdue_cards_list = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#my_overdue_cards_list',
+	data: {
+		my_overdue_cards_list: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/cards/my_overdue_cards_list', function (response) {
+				this.my_overdue_cards_list = response.my_overdue_cards_list;
+			}.bind(this));
+		},
+		moment: function () {
+    	return moment();
+  	}
+	},
+	created: function () {
+		this.loadData();
+
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 2000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	filters: {
+  	moment: function (date) {
+    	return moment(date).format('MMM Do YYYY, k:m');
+  		}
+		}
+})
 // my_overdue_cards
 var my_overdue = new Vue({
 	delimiters: ['[[', ']]'],

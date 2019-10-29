@@ -280,31 +280,16 @@ def home(request):
 def my_vue_cards(request):
     if request.user.is_authenticated():
         u = User.objects.get(username=request.user)
-        cards = Card.objects.all().filter(closed=False, owner=u)
-        mycards = []
-        for i in cards:
-            if str(i.column.usage) != "Backlog":
-                mycards.append(i)
-            mycards.sort(key=lambda c: c.due_date
-            if (c and c.due_date)
-            else timezone.now())
-
+        cards = Card.objects.all().filter(closed=False, owner=u).filter(~Q(column__title="Backlog"))
         return JsonResponse({
-            "open_cards": len(mycards),
+            "open_cards": cards.count(),
         })
 
 @login_required
 def all_my_open_cards(request):
     if request.user.is_authenticated():
         u = User.objects.get(username=request.user)
-        cards = Card.objects.all().filter(closed=False, owner=u)
-        allmycards = []
-        for i in cards:
-            if str(i.column.usage) != "Backlog":
-                allmycards.append(i)
-            allmycards.sort(key=lambda c: c.due_date
-            if (c and c.due_date)
-            else timezone.now())
+        cards = Card.objects.filter(closed=False, owner=u).filter(~Q(column__title="Backlog")).order_by('due_date')
         return JsonResponse({
             "allmycards": list(cards.values('id', 'title', 'company__name', 'board__name', 'priority__title', 'created_time', 'due_date')),
         }, content_type='application/json')
@@ -544,22 +529,21 @@ def my_vue_overdue(request):
     if request.user.is_authenticated():
         u = User.objects.get(username=request.user)
         # Note: If user != superuser we limit to company or owned/watched cards only!
-        all_records = Card.objects.all().filter(closed=False, owner=u).distinct()
-        myoverdue = []
-        for i in all_records:
-            if i.is_overdue and str(i.column.usage) != "Backlog":
-                myoverdue.append(i)
-
-        # for i in all_records:
-        #     if str(i.column.usage) != "Backlog":
-        #         myoverdue.append(i)
-        #     myoverdue.sort(key=lambda c: c.due_date
-        #     if (c and c.due_date)
-        #     else timezone.now())
-
+        all_records = Card.objects.all().filter(closed=False, owner=u).distinct().filter(~Q(column__title="Backlog")).order_by('due_date')
         return JsonResponse({
-            "overdue_cards": len(myoverdue),
+            "overdue_cards": all_records.count(),
         })
+
+@login_required
+def my_overdue_cards_list(request):
+    if request.user.is_authenticated():
+        u = User.objects.get(username=request.user)
+        cards = Card.objects.filter(closed=False, owner=u).filter(~Q(column__title="Backlog")).order_by('due_date')
+        [card.is_overdue for card in cards]
+        return JsonResponse({
+            "my_overdue_cards_list": list(cards.values('id', 'title', 'company__name', 'board__name', 'priority__title', 'created_time', 'due_date')),
+        }, content_type='application/json')
+
 
 @login_required
 def my_incidents(request):

@@ -321,24 +321,44 @@
   <!-- end cards without owner -->
 
   <!-- myoverduecards-->
-<div id="myoverduecards-modal" uk-modal>
+<div id="myoverduecards-modal" class="uk-modal-container" uk-modal>
   <div class="uk-modal-dialog">
     <button class="uk-modal-close-default" type="button" uk-close></button>
     <div class="uk-modal-header">
         <h2 class="uk-modal-title">My Overdue Cards</h2>
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
-        <ul class="uk-list-striped">
-          {% if myoverduecards %}
-            {% for card in myoverduecards %}
-            <li><a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card.title|safe}}
-              <span class="uk-text-warning">{{card.due_date}}</span>
-            </li>
-            {% endfor %}
-          {% else %}
-            <p>Hooray! No overdue cards.</p>
-          {% endif %}
-        </ul>
+
+        <div class="uk-list-striped">
+          <table id="my_overdue_cards_list" class="uk-table uk-table-striped">
+            <thead>
+              <tr>
+                <th>Board</th>
+                <th>Customer</th>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Due</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="card in my_overdue_cards_list">
+                <td>[[card.board__name]]</td>
+                <td>[[card.company__name]]</td>
+                <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
+                <td>[[card.title]]</td>
+                <td>[[card.created_time | moment ]]</td>
+                <td v-cloak>[[card.due_date | moment ]]</td>
+                <td>
+                  <a v-bind:href="'/cards/deletecard/' + card.id">
+                    <span uk-icon="trash" style="color:red" onclick="return confirm('This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?')"></span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     <div class="uk-modal-footer uk-text-right">
         <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
@@ -438,34 +458,34 @@
     <div class="uk-modal-header">
         <h2 class="uk-modal-title">Cards I'm Watching</h2>
     </div>
-      <div class="uk-modal-body" uk-overflow-auto>
-        <div class="uk-list-striped">
-          <table class="uk-table uk-table-striped">
-            <thead>
-              <tr>
-                <th>Board</th>
-                <th>Customer</th>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Created</th>
-                <th>Due</th>
-              </tr>
-            </thead>
-            <tbody>
-             {% for card in cardswatcher %}
-              <tr>
-                <td>{{card.board}}</td>
-                <td>{{card.company}}</td>
-                <td><a href="/cards/editcard/{{card.id}}">{{card.id}}</a></td>
-                <td>{{card}}</td>
-                <td>{{card.created_time}}</td>
-                <td>{{card.due_date}}</td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-        </div>
+    <div class="uk-modal-body" uk-overflow-auto>
+      <div class="uk-list-striped">
+        <table class="uk-table uk-table-striped">
+          <thead>
+            <tr>
+              <th>Board</th>
+              <th>Customer</th>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Created</th>
+              <th>Due</th>
+            </tr>
+          </thead>
+          <tbody>
+           {% for card in cardswatcher %}
+            <tr>
+              <td>{{card.board}}</td>
+              <td>{{card.company}}</td>
+              <td><a href="/cards/editcard/{{card.id}}">{{card.id}}</a></td>
+              <td>{{card}}</td>
+              <td>{{card.created_time}}</td>
+              <td>{{card.due_date}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
       </div>
+    </div>
     <div class="uk-modal-footer uk-text-right">
         <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
     </div>
@@ -614,7 +634,7 @@
   <div class="uk-modal-dialog">
     <button class="uk-modal-close-default" type="button" uk-close></button>
     <div class="uk-modal-header">
-        <h2 class="uk-modal-title">My Cards</h2>
+        <h2 class="uk-modal-title">My Open Cards</h2>
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
 
@@ -641,7 +661,7 @@
                 <td v-cloak>[[card.due_date | moment ]]</td>
                 <td>
                   <a v-bind:href="'/cards/deletecard/' + card.id">
-                    <span uk-icon="trash" style="color:red" onclick="return confirm('This is a non-recoverable operation! Are you sure?')"></span>
+                    <span uk-icon="trash" style="color:red" onclick="return confirm('This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?')"></span>
                   </a>
                 </td>
               </tr>
