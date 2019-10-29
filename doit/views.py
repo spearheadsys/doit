@@ -19,7 +19,8 @@ from doit.forms import EditUserForm, EditCustomerProfileForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum, Count
 from collections import namedtuple
-import os
+
+import simplejson
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -107,13 +108,6 @@ def home(request):
             if u in i.watchers.all():
                 cardswatcher.append(i)
         cardswatcher.sort(key=lambda c: c.due_date
-            if (c and c.due_date)
-            else timezone.now())
-        mycards = []
-        for i in cards:
-            if str(i.column.usage) != "Backlog":
-                mycards.append(i)
-        mycards.sort(key=lambda c: c.due_date
             if (c and c.due_date)
             else timezone.now())
         customerowncards = []
@@ -255,7 +249,7 @@ def home(request):
             'page_name': "DoIT",
             'site_description': "Spearhead DoIT",
             'noowner': noowner,
-            'mycards': mycards,
+            # 'mycards': mycards,
             'customerowncards': customerowncards,
             'allcustomercards': allcustomercards,
             'myoverduecards': myoverduecards,
@@ -298,6 +292,22 @@ def my_vue_cards(request):
         return JsonResponse({
             "open_cards": len(mycards),
         })
+
+@login_required
+def all_my_open_cards(request):
+    if request.user.is_authenticated():
+        u = User.objects.get(username=request.user)
+        cards = Card.objects.all().filter(closed=False, owner=u)
+        allmycards = []
+        for i in cards:
+            if str(i.column.usage) != "Backlog":
+                allmycards.append(i)
+            allmycards.sort(key=lambda c: c.due_date
+            if (c and c.due_date)
+            else timezone.now())
+        return JsonResponse({
+            "allmycards": list(cards.values('id', 'title', 'company__name', 'board__name', 'priority__title', 'created_time', 'due_date')),
+        }, content_type='application/json')
 
 def open_cards_ajax(request):
     draw = request.GET['draw']
@@ -423,7 +433,6 @@ def open_cards_ajax(request):
         "data": objects,
     })
 
-
 def open_incidents_ajax(request):
     draw = request.GET['draw']
     start = int(request.GET['start'])
@@ -529,7 +538,6 @@ def open_incidents_ajax(request):
         "recordsFiltered": filtered_count,
         "data": objects,
     })
-
 
 @login_required
 def my_vue_overdue(request):

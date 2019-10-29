@@ -51,6 +51,41 @@ var my_open = new Vue({
 	}
 })
 
+//all_my_open_cards
+var all_my_open_cards = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#all_my_open_cards',
+	data: {
+		all_my_open_cards: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/cards/all_my_open_cards', function (response) {
+				this.all_my_open_cards = response.allmycards;
+				console.log(this);
+			}.bind(this));
+		},
+		moment: function () {
+    	return moment();
+  	}
+	},
+	created: function () {
+		this.loadData();
+
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 2000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	filters: {
+  	moment: function (date) {
+    	return moment(date).format('MMM Do YYYY, k:m');
+  		}
+		}
+})
+
 // my_overdue_cards
 var my_overdue = new Vue({
 	delimiters: ['[[', ']]'],

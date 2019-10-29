@@ -33,7 +33,7 @@ urlpatterns = [
     url(r'updatetask/', update_task, name='update tasks'),
     url(r'movecard/', movecard, name='moveCard'),
     url(r'movecardtoboard/', movecardtoboard, name='movecardtoboard'),
-    url(r'deletecard/', deleteCard, name='deleteCard'),
+    url(r'deletecard/(?P<card>\d+)', deleteCard, name='deleteCard'),
 
     # get_company ajax search
     url(r'^api/get_users/', get_users, name='get_users'),

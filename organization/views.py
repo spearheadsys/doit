@@ -168,7 +168,7 @@ def delete_organization(request, company=None):
             i.delete()
         # delete the org last because we need the card m2m reverse to ge the comments
         organization.delete()
-    return HttpResponseRedirect('/organizations/')
+    return HttpResponse("200 ok", content_type='application/json')
 
 
 @login_required

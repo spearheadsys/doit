@@ -7,7 +7,7 @@ from django.conf.urls import include, url
 from doit.views import home
 from doit.views import getCardsCreatedToday, getWlogsCreatedToday, getTodaysTasks, emailviewer, closed_cards_ajax, \
     overdue_cards_ajax, open_incidents_ajax, open_cards_ajax, settings_view, my_vue_cards, my_vue_overdue, \
-    profile_change_picture, cards_without_owner, cards_without_company, my_incidents
+    profile_change_picture, cards_without_owner, cards_without_company, my_incidents, all_my_open_cards
 from django.contrib import admin
 admin.autodiscover()
 
@@ -18,17 +18,20 @@ urlpatterns = [
 
     url(r'^summernote/', include('django_summernote.urls')),
 
+    # Todo: merge with cards (urls, etc)
     url(r'^closed_cards_ajax', closed_cards_ajax, name='closed_cards_ajax'),
     url(r'^overdue_cards_ajax', overdue_cards_ajax, name='overdue_cards_ajax'),
     url(r'^open_incidents_ajax', open_incidents_ajax, name='open_incidents_ajax'),
     url(r'^open_cards_ajax', open_cards_ajax, name='open_cards_ajax'),
     url(r'^my_vue_cards', my_vue_cards, name='my_vue_cards'),
+    url(r'^cards/all_my_open_cards', all_my_open_cards, name='all_my_open_cards'),
     url(r'^my_vue_overdue', my_vue_overdue, name='my_vue_overdue'),
     url(r'^cards/cards_without_owner', cards_without_owner, name='cards_without_owner'),
     url(r'^cards/cards_without_company', cards_without_company, name='cards_without_company'),
     url(r'^cards/my_incidents', my_incidents, name='my_incidents'),
 
     url(r'^settings', settings_view, name='settings_view'),
+
 
     # TODO: move these to 'global' api project?
     url(r'^api/get_todays_cards/', 

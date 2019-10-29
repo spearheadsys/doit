@@ -545,51 +545,21 @@ def addColumn(request):
 
 @login_required
 @staff_member_required
-def deleteCard(request):
+def deleteCard(request, card=None):
     """
     Delete a card.
-
     """
-
     current_url = resolve(request.path_info).url_name
-
-    if request.is_ajax() or request.method == 'POST':
-        card = request.POST['card']
-
-        # TODO: make sure user has permission to add this comment
-        # by looking at watchers, company with is_org_admin
-
-        # ajaxifying shit up
-        xhr = request.GET.has_key('xhr')
-
-        # select card
-        workon_card = Card.objects.get(id=card)
-        workon_card.delete()
-        # save our work
-        # workon_card.save()
-
-        # if we were called via ajax
-        # then pop up a little OK or something
-        if xhr:
-            return HttpResponse(
-                simplejson.dumps(response_dict),
-                mimetype='application/javascript')
-
-        return HttpResponseRedirect("/cards/deletecard/")
-    # print the form - nothing was submitted to POST
-    else:
-        context = RequestContext(request)
-        cards = Card.objects.all()
-        columns = Column.objects.all()
-        context_dict = {
-            'site_title': "Cards | Spearhead Systems",
-            'page_name': "Add Card",
-            'active_url': current_url,
-            'site_description': "",
-            'columns': columns,
-            'cards': cards, }
-        return render_to_response(
-            'cards/deletecard.html', context_dict, context)
+    print("in the delete card")
+    if request.user.profile_user.is_superuser or request.user.profile_user.is_operator:
+        print("deleting > ", card)
+        # delete all attachments
+        # delete all comments
+        # delete all reminders
+        # delete all tasks
+        # delete the card
+    # Todo: to where you came from
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
@@ -1458,10 +1428,13 @@ def mailpost(request):
         cc = request.POST.getlist('Cc')
         subject = request.POST.get('subject', '')
         body_plain = request.POST.get('body-plain', '')
-        body_html = request.POST.get('body-html', '')
+        # body_html = request.POST.get('body-html', '')
         body_plain_stripped = request.POST.get('stripped-text', '')
         # we use stripped html in replies
         body_html_stripped = request.POST.get('stripped-html', '')
+
+        print("DEBUG >>> ", body_plain_stripped)
+        print("DEBUG >>> ", body_html_stripped)
 
         # TODO: maybe strip signatures on replies?
         # sender_signature = request.POST.get('stripped-html   ', '')
@@ -1475,7 +1448,7 @@ def mailpost(request):
         #     body_html = body_plain
         # if not body_html_stripped:
         #     body_html_stripped = body_plain_stripped
-        body_html_stripped = body_plain_stripped
+        # body_html_stripped = body_plain_stripped
 
         parsed_sender = parseaddr(sender_from)
         parsed_sender_email = parsed_sender[1]
