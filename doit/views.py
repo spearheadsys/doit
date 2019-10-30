@@ -529,7 +529,7 @@ def my_vue_overdue(request):
     if request.user.is_authenticated():
         u = User.objects.get(username=request.user)
         # Note: If user != superuser we limit to company or owned/watched cards only!
-        all_records = Card.objects.all().filter(closed=False, owner=u).distinct().filter(~Q(column__title="Backlog")).order_by('due_date')
+        all_records = Card.objects.all().filter(closed=False, owner=u).distinct().filter(~Q(column__title="Backlog")).order_by('due_date').filter(due_date__lt=today_date)
         return JsonResponse({
             "overdue_cards": all_records.count(),
         })
@@ -538,8 +538,9 @@ def my_vue_overdue(request):
 def my_overdue_cards_list(request):
     if request.user.is_authenticated():
         u = User.objects.get(username=request.user)
-        cards = Card.objects.filter(closed=False, owner=u).filter(~Q(column__title="Backlog")).order_by('due_date')
-        [card.is_overdue for card in cards]
+        cards = Card.objects.filter(closed=False, owner=u).filter(~Q(column__title="Backlog")).order_by('due_date').filter(due_date__lt=today_date)
+        # gigi = [not card.is_overdue for card in cards]
+
         return JsonResponse({
             "my_overdue_cards_list": list(cards.values('id', 'title', 'company__name', 'board__name', 'priority__title', 'created_time', 'due_date')),
         }, content_type='application/json')
