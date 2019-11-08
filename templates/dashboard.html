@@ -104,25 +104,8 @@
     </div>
   </div>
 
-  {% if user.profile_user.is_operator %}
-  <div class="uk-width-expand">
-    <span class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-       <p class="uk-text">Minutes per operator</p>
 
-        <div class="uk-flex">
-          {% for operator in total_minutes_per_op %}
-            <div class="uk-text-small">
-              <div class="uk-card uk-card-small uk-card-body uk-margin-left">
-                <span class="uk-text-large">{{operator.operator.user}}</span>
-                <span class="uk-text-large uk-text-primary ">{{operator.minutes}}</span>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-    </div>
-  </div>
-  {% endif %}
-
+</div>
 
 
 <!--  TODO:
