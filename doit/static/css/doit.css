@@ -1038,6 +1038,7 @@ div:hover > ul {
 /* '`-.,_,.-*'`-.,_,.-*'`-.,_,.-*' END FOOTER `-.,_,.-*'`-.,_,.-*'`-.,_,.-*'`-.,_,.-*'*/
 
 .collapsed-column-header {
+	padding: 15px;
     transform: rotate(90deg);
     transform-origin: left top 0;
     -webkit-transform: rotate(90deg);
@@ -1046,7 +1047,6 @@ div:hover > ul {
     margin-left: 30px;
     float: left;
 }
-
 
 /* vuejs stuff */
 [v-cloak] {
@@ -1064,4 +1064,10 @@ trix-toolbar {
 	padding: 1em 0;
 	white-space: nowrap;
 	display: block;
+}
+
+trix-toolbar .trix-button-row {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: space-between;
 }
