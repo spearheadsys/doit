@@ -6,26 +6,28 @@ from contact.views import change_password
 from django.conf.urls import include, url
 from doit.views import home
 from doit.views import getCardsCreatedToday, getWlogsCreatedToday, getTodaysTasks, emailviewer, closed_cards_ajax, \
-    overdue_cards_ajax, open_incidents_ajax, open_cards_ajax, settings_view, my_vue_cards, my_vue_overdue, \
+    overdue_cards_ajax, open_incidents_ajax, open_cards_ajax, settings_view, my_vue_cards, \
     profile_change_picture, cards_without_owner, cards_without_company, my_incidents, all_my_open_cards, my_overdue_cards_list
 from django.contrib import admin
+from .routers import router
 admin.autodiscover()
+
 
 urlpatterns = [
     url(r'^$', home, name='home'),
     # email viewer
     url(r'emailviewer$', emailviewer, name='emailviewer'),
 
-    url(r'^summernote/', include('django_summernote.urls')),
+    # url(r'^summernote/', include('django_summernote.urls')),
 
     # Todo: merge with cards (urls, etc)
     url(r'^closed_cards_ajax', closed_cards_ajax, name='closed_cards_ajax'),
     url(r'^overdue_cards_ajax', overdue_cards_ajax, name='overdue_cards_ajax'),
     url(r'^open_incidents_ajax', open_incidents_ajax, name='open_incidents_ajax'),
     url(r'^open_cards_ajax', open_cards_ajax, name='open_cards_ajax'),
-    url(r'^my_vue_cards', my_vue_cards, name='my_vue_cards'),
     url(r'^cards/all_my_open_cards', all_my_open_cards, name='all_my_open_cards'),
-    url(r'^my_vue_overdue', my_vue_overdue, name='my_vue_overdue'),
+    url(r'^my_vue_cards', my_vue_cards, name='my_vue_cards'),
+    # url(r'^my_vue_overdue', my_vue_overdue, name='my_vue_overdue'),
     url(r'^cards/my_overdue_cards_list', my_overdue_cards_list, name='my_overdue_cards_list'),
     url(r'^cards/cards_without_owner', cards_without_owner, name='cards_without_owner'),
     url(r'^cards/cards_without_company', cards_without_company, name='cards_without_company'),
@@ -35,11 +37,11 @@ urlpatterns = [
 
 
     # TODO: move these to 'global' api project?
-    url(r'^api/get_todays_cards/', 
-        getCardsCreatedToday, 
-        name='getCardsCreatedToday'),
-    url(r'^api/get_todays_wlogs/', getWlogsCreatedToday, name='getWlogsCreatedToday'),
-    url(r'^api/get_todays_tasks/', getTodaysTasks, name='getTodaysTasks'),
+    # url(r'^api/get_todays_cards/',
+    #     getCardsCreatedToday,
+    #     name='getCardsCreatedToday'),
+    # url(r'^api/get_todays_wlogs/', getWlogsCreatedToday, name='getWlogsCreatedToday'),
+    # url(r'^api/get_todays_tasks/', getTodaysTasks, name='getTodaysTasks'),
 
     # login / logout
     url(r'^login/$', user_login, name='login'),
@@ -64,12 +66,16 @@ urlpatterns = [
     url(r'^boards/', include('board.urls')),
     # include reports
     url(r'^reports/', include('report.urls')),
-    # TODO: disable / replace omcpletely inplace editing
-    # url(r'^inplaceeditform/', include('inplaceeditform.urls')),
     # attachments
     url(r'^attachments/', include('attachment.urls')),
     # comments or notes
     url(r'^comments/', include('comment.urls')),
+
+    #
+    # test rest,vue
+    #
+    url(r'^api2/', include(router.urls)),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
