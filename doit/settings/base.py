@@ -70,7 +70,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django_mailbox',
     'taggit',
-    'django_summernote',
+    'rest_framework',
 )
 
 MIDDLEWARE = (
@@ -86,6 +86,18 @@ MIDDLEWARE = (
 
 ROOT_URLCONF = 'doit.urls'
 WSGI_APPLICATION = 'doit.wsgi.application'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.DjangoModelPermissions'
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -146,40 +158,6 @@ AUTH_PROFILE_MODULE = "contact.UserProfile"
 
 DJANGO_MAILBOX_STORE_ORIGINAL_MESSAGE=True
 DJANGO_MAILBOX_ATTACHMENT_UPLOAD_TO='uploads'
-
-SUMMERNOTE_THEME = 'lite'
-SUMMERNOTE_CONFIG = {
-    'lang': None,
-    'iframe': False,
-    'summernote': {
-        'airMode': False,
-        'width': '100%',
-        'height': '400',
-        'disableDragAndDrop': False,
-    },
-    'toolbar': [
-        ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color']],
-        ['para', ['ul', 'ol', 'paragraph', 'link']],
-        ['insert', ['picture', 'video', 'table', 'hr']],
-        ['misc', ['undo', 'redo']],
-        ['insert', ['template']],
-    ],
-    # 'template': {
-    #     'path': '/static/tpls/',
-    #     'list': {
-    #         'pending-close': 'Pending close'
-    #     }
-    # },
-    'js': (
-       '/static/js/summernote-ext-template.js',
-    ),
-    'js_for_inplace': (
-        '/static/js/summernote-ext-template.js',
-    ),
-    'attachment_require_authentication': True,
-    'disable_attachment': False,
-    'lazy': False
-}
 
 # GIT master branch always points to the latest stable version
 # Git development branch points to the current development version
