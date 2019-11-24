@@ -4,7 +4,6 @@ from card.models import Card, Column, Task, Organization, Reminder
 from contact.models import UserProfile
 from board.models import Board
 from django.forms.models import inlineformset_factory
-from django_summernote.widgets import SummernoteWidget
 from dal import autocomplete
 
 
@@ -54,7 +53,7 @@ class CardsForm(forms.ModelForm):
                 'placeholder': "Enter card title",
                 'style': 'width: 86%; border: 0px; font-size: 16pt;',
             }),
-            'description': SummernoteWidget(),
+            'description': forms.Textarea(),
             'board': forms.HiddenInput(),
             'estimate': forms.NumberInput(
                 attrs={
