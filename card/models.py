@@ -47,7 +47,7 @@ class Card(models.Model):
     # todo. migrate to datetimefield
     created_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
-    board = models.ForeignKey(Board)
+    board = models.ForeignKey(Board, related_name="card_board")
     column = models.ForeignKey("Column", related_name="card_column")
     closed = models.BooleanField(default=False)
     estimate = models.IntegerField(null=True, blank=True)
