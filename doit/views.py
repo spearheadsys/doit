@@ -19,7 +19,6 @@ from doit.forms import EditUserForm, EditCustomerProfileForm
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum, Count
 from collections import namedtuple
-
 import simplejson
 from django.views.decorators.csrf import csrf_exempt
 
@@ -49,7 +48,7 @@ def user_login(request):
         else:
             return HttpResponse("Invalid login details supplied.")
     else:
-        return render(request, 'login.html', {}, context)
+        return render(request, 'doit/login.html', {}, context)
 
 
 # Use the login_required() decorator to ensure only those logged in can
@@ -271,9 +270,9 @@ def home(request):
             'boards': boards,
             'doitVersion': doitVersion,
         }
-        return render(request, 'dashboard.html', context_dict)
+        return render(request, 'doit/dashboard.html', context_dict)
     else:
-        return render(request, 'login.html', {})
+        return render(request, 'doit/login.html', {})
 
 
 @login_required
@@ -524,15 +523,15 @@ def open_incidents_ajax(request):
         "data": objects,
     })
 
-@login_required
-def my_vue_overdue(request):
-    if request.user.is_authenticated():
-        u = User.objects.get(username=request.user)
-        # Note: If user != superuser we limit to company or owned/watched cards only!
-        all_records = Card.objects.all().filter(closed=False, owner=u).distinct().filter(~Q(column__title="Backlog")).order_by('due_date').filter(due_date__lt=today_date)
-        return JsonResponse({
-            "overdue_cards": all_records.count(),
-        })
+# @login_required
+# def my_vue_overdue(request):
+#     if request.user.is_authenticated():
+#         u = User.objects.get(username=request.user)
+#         # Note: If user != superuser we limit to company or owned/watched cards only!
+#         all_records = Card.objects.all().filter(closed=False, owner=u).distinct().filter(~Q(column__title="Backlog")).order_by('due_date').filter(due_date__lt=today_date).filter(due_date__lt=today_date)
+#         return JsonResponse({
+#             "overdue_cards": all_records.count(),
+#         })
 
 @login_required
 def my_overdue_cards_list(request):
