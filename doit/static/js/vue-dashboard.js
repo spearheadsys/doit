@@ -40,7 +40,7 @@ var my_incidents = new Vue({
 		this.loadData();
 		setInterval(function () {
 			this.loadData();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -112,7 +112,7 @@ var all_my_open_cards = new Vue({
 
 		setInterval(function () {
 			this.loadData();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -158,7 +158,7 @@ var my_backlog = new Vue({
 
 		setInterval(function () {
 			this.loadData();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -204,7 +204,7 @@ var my_backlog = new Vue({
 
 		setInterval(function () {
 			this.loadData();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -252,7 +252,7 @@ var my_overdue_cards_list = new Vue({
 
 		setInterval(function () {
 			this.loadData();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -288,7 +288,7 @@ var my_overdue_boards_list = new Vue({
 
 		setInterval(function () {
 			this.loadData();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -360,7 +360,7 @@ var cards_without_owner_or_company = new Vue({
 
 		setInterval(function () {
 			this.loadData();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -398,7 +398,7 @@ var cards_watcher = new Vue({
 
 		setInterval(function () {
 			this.loadData();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);

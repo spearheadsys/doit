@@ -28,7 +28,7 @@ Vue.component('all-open-incidents-component',{
 
 		setInterval(function () {
 			this.getCards();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -70,7 +70,7 @@ Vue.component('my-open-incidents-component',{
 
 		setInterval(function () {
 			this.getCards();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -112,7 +112,7 @@ Vue.component('my-backlog-component',{
 
 		setInterval(function () {
 			this.getCards();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -154,7 +154,7 @@ Vue.component('all-backlog-component',{
 
 		setInterval(function () {
 			this.getCards();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -197,7 +197,7 @@ Vue.component('my-overdue-cards-component',{
 
 		setInterval(function () {
 			this.getCards();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -239,7 +239,7 @@ Vue.component('my-open-cards-component',{
 
 		setInterval(function () {
 			this.getCards();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -280,7 +280,7 @@ Vue.component('my-overdue-boards-component',{
 		this.getBoards();
 		setInterval(function () {
 			this.getBoards();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -322,7 +322,7 @@ Vue.component('cards-without-owner-or-company-component',{
 
 		setInterval(function () {
 			this.getCards();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
@@ -364,7 +364,7 @@ Vue.component('cards-im-watching',{
 
 		setInterval(function () {
 			this.getCards();
-		}.bind(this), 20000);
+		}.bind(this), 90000);
 	},
 	beforeDestroy: function(){
 		clearInterval(this.interval);
