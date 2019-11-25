@@ -55,6 +55,7 @@
 
                 <span class="uk-badge" uk-tooltip="title: Open Cards">{{details.open_cards}}</span>
                 <span class="uk-badge" uk-tooltip="title: Closed Cards">{{details.closed_cards}}</span>
+                <a href="knowledge_base/{{company.id}}" uk-icon="file-text" uk-tooltip="title: Knowledge Base"></a>
                 <span uk-icon="settings" uk-tooltip="title: Company Settings"></span>
                 <a href="delete_organization/{{company.id}}" uk-icon="trash" uk-tooltip="title: Delete {{company}}" style="color: red;" onclick="return confirm('This is a non-recoverable operation! Are you sure?')"></a>
             </div>

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+{% block main-content %}
+{% load static %}
+
+<div class=" uk-padding-small" uk-grid>
+    <div class="uk-width-1-4@s">
+        <div>
+          <ul uk-accordion="multiple: false">
+            <li>
+              <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Settings</span></a>
+              <div class="uk-accordion-content">
+                Public | Private article
+            </div>
+            </li>
+            <li>
+              <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Articles</span></a>
+              <div class="uk-accordion-content">
+                General
+                <ul>
+                    <li>Access details</li>
+                    <li>Architecture</li>
+                </ul>
+                Accounts
+                <ul>
+                    <li>Servers</li>
+                    <li>Networking</li>
+                    <li>Third parties</li>
+                </ul>
+                Misc
+                <ul>
+                    <li>this is one item</li>
+                    <li>this is one item</li>
+                    <li>this is one item</li>
+                    <li>this is one item</li>
+                </ul>
+            </div>
+            </li>
+          </ul>
+        </div>
+    </div>
+
+    <div class="uk-width-expand" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
+        <div>
+          <div>
+            <input id="x" type="hidden" name="comment">
+            <trix-editor autofocus input="x"></trix-editor>
+                <script>
+                // Todo: update content-attachments as well
+                  document.addEventListener("trix-file-accept", function(event) {
+                    (function() {
+                      //var HOST = "http://127.0.0.1:8000/"
+                      var HOST = "{{SITE_URL}}"
+
+                      addEventListener("trix-attachment-add", function(event) {
+                        if (event.attachment.file) {
+                          uploadAttachment(event.attachment)
+                        }
+                      })
+
+                      function uploadAttachment(attachment) {
+                        //var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                        var file = attachment.file;
+                        var form = new FormData;
+                        var endpoint = "/attachments/addattachments/";
+                        form.append("Content-Type", file.type);
+                        form.append("image[image]", file);
+                        form.append("card", {{card.id}})
+
+                        xhr = new XMLHttpRequest;
+                        xhr.open("POST", endpoint, true);
+                        //xhr.setRequestHeader("X-CSRF-Token", csrfToken);
+
+                        xhr.upload.onprogress = function(event) {
+                          var progress = event.loaded / event.total * 100;
+                          return attachment.setUploadProgress(progress);
+                        };
+
+                        xhr.onload = function() {
+                          if (this.status >= 200 && this.status < 300) {
+                            var data = JSON.parse(this.responseText);
+                            return attachment.setAttributes({
+                              url: HOST + 'media/' + data.url,
+                            });
+                          }
+                        };
+
+                        return xhr.send(form);
+
+                      };
+
+                    })();
+                  })
+                </script>
+          </div>
+        </div>
+      <div class="uk-margin-top">
+        <input name="card" type="hidden" value="{{kb.id}}" />
+        <input class="uk-button-small uk-button-secondary"  name="public_close" type="submit" value="Save article" />
+      </div>
+    </div>
+</div>
+
+<!-- end uikit -->
+{% endblock main-content %}
+{% block footer %}
+  {% include "footer.html" %}
+{% endblock footer %}
