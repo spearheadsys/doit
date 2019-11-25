@@ -11,6 +11,7 @@ today_date = timezone.now()
 
 
 class CardViewSet(viewsets.ModelViewSet):
+    # Todo: restrict to user object (i.e. admin sees all, operator sees all, customers see only their own)
     queryset = Card.objects.all().filter(closed=False)
     serializer_class = CardSerializer
 
