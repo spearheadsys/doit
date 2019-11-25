@@ -369,7 +369,7 @@ Vue.component('cards-im-watching',{
 	beforeDestroy: function(){
 		clearInterval(this.interval);
 	},
-	template: '<div class="uk-card-small uk-card-default uk-card-body" v-cloak> <p class="uk-text-center">Cards I\'m Watching</p> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#cardswatcher-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/icons8-cafe.png"> </div>'
+	template: '<div class="uk-card-small uk-card-default uk-card-body"> <p class="uk-text-center">Cards I\'m Watching</p> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#cardswatcher-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/icons8-cafe.png"> </div>'
 });
 
 var cardswatcher = new Vue({
