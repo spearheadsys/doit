@@ -485,7 +485,7 @@
             <tbody>
               <tr v-for="card in cards">
                 <td>[[card.board.name]]</td>
-                <td v-if="card.company" >[[card.company__name]]</td>
+                <td v-if="card.company.name" >[[card.company.name]]</td>
                 <td v-else="card.company" class="uk-text-danger">no company</td>
                 <td v-if="card.owner">[[card.owner.username]]</td>
                 <td v-else="card.owner" class="uk-text-danger">no owner</td>
