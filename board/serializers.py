@@ -4,8 +4,9 @@ from organization.serializers import CompanySerializer
 
 
 class BoardSerializer(serializers.ModelSerializer):
-    # company = CompanySerializer()
+    company = CompanySerializer()
 
     class Meta:
         model = Board
-        fields = ('id', 'name', 'company')
+        fields = '__all__'
+        # fields = ('id', 'name', 'company')
