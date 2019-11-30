@@ -35,7 +35,7 @@ class AllOpenIncidentsViewSet(viewsets.ModelViewSet):
 
     # TODO: limit this to incidents this user CAN view (i.e. is watcher, is operator,
     def get_queryset(self):
-        queryset = Card.objects.all().filter(closed=False).filter(type="IN")
+        queryset = Card.objects.all().filter(closed=False).filter(~Q(column__title="Backlog")).filter(type="IN")
         return queryset
 
 
