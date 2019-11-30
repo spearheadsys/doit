@@ -78,7 +78,6 @@ def organizations(request):
         'site_title': "Organizations | DoIT Spearhead Systems",
         'addOrganizationForm': addOrganizationForm,
         # 'active_url': current_url,
-        'site_description': "",
         # 'org_list': org_list,
         'companies': companies,
         # 'user_list': user_list,
@@ -115,7 +114,6 @@ def change_organization(request):
             'addOrganizationForm': addOrganizationForm,
             'page_name': "Add Organization",
             'active_url': current_url,
-            'site_description': "",
         }
         return render_to_response('cases/addorganization.html', context_dict, context)
 
@@ -147,7 +145,6 @@ def add_organization(request):
             'addOrganizationForm': addOrganizationForm,
             'page_name': "Add Organization",
             'active_url': current_url,
-            'site_description': "",
         }
         return render_to_response('cases/addorganization.html', context_dict, context)
 
