@@ -66,7 +66,6 @@ def settings_view(request):
         context_dict = {
             'site_title': "DoIT | Spearhead Systems",
             'page_name': "DoIT Settings",
-            'site_description': "Spearhead DoIT",
             'doitVersion': doitVersion,
         }
         return render(request, 'settings.html', context_dict)
@@ -246,7 +245,6 @@ def home(request):
         context_dict = {
             'site_title': "DoIT | Spearhead Systems",
             'page_name': "DoIT",
-            'site_description': "Spearhead DoIT",
             'noowner': noowner,
             # 'mycards': mycards,
             'customerowncards': customerowncards,

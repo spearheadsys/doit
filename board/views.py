@@ -250,7 +250,6 @@ def editBoard(request, board=None):
             'site_title': "Edit Board - " + str(board.name) + " | Spearhead Systems",
             'page_name': "Edit Board",
             'active_url': current_url,
-            'site_description': "",
             'board': board,
             'form': form,
             'board_columns': board_columns,

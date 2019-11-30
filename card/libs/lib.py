@@ -206,7 +206,6 @@ def d_movecard(request, card, column, board=None):
         context_dict = {
             'site_title': "Cards | Spearhead Systems",
             'page_name': "Add Card",
-            'site_description': "",
             'columns': columns,
             'cards': cards, }
         # return render_to_response(

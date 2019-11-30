@@ -428,7 +428,6 @@ def addcard(request):
             context_dict = {
                 'site_title': "Cards | Spearhead Systems",
                 'page_name': "Add Card",
-                'site_description': "",
                 'addcardform': addcardform,
                 'boards': Board.objects.filter(archived=False)
                 # 'board': Board.objects.get(id=board)
@@ -536,7 +535,6 @@ def addColumn(request):
         'site_title': "Cards | Spearhead Systems",
         'page_name': "Add a Column",
         'active_url': current_url,
-        'site_description': "",
         'form': form,
         'formSet': formSet, }
     # return render_to_response('cards/addcolumn.html', context_dict, context)
@@ -627,7 +625,6 @@ def movecard(request):
         context_dict = {
             'site_title': "Cards | Spearhead Systems",
             'page_name': "Add Card",
-            'site_description': "",
             'columns': columns,
             'cards': cards, }
         # return render_to_response(
@@ -694,7 +691,6 @@ def movecard(request):
 #         context_dict = {
 #             'site_title': "Cards | Spearhead Systems",
 #             'page_name': "Add Card",
-#             'site_description': "",
 #             'columns': columns,
 #             'cards': cards, }
 #         # return render_to_response(
@@ -812,7 +808,6 @@ def closecard(request, card=None):
     context_dict = {
         'site_title': "Cards | Spearhead Systems",
         'page_name': "Edit Card",
-        'site_description': "",
         'card': card,
     }
     return render(request, 'cards/closecard.html', context_dict)
@@ -954,7 +949,6 @@ def editCard(request, card=None):
         context_dict = {
             'site_title': "Cards | Spearhead Systems",
             'page_name': "Edit Card",
-            'site_description': "",
             'card': card,
             'editcard_form': editcard_form,
             'attachments': attachments,
@@ -1007,7 +1001,6 @@ def editCard(request, card=None):
             context_dict = {
                 'site_title': "Cards | Spearhead Systems",
                 'page_name': "editcard-ext",
-                'site_description': "",
                 'card': card,
                 'editcard_form': editcard_form,
                 'boards': boards,
@@ -1052,7 +1045,6 @@ def editCard(request, card=None):
             context_dict = {
                 'site_title': "Cards | Spearhead Systems",
                 'page_name': "editcard-ext",
-                'site_description': "",
                 'card': card,
                 'editcard_form': editcard_form,
                 'attachments': attachments,
@@ -1096,7 +1088,6 @@ def editCard(request, card=None):
         context_dict = {
             'site_title': "Cards | Spearhead Systems",
             'page_name': "editcard-ext",
-            'site_description': "",
             'card': card,
             'editcard_form': editcard_form,
             'attachments': attachments,
@@ -1143,7 +1134,6 @@ def editColumn(request, column=None):
             'site_title': "Column | Spearhead Systems",
             'page_name': "Edit column",
             'active_url': current_url,
-            'site_description': "",
             'editColumnForm': editColumnForm,
             'col': col, }
         return render_to_response(
