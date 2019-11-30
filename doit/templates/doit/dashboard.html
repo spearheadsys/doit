@@ -395,12 +395,12 @@
             </thead>
             <tbody>
               <tr v-for="board in my_overdue_boards_list">
-                <td>[[board.name]]</td>
-                <td v-if="board.company.name" >[[board.company.name]]</td>
-                <td v-else="board.company.name" class="uk-text-danger">no company</td>
-                <td><a v-bind:href="'/boards/editboard/' + board.id">[[board.id]]</a></td>
-                <td>[[board.created_time | moment ]]</td>
-                <td v-cloak>[[board.due_date | moment ]]</td>
+                <td>[[results.name]]</td>
+                <td v-if="results.company.name" >[[results.company.name]]</td>
+                <td v-else="results.company.name" class="uk-text-danger">no company</td>
+                <td><a v-bind:href="'/boards/editboard/' + results.board.id">[[results.board.id]]</a></td>
+                <td>[[results.board.created_time | moment ]]</td>
+                <td v-cloak>[[results.board.due_date | moment ]]</td>
                 <!-- <td>
                   <a v-on:click="deleteBoard(board.id)">
                     <span uk-icon="trash" style="color:red" onclick="return confirm('This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?')"></span>

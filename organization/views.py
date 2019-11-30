@@ -81,11 +81,12 @@ def organizations(request):
         'site_description': "",
         # 'org_list': org_list,
         'companies': companies,
+        'page_name': "Organizations",
         # 'user_list': user_list,
         'doitVersion': doitVersion,
         'boards': boards,
     }
-    return render(request, 'organizations.html', context_dict)
+    return render(request, 'organization/organizations.html', context_dict)
 
 
 @login_required
@@ -151,7 +152,7 @@ def add_organization(request):
         }
         return render_to_response('cases/addorganization.html', context_dict, context)
 
-
+@login_required()
 def delete_organization(request, company=None):
     """ Delete an Organization object."""
     # who can delete organization? Just superusers!
@@ -170,6 +171,16 @@ def delete_organization(request, company=None):
         organization.delete()
     return HttpResponse("200 ok", content_type='application/json')
 
+@login_required()
+def knowledge_base(request, company=None):
+    context = RequestContext(request)
+    context_dict = {
+        'site_title': "Companies KB | Spearhead Systems",
+        'page_name': "Knowledge Base",
+        'company':  Organization.objects.get(id=company),
+        'boards': Board.objects.filter(archived=False),
+    }
+    return render(request, 'organization/knowledge_base.html', context_dict)
 
 @login_required
 # get company view

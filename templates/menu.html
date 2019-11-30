@@ -1,6 +1,6 @@
 {% load static %}
 
-<body {%if page_name == "Edit Card" or page_name == "editcard-ext" or page_name == "Cards" %} style="overflow: hidden" {% endif %}>
+<body {%if page_name == "Edit Card" or page_name == "editcard-ext" %} style="overflow: hidden" {% endif %}>
   <div uk-sticky>
     <header>
       <!-- Main Navbar -->
@@ -180,12 +180,20 @@
   </ul>
   {% endif %}
 
-  
   {% if page_name == "Cards" %}
   <ul class="uk-breadcrumb uk-padding-small">
     <li><a href="/" class="uk-text-large">Dashboard</a></li>
     <li><a href="/boards/" class="uk-text-large">Boards</a></li>
     <li><a href="/boards/editboard/{{boardname.id}}" class="uk-text-large">Edit board</a></li>
+  </ul>
+  {% endif %}
+
+  {% if page_name == "Knowledge Base" %}
+  <ul class="uk-breadcrumb uk-padding-small">
+    <li><a href="/organizations/" class="uk-text-large">Organizations</a></li>
+  <!--    TODO: create kb list view -->
+    <li><a href="/organizations/knowledge_bases/" class="uk-text-large">Knowledge Bases</a></li>
+    <li>{{company}}</li>
   </ul>
   {% endif %}
 
