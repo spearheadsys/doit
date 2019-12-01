@@ -99,3 +99,19 @@ class AllBacklogCardsViewSet(viewsets.ModelViewSet):
         backlog = Columntype.objects.all().filter(name="Backlog")
         queryset = Card.objects.filter(closed=False).filter(Q(column__usage__exact=backlog))
         return queryset
+
+
+class CardsWithoutDueDateViewSet(viewsets.ModelViewSet):
+    serializer_class = CardSerializer
+
+    def get_queryset(self):
+        queryset = Card.objects.filter(closed=False).filter(due_date__isnull=True)
+        return queryset
+
+class OverdueTodayViewSet(viewsets.ModelViewSet):
+    serializer_class = CardSerializer
+
+    def get_queryset(self):
+        if self.request.user.profile_user.is_operator or self.request.user.profile_user.is_superuser:
+            queryset = Card.objects.filter(closed=False).filter(due_date__year=today_date.year, due_date__month=today_date.month, due_date__day=today_date.day)
+            return queryset

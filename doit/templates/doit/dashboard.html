@@ -63,36 +63,19 @@
     <all-backlog-component></all-backlog-component>
   </div>
 
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body"
-        uk-tooltip="These Cards do not have a due date.">
-      <p class="uk-text-center">Cards Without Due Date</p>
-      <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text" href="#cardswithoutduedate-modal" uk-toggle>{{cardswithoutduedate|length}}</a>
-      </h1>
-    </div>
+  <div id="cards-no-due-date">
+    <cards-no-due-date-component></cards-no-due-date-component>
   </div>
 
 </div>
 
 <!-- third row / labels -->
-<!--<div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>-->
-<!--&lt;!&ndash;  TODO:-->
-<!--    - add priorities based on formula (sla, prio, etc.)-->
-<!--    - add accounts without activity-->
-<!--    - SLA Breaches-->
-<!--    - Overdue today, tomorrow in 5 in two weeks, etc.-->
-<!--    - -->
-<!--&ndash;&gt;-->
-<!--<span class="uk-label uk-margin-right"># Overdue today</span>-->
-
-<!--<span class="uk-label uk-label-success uk-margin-right"># cards SLA breached</span>-->
-
-<!--<span class="uk-label uk-label-warning uk-margin-right"># cards Normal</span>-->
-
-<!--<span class="uk-label uk-label-danger">#cards Major</span>-->
-
-<!--</div>-->
+  <!-- <div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
+    <span class="uk-label uk-label-danger uk-margin-right">[[duetoday]] Due today</span>
+    <span class="uk-label uk-label-success uk-margin-right"># cards SLA breached</span>
+    <span class="uk-label uk-label-warning uk-margin-right"># cards Normal</span>
+    <span class="uk-label uk-label-danger">#cards Major</span>
+  </div> -->
 {% endif %}
 <!-- end uikit -->
 
@@ -134,7 +117,7 @@
 {% endif %}
 
 <!-- Begin page content -->
-<div class="container"> <!-- container -->
+<div class="uk-padding"> <!-- container -->
   <ul uk-accordion="multiple: true" id="dashboard-accordion">
     <li>
       <a class="uk-accordion-title" href="#"><h3>Incidents</h3></a>
@@ -421,42 +404,51 @@
   <!-- end myoverdueboard-modal  -->
 
   <!-- cardswithoutduedate-modal-->
-<div id="cardswithoutduedate-modal" uk-modal>
-  <div class="uk-modal-dialog">
-    <button class="uk-modal-close-default" type="button" uk-close></button>
-    <div class="uk-modal-header">
-        <h2 class="uk-modal-title">My Overdue Boards</h2>
-    </div>
-      <div class="uk-modal-body" uk-overflow-auto>
-        <table class="uk-table uk-table-striped">
-          <thead>
-              <tr>
+  <div id="cardswithoutduedate-modal" class="uk-modal-container" uk-modal>
+    <div class="uk-modal-dialog">
+      <button class="uk-modal-close-default" type="button" uk-close></button>
+      <div class="uk-modal-header">
+          <h2 class="uk-modal-title">Cards Without a Due date</h2>
+      </div>
+        <div class="uk-modal-body" uk-overflow-auto>
+          <div class="uk-list-striped">
+            <table id="cards-without-due-date" class="uk-table uk-table-striped">
+              <thead>
+                <tr>
                   <th>Board</th>
                   <th>Customer</th>
                   <th>ID</th>
                   <th>Title</th>
                   <th>Created</th>
-              </tr>
-          </thead>
-          <tbody>
-            {% for card in cardswithoutduedate %}
-              <tr>
-                  <td>{{card.board}}</td>
-                  <td>{{card.company}}</td>
-                  <td><a href="/cards/editcard/{{card.id}}">{{card.id}}</a></td>
-                  <td>{{card}}</td>
-                  <td>{{card.created_time}}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+                  <th>Due</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="card in cards">
+                  <td>[[card.board__name]]</td>
+                  <td v-if="card.company__name" >[[card.company__name]]</td>
+                  <td v-else="card.company__name" class="uk-text-danger">no company</td>
+                  <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
+                  <td>[[card.title]]</td>
+                  <td>[[card.created_time | moment ]]</td>
+                  <td v-cloak>[[card.due_date | moment ]]</td>
+                  <td>
+                    <a v-on:click="deleteCard(card.id)">
+                      <span uk-icon="trash" style="color:red" onclick="return confirm('This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?')"></span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <div class="uk-modal-footer uk-text-right">
+          <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
       </div>
-    <div class="uk-modal-footer uk-text-right">
-        <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
     </div>
   </div>
-</div>
-<!-- end cardswithoutduedate-modal  -->
+  <!-- end cardswithoutduedate-modal  -->
 
   <!-- cardswatcher-modal-->
 <div id="cardswatcher-modal" class="uk-modal-container" uk-modal>

@@ -339,7 +339,7 @@ var cards_without_owner_or_company = new Vue({
 		loadData: function () {
 			$.get('/api2/noownerorcompany', function (response) {
 				this.no_owner_or_company = response;
-				console.log(response.data);
+				// console.log(response.data);
 			}.bind(this));
 		},
 	deleteCard: function(id) {
@@ -386,7 +386,7 @@ var cards_watcher = new Vue({
 		loadData: function () {
 			$.get('/api2/cardswatcher', function (response) {
 				this.cards = response;
-				console.log(response.data);
+				// console.log(response.data);
 			}.bind(this));
 		},
 		moment: function () {
@@ -409,6 +409,55 @@ var cards_watcher = new Vue({
 		}
 	}
 })
+
+
+// cards no due date
+//my_backlogs
+var no_duedate = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#cards-without-due-date',
+	data: {
+		cards: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/api2/cardswoduedate/', function (response) {
+				this.cards = response;
+			}.bind(this));
+		},
+		deleteCard: function(id) {
+			this.loading = true;
+			this.$http.delete(`/api2/cardswoduedate/${[[id]]}/`)
+				.then((response) => {
+					this.loading = false;
+					this.loadData();
+				})
+				.catch((err) => {
+					this.loading = false;
+					console.log(err);
+				})
+		},
+		moment: function () {
+    		return moment();
+  	}
+	},
+	created: function () {
+		this.loadData();
+
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	filters: {
+  		moment: function (date) {
+			return moment(date).format('MMM Do YYYY, k:m');
+		}
+	}
+})
+
 
 
 // test rest

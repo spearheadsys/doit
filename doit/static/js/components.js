@@ -375,3 +375,46 @@ Vue.component('cards-im-watching',{
 var cardswatcher = new Vue({
 	el: '#cards-watcher',
 });
+
+// cards no due date
+Vue.component('cards-no-due-date-component',{
+	delimiters: ['[[', ']]'],
+	props: '',
+	data: function () {
+		return {
+			cards: []
+		}
+	},
+	mounted: function() {
+		this.getCards();
+	},
+	methods: {
+		getCards: function() {
+			this.loading = true;
+			this.$http.get('/api2/cardswoduedate/')
+				.then((response) => {
+					this.cards = response.data.length;
+					this.loading = false;
+				})
+				.catch((err) => {
+				 this.loading = false;
+				 //console.log(err);
+				})
+		},
+	},
+	created: function () {
+		this.getCards();
+
+		setInterval(function () {
+			this.getCards();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	template: '<div class="uk-card-small uk-card-default  uk-card-body v-cloak"> <p class="uk-text-center">Cards Without Due Date</p> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#cardswithoutduedate-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/icons8-last_hour_time_and_date.png"> </div>'
+});
+
+var cardsnoduedate = new Vue({
+	el: '#cards-no-due-date',
+});
