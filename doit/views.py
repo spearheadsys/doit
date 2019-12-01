@@ -48,7 +48,7 @@ def user_login(request):
         else:
             return HttpResponse("Invalid login details supplied.")
     else:
-        return render(request, 'doit/login.html', {}, context)
+        return render(request, 'doit/login.html', {"site_title": "gigicon"}, context)
 
 
 # Use the login_required() decorator to ensure only those logged in can
