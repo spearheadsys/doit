@@ -340,7 +340,7 @@ Is there something more specific you'd like to know?
                   <img class="uk-border-circle" width="40" height="40" src="/media/{{ card.created_by.profile_user.picture }}">
               </div>
               <div class="uk-width-expand">
-                  <h3 class="uk-card-title uk-margin-remove-bottom">{{card.created_by.first_name}} on</h3>
+                  <h3 class="uk-card-title uk-margin-remove-bottom">{{card.created_by.first_name}} {{card.created_by.last_name}}</h3>
                   <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">{{card.created_time}} said:</time></p>
               </div>
           </div>
@@ -376,7 +376,7 @@ Is there something more specific you'd like to know?
                     </div>
                     {% endif %}
                     <div class="uk-width-expand">
-                        <h3 class="uk-card-title uk-margin-remove-bottom">{{comment.owner.first_name}} on</h3>
+                        <h3 class="uk-card-title uk-margin-remove-bottom">{{comment.owner.first_name}} {{comment.owner.last_name}}</h3>
                         <p class="uk-text-meta uk-margin-remove-top"><time >{{card.created_time}} said:</time></p>
                     </div>
                   </div>
