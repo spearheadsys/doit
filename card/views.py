@@ -1429,9 +1429,6 @@ def mailpost(request):
         # we use stripped html in replies
         body_html_stripped = request.POST.get('stripped-html', '')
 
-        print("DEBUG >>> ", body_plain_stripped)
-        print("DEBUG >>> ", body_html_stripped)
-
         # TODO: maybe strip signatures on replies?
         # sender_signature = request.POST.get('stripped-html   ', '')
         # note: other MIME headers are also posted here...
@@ -1531,7 +1528,8 @@ def mailpost(request):
                         w.save()
                 # attachments
                 for key in request.FILES:
-                    file = request.FILES[key]
+                    file = u' '.join(request.FILES[key]).encode('utf-8').strip()
+                    # file = request.FILES[key]
                     mime = file.content_type
                     try:
                         Attachment.objects.create(
@@ -1643,7 +1641,8 @@ def mailpost(request):
 
                 # attachments
                 for key in request.FILES:
-                    file = request.FILES[key]
+                    file = u' '.join(request.FILES[key]).encode('utf-8').strip()
+                    # file = request.FILES[key]
                     mime = file.content_type
                     Attachment.objects.create(
                         name=file.name,
@@ -1783,7 +1782,8 @@ def mailpost(request):
 
                 # attachments
                 for key in request.FILES:
-                    file = request.FILES[key]
+                    file = u' '.join(request.FILES[key]).encode('utf-8').strip()
+                    # file = request.FILES[key]
                     mime = file.content_type
                     Attachment.objects.create(
                         name=file.name,
