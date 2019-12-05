@@ -5,7 +5,7 @@ A Card has been been updated.
 Card title: {{card.title}}
 Comment: {{comment}}
 
-For more details view https://doit.spearhead.systems/cards/editcard/%d
+For more details view https://doit.spearhead.systems/cards/editcard/{{card.id}}
 
 # This is a message from Spearhead DoIT.
 
