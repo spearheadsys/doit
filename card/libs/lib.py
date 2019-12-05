@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from card.models import Card, Board
 from contact.models import UserProfile
 from django.core.mail import send_mail
