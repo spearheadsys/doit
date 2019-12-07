@@ -1,4 +1,5 @@
-# -*- coding: UTF-8 -*-
+#-*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from card.models import Card, Board
 from contact.models import UserProfile
 from django.core.mail import send_mail
@@ -62,8 +63,9 @@ def sendmail_card_created(cardid, card_creator):
             'description': soup_description.get_text(),
         }
         try:
+            subject = ("DoIT #doit{} {}").format(card.id, card.title)
             send_mail(
-                'DoIT #doit' + str(card.id) + " " + card.title,
+                str(subject),
                 plaintext.render(content),
                 doit_myemail,
                 [card.owner.email],
@@ -75,7 +77,7 @@ def sendmail_card_created(cardid, card_creator):
         if card_creator.profile_user.is_customer:
             text_content = plaintext.render(content)
             send_mail(
-                'DoIT #doit' + str(card.id) + " " + card.title,
+                ("DoIT #doit{} {}").format(card.id, card.title),
                 plaintext.render(content),
                 doit_myemail,
                 ["doit@spearhead.systems"],
@@ -105,7 +107,7 @@ def sendmail_card_updated(cardid, comment, card_creator):
         try:
             # now send to the owner
             send_mail(
-                'DoIT #doit' + str(card.id) + " " + card.title,
+                u'DoIT #doit' + str(card.id) + " " + card.title,
                 plaintext.render(content),
                 doit_myemail,
                 [card.owner.email],
@@ -117,7 +119,7 @@ def sendmail_card_updated(cardid, comment, card_creator):
         # TODO: temporary notify support of cards created via customer portal
         if card_creator.profile_user.is_customer:
             send_mail(
-                'DoIT #doit' + str(card.id) + " " + card.title,
+                u'DoIT #doit' + unicode(card.id) + " " + unicode(card.title),
                 plaintext.render(content),
                 doit_myemail,
                 ["doit@spearhead.systems"],
@@ -125,7 +127,8 @@ def sendmail_card_updated(cardid, comment, card_creator):
 
 
 def doit_tracker(objid):
-    print 'we got an id >>>'
+    # print 'we got an id >>>'
+    pass
 
 
 def org_stats(org):
@@ -135,7 +138,7 @@ def org_stats(org):
     archived_boards = Board.objects.all().filter(archived=True)
 
     org_stats = {}
-    print open_cards.count()
+    # print open_cards.count()
 
     org_card_stats = open_cards | closed_cards
 
