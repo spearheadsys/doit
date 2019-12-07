@@ -47,6 +47,7 @@ from email.utils import parseaddr, getaddresses
 from django.core.mail import send_mail
 from django.core.exceptions import ObjectDoesNotExist
 import re
+import codecs
 
 # GLOBALS
 doitVersion = settings.DOIT_VERSION
@@ -1642,15 +1643,12 @@ def mailpost(request):
 
                 # attachments
                 for key in request.FILES:
-                    file = u' '.join(request.FILES[key]).encode('utf-8').strip()
-                    # file = request.FILES[key]
-                    mime = file.content_type
                     Attachment.objects.create(
-                        name=file.name,
-                        content=file,
+                        name=codecs.EncodedFile(request.FILES[key].name,"utf-8"),
+                        content=unicode(request.FILES[key]),
                         uploaded_by=user,
                         card=card,
-                        mimetype=mime,
+                        mimetype=request.FILES[key].content_type
                     )
                 lib.sendmail_card_created(card.id, user)
             else:
