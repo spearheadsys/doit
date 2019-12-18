@@ -5,7 +5,7 @@ SITE_URL = "https://doit.spearhead.systems/"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-ALLOWED_HOSTS = ['doit.sphs.ro']
+ALLOWED_HOSTS = ['doit.spearhead.systems']
 
 MEDIA_ROOT = os.path.join(os.getcwd(), "media/")
 

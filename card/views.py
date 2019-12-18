@@ -787,7 +787,7 @@ def closecard(request, card=None):
         # check card company and watcher
 
         if card in request.user.Watchers.all():
-            print "we're in"
+            print("we're in")
 
     card.column = done_column[0]
     card.closed = True
@@ -1123,7 +1123,7 @@ def editColumn(request, column=None):
             return HttpResponseRedirect("/cards/")
         else:
             # TODO: something meaningful perhaps
-            print editColumnForm.errors
+            print(editColumnForm.errors)
         # this should never hit
         return HttpResponseRedirect("/home/")
     else:

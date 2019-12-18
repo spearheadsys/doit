@@ -225,7 +225,7 @@ def editBoard(request, board=None):
                 allcardsofthisboard = Card.objects.all().filter(board=board).filter(closed=False)
 
                 for card in allcardsofthisboard:
-                    print(card, card.column)
+                    # print(card, card.column)
                     # Do not move to Done column - it will be hard to reopen on unarchiving the board
                     # card.column = columndoneofthisboard
                     card.closed = True
@@ -246,6 +246,7 @@ def editBoard(request, board=None):
         board = Board.objects.get(id=board)
         form = EditBoardForm(instance=board)
         board_columns = Column.objects.filter(board=board).order_by('order')
+        boards = Board.objects.filter(archived=False)
         context_dict = {
             'site_title': "Edit Board - " + str(board.name) + " | Spearhead Systems",
             'page_name': "Edit Board",
@@ -253,9 +254,39 @@ def editBoard(request, board=None):
             'board': board,
             'form': form,
             'board_columns': board_columns,
+            'boards': boards
         }
         # return render_to_response('boards/editboard.html', context_dict, context)
         return render(request, 'boards/editboard.html', context_dict)
+
+
+@login_required
+def deleteBoard(request, board=None):
+    """
+    Delete a board.
+    """
+    if request.user.profile_user.is_superuser or request.user.profile_user.is_operator:        
+        # delete associated cards
+        for card in Card.objects.all.filter(board=board.id):
+            # delete all tasks
+            for t in Task.objects.filter(object_id=card):
+                t.delete()
+            # delete all reminders
+            for r in Reminder.objects.filter(card=card):
+                r.delete()
+            # delete all comments
+            for c in Comment.objects.filter(object_id=card):
+                c.delete()
+            # delete all attachments
+            for a in Attachment.objects.filter(card=card):
+                a.delete()
+            # finally delete the card
+            card.delete()
+        # now we can remove the board
+        Board.objects.get(id=board.id).delete()
+    # Todo: to where you came from
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 
 # archived boards are here
 # TODO: make these read-only

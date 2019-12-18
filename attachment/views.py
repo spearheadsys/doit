@@ -51,8 +51,6 @@ def addattachments(request):
                         if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):
                             os.makedirs(os.path.join(settings.MEDIA_ROOT, dirspath))
                         new_up_path = os.path.join(settings.MEDIA_ROOT, path)
-                        print("CUSTOMER PATH is >>> ", new_up_path)
-                        print("CUSTOMER FILENAME is >>> ", uploaded_file)
                         destination = open(new_up_path, 'wb+')
                         for chunk in uploaded_file.chunks():
                             destination.write(chunk)
@@ -79,13 +77,10 @@ def addattachments(request):
             if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):
                 os.makedirs(os.path.join(settings.MEDIA_ROOT, dirspath))
             new_up_path = os.path.join(settings.MEDIA_ROOT, path)
-            print("NEW UP PATH is >>> ", new_up_path)
-            print("FILENAME is >>> ", uploaded_file)
             destination = open(new_up_path, 'wb+')
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
             destination.close()
-            print("PATH is >>> ", path)
             # end write
             # TODO: clean files, make sure we do not bad things
             new_attachment = Attachment.objects.create(
@@ -102,7 +97,7 @@ def addattachments(request):
             dump = json.dumps(data)
             return HttpResponse(dump, content_type='application/json')
         else:
-            print request
+            print(request)
             # not sure how you got here ..
             # return render_to_response('attachments/null.html')
             return JsonResponse({'status': '500'})
