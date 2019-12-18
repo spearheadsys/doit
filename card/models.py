@@ -13,7 +13,10 @@ from django.dispatch import receiver
 from attachment.models import Attachment
 import os
 from django.conf import settings
+<<<<<<< HEAD
 from shutil import rmtree
+=======
+>>>>>>> 34651079e0ddf15c4d376c8ccb675f4a8085bf43
 
 
 # cards

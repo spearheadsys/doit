@@ -79,6 +79,8 @@ def addattachments(request):
             if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):
                 os.makedirs(os.path.join(settings.MEDIA_ROOT, dirspath))
             new_up_path = os.path.join(settings.MEDIA_ROOT, path)
+            print("NEW UP PATH is >>> ", new_up_path)
+            print("FILENAME is >>> ", uploaded_file)
             destination = open(new_up_path, 'wb+')
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
