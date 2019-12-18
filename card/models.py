@@ -13,10 +13,7 @@ from django.dispatch import receiver
 from attachment.models import Attachment
 import os
 from django.conf import settings
-<<<<<<< HEAD
 from shutil import rmtree
-=======
->>>>>>> 34651079e0ddf15c4d376c8ccb675f4a8085bf43
 
 
 # cards
@@ -161,18 +158,13 @@ def _delete_file(path):
 
 @receiver(pre_delete, sender=Card)
 def submission_delete(sender, instance, **kwargs):
-    print("RECEIVER DELTE CARD")
     for a in Attachment.objects.filter(card=instance.id):
         a.content.delete(save=False)
         a.delete()
-    # remove card dir
-    # os.path.join(settings.MEDIA_ROOT, instance.board.id))
-    boardpath = 'uploads/{}'.format(instance.board.id, related_card.id)
-    cardpath = 'uploads/{}/{}'.format(instance.board.id, related_card.id)
-    os.rmtree()
-
+    cardpath = 'uploads/{}/{}'.format(instance.board.id, instance.id)
+    if os.path.exists(os.path.join(settings.MEDIA_ROOT, cardpath)):
+        rmtree(os.path.join(settings.MEDIA_ROOT, cardpath))
     
-
 
 class Reminder(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
