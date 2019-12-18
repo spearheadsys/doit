@@ -39,18 +39,20 @@ def addattachments(request):
     u = User.objects.get(username=request.user)
     up = u.profile_user
     if request.is_ajax() or request.method == 'POST':
-        print("POST IS AJAZXXXX??????")
         card = request.POST['card']
         related_card = Card.objects.get(id=card)
-        # uploaded_file = request.FILES
         for filename, uploaded_file in request.FILES.iteritems():
             f = uploaded_file.content_type
-            print("FILENAME >>>>>> ", file)
             if up.is_customer:
                 if u.profile_user.company == related_card.company:
                     if u.profile_user.is_org_admin or u in related_card.watchers.all():
-                        path = 'uploads/%s' % filename
+                        dirspath = 'uploads/{}'.format(related_card.id)
+                        path = 'uploads/{}/{}'.format(related_card.id, uploaded_file)
+                        if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):
+                            os.makedirs(os.path.join(settings.MEDIA_ROOT, dirspath))
                         new_up_path = os.path.join(settings.MEDIA_ROOT, path)
+                        print("CUSTOMER PATH is >>> ", new_up_path)
+                        print("CUSTOMER FILENAME is >>> ", uploaded_file)
                         destination = open(new_up_path, 'wb+')
                         for chunk in uploaded_file.chunks():
                             destination.write(chunk)
@@ -72,17 +74,23 @@ def addattachments(request):
             # # write file to upload dir
             ## TODO: check if file already exista otherwise we truncate and this
             # is probably NOT what we want
-            path = 'uploads/%s' % filename
+            dirspath = 'uploads/{}'.format(related_card.id)
+            path = 'uploads/{}/{}'.format(related_card.id, uploaded_file)
+            if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):
+                os.makedirs(os.path.join(settings.MEDIA_ROOT, dirspath))
             new_up_path = os.path.join(settings.MEDIA_ROOT, path)
+            print("NEW UP PATH is >>> ", new_up_path)
+            print("FILENAME is >>> ", uploaded_file)
             destination = open(new_up_path, 'wb+')
             for chunk in uploaded_file.chunks():
                 destination.write(chunk)
             destination.close()
+            print("PATH is >>> ", path)
             # end write
             # TODO: clean files, make sure we do not bad things
             new_attachment = Attachment.objects.create(
                 name=uploaded_file.name,
-                content=uploaded_file,
+                content=path,
                 uploaded_by=u,
                 card=related_card,
                 mimetype=f,
@@ -108,13 +116,10 @@ def get_attachments(request):
         if not q:
             return HttpResponse("This feature is not enabled.")
         card = Card.objects.get(id=q)
-        print("card >>>> ", card)
         ctype = ContentType.objects.get_for_model(card)
-        print("ctype >>>>> ", ctype)
         attachments = Attachment.objects.filter(
             card_id=card.id
         )
-        print("atttachments >>> ", attachments)
         results = []
         for co in attachments:
             co_json = {}

@@ -236,7 +236,7 @@ def editBoard(request, board=None):
                 # additionally reopen them once the board is re-opened
             return HttpResponseRedirect(redirect_url)
         else:
-            print form.errors
+            print(form.errors)
         # this should never hit
         return HttpResponseRedirect("/home/")
     else:

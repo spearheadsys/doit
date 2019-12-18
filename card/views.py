@@ -552,6 +552,7 @@ def deleteCard(request, card=None):
     if request.user.profile_user.is_superuser or request.user.profile_user.is_operator:
         # delete all attachments
         for a in Attachment.objects.filter(card=card):
+            print("about to delete attachment: ", a)
             a.delete()
         # delete all comments
         for c in Comment.objects.filter(object_id=card):
