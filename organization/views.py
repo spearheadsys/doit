@@ -84,7 +84,7 @@ def organizations(request):
         'doitVersion': doitVersion,
         'boards': boards,
     }
-    return render(request, 'organizations.html', context_dict)
+    return render(request, 'organization/organizations.html', context_dict)
 
 
 @login_required
