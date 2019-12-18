@@ -20,6 +20,8 @@
                   <span class="uk-icon uk-margin-small-right" uk-icon="icon: grid"></span>
                   <span class="uk-text-large">Boards</span>
                 </a>
+
+                {% if page_name != "Boards" %}
                 <div class="uk-navbar-dropdown uk-width-1-3" >
                     <ul class="uk-nav uk-navbar-dropdown-nav">
                       {% for board in boards %}
@@ -30,6 +32,7 @@
 
                     </ul>
                 </div>
+                {% endif %}
               </li>
               <li>
                 <a class="uk-text-large" href="/organizations">
