@@ -98,7 +98,7 @@ def change_organization(request):
             model_instance = form.save()
             return HttpResponseRedirect('/organizations/')
         else:
-            print form.errors
+            print(form.errors)
         return HttpResponseRedirect('/organizations/')
     else:
         u = User.objects.get(username=request.user)
@@ -129,7 +129,7 @@ def add_organization(request):
             model_instance = form.save()
             return HttpResponseRedirect('/organizations/')
         else:
-            print form.errors
+            print(form.errors)
         return HttpResponseRedirect('/organizations/')
     else:
         u = User.objects.get(username=request.user)

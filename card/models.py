@@ -8,6 +8,12 @@ from django.utils import timezone
 from django.db.models import Max, Sum
 from comment.models import Comment
 from taggit.managers import TaggableManager
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+from attachment.models import Attachment
+import os
+from django.conf import settings
+from shutil import rmtree
 
 
 # cards
@@ -137,8 +143,32 @@ class Card(models.Model):
             return True
         return False
 
+    # def delete(self, *args, **kwargs):
+    #     self.card.delete()
+    #     super(Attachment, self).delete(*args, **kwargs)
+
     class Meta:
         ordering = ['created_time']
+
+
+def _delete_file(path):
+   """ Deletes file from filesystem. """
+   if os.path.isfile(path):
+       os.remove(path)
+
+@receiver(pre_delete, sender=Card)
+def submission_delete(sender, instance, **kwargs):
+    print("RECEIVER DELTE CARD")
+    for a in Attachment.objects.filter(card=instance.id):
+        a.content.delete(save=False)
+        a.delete()
+    # remove card dir
+    # os.path.join(settings.MEDIA_ROOT, instance.board.id))
+    boardpath = 'uploads/{}'.format(instance.board.id, related_card.id)
+    cardpath = 'uploads/{}/{}'.format(instance.board.id, related_card.id)
+    os.rmtree()
+
+    
 
 
 class Reminder(models.Model):
