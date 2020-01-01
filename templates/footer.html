@@ -4,31 +4,50 @@
 <script src="{% static "js/bootstrap-datepicker.js" %}"></script>
 <script src="{% static "js/daterangepicker.js" %}"></script>
 
-<!-- test bbb -->
-<script>
-$(document).ready(function(){
-  var column_form_index=0;
-  $("#add_column").click(function(){
-    column_form_index++;
-    $(this).parent().before($("#column_form").clone().attr("id","column_form" + column_form_index));
-    $("#column_form" + column_form_index).css("display","inline");
-    $("#column_form" + column_form_index).css("display","inline");
-    $("#column_form" + column_form_index + " :input").each(function(){
-        $(this).attr("id",$(this).attr("id") + column_form_index);
-        });
-    $("#remove_column" + column_form_index).click(function(){
-        $(this).closest("div").remove();
-    });
-  });
-});
-</script>
-<!-- end test bbb -->
-
 {% if page_name == "Edit Card" %}
 <script type="text/javascript">
 $(document).ready(function(){
     $(".edit-card-main-content").animate({ scrollTop: $('.edit-card-main-content').prop("scrollHeight")}, 1000);
 });
+
+
+<!--editcarcdfomr dal onchange -->
+$('#editcard_form').on('change', function(event){
+	console.log("editcardform changed!!")
+    event.preventDefault();
+    var formdata = $('#editcard_form');
+    console.log("form submitted!")  // sanity check
+    //console.log()  // sanity check
+    doit_submit_form(formdata);
+});
+
+
+// AJAX for posting
+function doit_submit_form(formdata) {
+    console.log("doit_submit_form post being processed!") // sanity check
+    //console.log($(formdata).serialize())
+    var url =  window.location.href;
+    postFormData = $(formdata).serialize()
+    $.ajax({
+        url : url, // the endpoint
+        type : "POST", // http method
+        data : postFormData, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+            //$('#post-text').val(''); // remove the value from the input
+            console.log("success"); // another sanity check
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+};
+<!--editcarcdfomr dal onchange -->
 </script>
 {% endif %}
 

@@ -3,13 +3,13 @@
 {% block menu %}
   {% include "menu.html" %}
 {% endblock menu %}
+
 {% block main-content %}
-  {{comment_form.media}}
-  {{editcard_form.media}}
+
 {% load humanize %}
 {% load static %}
-
-
+  {{editcard_form.media}}
+  {{comment_form.media}}
 <!-- Todo:
 trix-attachment-remove fires when an attachment is removed from the document. You can access the Trix attachment object through the attachment property on the event. You may wish to use this event to clean up remotely stored files
 ↳ https://github.com/basecamp/trix#observing-editor-changes
@@ -32,91 +32,92 @@ Is there something more specific you'd like to know?
     </div>
 
       <ul uk-accordion="multiple: false">
-        <li>
+        <li class="uk-open">
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Card details</span></a>
           <div class="uk-accordion-content" id="carddetails">
             <form action="" class="uk-form-stacked" id="editcard_form" method="POST" role="form">
-            {% csrf_token %}
-            {{ editcard_form.board }}
-            {{ editcard_form.title }}
-          <div class="uk-margin-small">
-            <div>
-              <span class="uk-link">
-                <a class="uk-link" href="#movecard-modal" uk-toggle><span uk-icon="icon: move"></span>Board</a>
-                <span></span>
-              </span>
-            </div>
+              {% csrf_token %}
+              {{ editcard_form.media }}
+              {{ editcard_form.board }}
+              {{ editcard_form.title }}
+              <div class="uk-margin-small">
+                <div>
+                  <span class="uk-link">
+                    <a class="uk-link" href="#movecard-modal" uk-toggle><span uk-icon="icon: move"></span>Board</a>
+                    <span></span>
+                  </span>
+                </div>
 
-            <div uk-form-custom="target: > * > span:last-child">
-              {{ editcard_form.column }}
-              <span class="uk-link">
-                <span uk-icon="icon: pencil"></span>Column
-                <span></span>
-              </span>
-            </div>
-          </div>
-            <div class="uk-margin-small">
-              <div uk-form-custom="target: > * > span:last-child">
-                {{ editcard_form.priority }}
-                <span class="uk-link">
-                  <span uk-icon="icon: pencil"></span>Priority
-                  <span></span>
-                </span>
+                <div uk-form-custom="target: > * > span:last-child">
+                  {{ editcard_form.column }}
+                  <span class="uk-link">
+                    <span uk-icon="icon: pencil"></span>Column
+                    <span></span>
+                  </span>
+                </div>
               </div>
-            </div>
-            <div class="uk-margin-small">
-              <div uk-form-custom="target: > * > span:last-child">
-                {{ editcard_form.type }}
-                <span class="uk-link">
-                  <span uk-icon="icon: pencil"></span>Type
-                  <span></span>
-                </span>
-              </div>
-            </div>
-            <div class="uk-margin-small">
-              <div class="uk-form-controls">
-                {{ editcard_form.start_time.label }}
-                {{ editcard_form.start_time }}
-              </div>
-            </div>
-            <div class="uk-margin-small">
-              <div class="uk-form-controls">
-                {{ editcard_form.due_date.label }}
-                {{ editcard_form.due_date }}
-              </div>
-            </div>
+                <div class="uk-margin-small">
+                  <div uk-form-custom="target: > * > span:last-child">
+                    {{ editcard_form.priority }}
+                    <span class="uk-link">
+                      <span uk-icon="icon: pencil"></span>Priority
+                      <span></span>
+                    </span>
+                  </div>
+                </div>
+                <div class="uk-margin-small">
+                  <div uk-form-custom="target: > * > span:last-child">
+                    {{ editcard_form.type }}
+                    <span class="uk-link">
+                      <span uk-icon="icon: pencil"></span>Type
+                      <span></span>
+                    </span>
+                  </div>
+                </div>
+                <div class="uk-margin-small">
+                  <div class="uk-form-controls">
+                    {{ editcard_form.start_time.label }}
+                    {{ editcard_form.start_time }}
+                  </div>
+                </div>
+                <div class="uk-margin-small">
+                  <div class="uk-form-controls">
+                    {{ editcard_form.due_date.label }}
+                    {{ editcard_form.due_date }}
+                  </div>
+                </div>
 
-            <div class="uk-margin-small">
-              <div class="uk-form-controls">
-                {{ editcard_form.company.label }}
-                {{ editcard_form.company }}
-              </div>
-            </div>
-            <div class="uk-margin-small">
-              <div class="uk-form-controls">
-                {{ editcard_form.owner.label}}
-                {{ editcard_form.owner}}
-              </div>
-            </div>
-            <div class="uk-margin-small">
-              <div class="uk-form-controls">
-                {{ editcard_form.watchers.label}}
-                {{ editcard_form.watchers}}
-              </div>
-            </div>
-            <div class="uk-margin-small">
-              <div class="uk-form-controls">
-                {{ editcard_form.estimate.label }}
-                {{ editcard_form.estimate }}
-              </div>
-            </div>
-            <div class="uk-margin-small">
-              <div class="uk-form-controls">
-                {{ editcard_form.tags.label }}
-                {{ editcard_form.tags }}
-              </div>
-            </div>
-          </form>
+                <div class="uk-margin-small">
+                  <div class="uk-form-controls">
+                    {{ editcard_form.company.label }}
+                    {{ editcard_form.company }}
+                  </div>
+                </div>
+                <div class="uk-margin-small">
+                  <div class="uk-form-controls">
+                    {{ editcard_form.owner.label }}
+                    {{ editcard_form.owner }}
+                  </div>
+                </div>
+                <div class="uk-margin-small">
+                  <div class="uk-form-controls">
+                    <div>{{ editcard_form.watchers.label }}</div>
+                    {{ editcard_form.watchers}}
+                  </div>
+                </div>
+                <div class="uk-margin-small">
+                  <div class="uk-form-controls">
+                    {{ editcard_form.estimate.label }}
+                    {{ editcard_form.estimate }}
+                  </div>
+                </div>
+                <div class="uk-margin-small">
+                  <div class="uk-form-controls">
+                    <div>{{ editcard_form.tags.label }}</div>
+                    {{ editcard_form.tags }}
+                  </div>
+                </div>
+            </form>
           </div>
         </li>
 
@@ -546,6 +547,8 @@ Is there something more specific you'd like to know?
 {% endblock main-content %}
 
 {% block footer %}
+
+
 {% include "footer.html" %}
   <script type="application/javascript">
     // for editcard datepicker, autosubmit
@@ -626,5 +629,6 @@ $(document).ready(function(){
     $("#middle-column").animate({ scrollTop: $('#middle-column').prop("scrollHeight")}, 1000);
 });
 </script>
+
 
 {% endblock footer %}

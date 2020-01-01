@@ -1,4 +1,11 @@
 
+// lazy load
+import Vue from 'vue';
+import 'beautify-scrollbar/dist/index.css';
+import V2LazyList from 'v2-lazy-list';
+
+
+
 // make sure we send csrf django token
 function getCookie(name) {
     var cookieValue = null;
@@ -146,21 +153,6 @@ function get_tasks(cardid) {
     });
 };
 
-//function get_tasks_count(cardid) {
-//    $.get( "/cards/gettasks/", { card: cardid }, function( data ) {
-//      var open_tasks = 0;
-//          $.each(data, function(i) {
-//            if(data[i].done) {
-//              return true;
-//          } else {
-//              open_tasks++;
-//          };
-//        };
-//        )};
-//    )};
-
-
-
 //<!-- tasklist tab in editcard modal -->
 $(document).on('change' , '.task-checkbox' , function(){
     if(this.checked) {
@@ -212,42 +204,6 @@ $(document).on('change' , '.task-checkbox' , function(){
 //
 // submit form for editcard via ajax
 //
-
-
-$('#editcard_form').on('change', function(event){
-    event.preventDefault();
-    var formdata = $('#editcard_form');
-    console.log("form submitted!")  // sanity check
-    //console.log()  // sanity check
-    doit_submit_form(formdata);
-});
-
-// AJAX for posting
-function doit_submit_form(formdata) {
-    console.log("doit_submit_form post being processed!") // sanity check
-    //console.log($(formdata).serialize())
-    var url =  window.location.href;
-    postFormData = $(formdata).serialize()
-    $.ajax({
-        url : url, // the endpoint
-        type : "POST", // http method
-        data : postFormData, // data sent with the post request
-
-        // handle a successful response
-        success : function(json) {
-            //$('#post-text').val(''); // remove the value from the input
-            console.log(json); // log the returned json to the console
-            console.log("success"); // another sanity check
-        },
-
-        // handle a non-successful response
-        error : function(xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
-    });
-};
 
 // disable trix image uploads ..
 

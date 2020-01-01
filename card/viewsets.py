@@ -88,7 +88,7 @@ class MyBacklogCardsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         backlog = Columntype.objects.all().filter(name="Backlog")
-        queryset = Card.objects.filter(closed=False, owner=self.request.user).filter(Q(column__usage__exact=backlog))
+        queryset = Card.objects.filter(closed=False, owner=self.request.user).filter(Q(column__usage__exact=backlog[0].id))
         return queryset
 
 
@@ -97,7 +97,7 @@ class AllBacklogCardsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         backlog = Columntype.objects.all().filter(name="Backlog")
-        queryset = Card.objects.filter(closed=False).filter(Q(column__usage__exact=backlog))
+        queryset = Card.objects.filter(closed=False).filter(Q(column__usage__exact=backlog[0].id))
         return queryset
 
 

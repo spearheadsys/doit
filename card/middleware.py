@@ -8,7 +8,7 @@ from django.utils.deprecation import MiddlewareMixin
 
 class TimezoneMiddleware(MiddlewareMixin):
     def process_request(self, request):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             u = User.objects.get(username=request.user)
             up = UserProfile.objects.get(user_id=u.id)
             tzname = up.timezone

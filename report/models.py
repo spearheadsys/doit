@@ -11,15 +11,15 @@ class Reports(models.Model):
     """
     title = models.CharField(max_length=255)
     description = models.TextField()
-    company = models.ForeignKey(Organization)
+    company = models.ForeignKey(Organization, models.CASCADE)
     # we should get this automatically form assigned in user
     #  and allow only admins to view reports
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     # we only save the period and board form which to
     # generate the report
     period_from = models.DateTimeField()
     period_to = models.DateTimeField(null=True, blank=True)
-    board = models.ForeignKey(Board)
+    board = models.ForeignKey(Board, models.CASCADE)
 
     def __unicode__(self):
         return self.title

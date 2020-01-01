@@ -55,7 +55,7 @@ urlpatterns = [
     # admindocs
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # admin page
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
     # include contacts
     url(r'^contacts/', include('contact.urls')),
     # organizations

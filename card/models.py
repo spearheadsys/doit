@@ -23,7 +23,7 @@ class Card(models.Model):
     """
     title = models.CharField(max_length=255)
     description = models.TextField()
-    company = models.ForeignKey(Organization, null=True, blank=True)
+    company = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
     # incident, service request
     SERVICE_REQUEST = 'SR'
     INCIDENT = 'IN'
@@ -39,29 +39,29 @@ class Card(models.Model):
         blank=True)
 
     watchers = models.ManyToManyField(
-        User, null=True,
+        User,
         blank=True,
         related_name="Watchers"
     )
 
     # todo: remove this when appropriate -use watchers instead
-    owner = models.ForeignKey(User, null=True, blank=True)
-    created_by = models.ForeignKey(User, related_name="created_by_user")
+    owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    created_by = models.ForeignKey(User, related_name="created_by_user", null=True, on_delete=models.SET_NULL)
     start_time = models.DateTimeField(null=True, blank=True)
     due_date = models.DateTimeField(null=True, blank=True)
-    priority = models.ForeignKey("Priority", blank=True, null=True)
+    priority = models.ForeignKey("Priority", blank=True, null=True, on_delete=models.SET_NULL)
     # todo. migrate to datetimefield
     created_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
-    board = models.ForeignKey(Board, related_name="card_board")
-    column = models.ForeignKey("Column", related_name="card_column")
+    board = models.ForeignKey(Board, related_name="card_board", on_delete=models.CASCADE)
+    column = models.ForeignKey("Column", related_name="card_column", on_delete=models.PROTECT)
     closed = models.BooleanField(default=False)
     estimate = models.IntegerField(null=True, blank=True)
     order = models.IntegerField(null=True, blank=True)
     tags = TaggableManager(blank=True)
     csat = models.BooleanField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     # get worked minutes total
@@ -169,12 +169,12 @@ def submission_delete(sender, instance, **kwargs):
 class Reminder(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(User, null=True, blank=True)
+    owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     reminder_time = models.DateTimeField()
-    card = models.ForeignKey(Card, related_name="card_reminder")
+    card = models.ForeignKey(Card, related_name="card_reminder", on_delete=models.CASCADE)
     notified = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return str(self.created_time)
 
 
@@ -183,7 +183,7 @@ class Columntype(models.Model):
     created_time = models.DateField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -194,7 +194,7 @@ class Column(models.Model):
     """
 
     title = models.CharField(max_length=50, blank=False, null=False)
-    board = models.ForeignKey(Board, related_name="board_column")
+    board = models.ForeignKey(Board, related_name="board_column", on_delete=models.CASCADE)
     wip = models.IntegerField(null=True, blank=True)
     order = models.IntegerField()
     # type (usage) of the column determines the workflows that are possible
@@ -214,9 +214,9 @@ class Column(models.Model):
     # noi (care este perspectiva clientului) sa ne anunte dand reply la tichet
     # sau sa dechida unul nou
     # usage = models.CharField(max_length=120, blank=True)
-    usage = models.ForeignKey(Columntype, blank=True, null=True, related_name="column_usage")
+    usage = models.ForeignKey(Columntype, blank=True, null=True, related_name="column_usage", on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 
@@ -226,7 +226,7 @@ class Priority(models.Model):
     """
     title = models.CharField(max_length=50, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
 
@@ -234,22 +234,23 @@ class Worklog(models.Model):
     """
     Stores a single worklog entry. A worklog is a unit of work.
     """
-    card = models.ForeignKey(Card)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
     minutes = models.IntegerField(blank=True, null=True)
     overtime = models.BooleanField(default=False)
     billable = models.BooleanField()
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True, null=True)
     modified_time = models.DateTimeField(auto_now=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.description or u''
 
 
 # todo: most likely will not use this to track
 class CardTracker(models.Model):
-    card = models.ForeignKey(Card)
+    # TODO: when a card is deleted all of its history will also be deleted
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
 
     # actions can be
     # create, delete, update
@@ -260,7 +261,7 @@ class CardTracker(models.Model):
     # created_time = models.DateTimeField(auto_now_add=True, null=True)
     # updated_fields = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.card
 
 
@@ -272,12 +273,12 @@ class Task(models.Model):
     created_time = models.DateField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
     done = models.BooleanField(default=False)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # genericforeignkey kungfu
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.task

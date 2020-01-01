@@ -1,3 +1,4 @@
+// TODO reuse single component
 Vue.component('all-open-incidents-component',{
 	delimiters: ['[[', ']]'],
 	props: '',

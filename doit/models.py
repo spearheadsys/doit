@@ -13,8 +13,8 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class Tracker(models.Model):
-    owner = models.ForeignKey(User, null=False, blank=False)
-    content_type = models.ForeignKey(ContentType)
+    owner = models.ForeignKey(User, null=False, blank=False, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, null=True, on_delete=models.SET_NULL)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     created_time = models.DateTimeField(auto_now_add=True, null=True)

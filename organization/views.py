@@ -1,12 +1,12 @@
 from django.http import HttpResponseRedirect, HttpResponse
-from django.core.urlresolvers import resolve
+from django.urls import resolve
 from django.template import RequestContext
 from django.shortcuts import render_to_response, render
 # user auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 # login
 from django.contrib.auth.models import User
-from forms import AddOrganizationsForm
+from organization.forms import AddOrganizationsForm
 from organization.models import Organization
 from comment.models import Comment
 from datetime import date, timedelta
@@ -31,7 +31,7 @@ class EmailDomainAutocomplete(autocomplete.Select2QuerySetView):
     # TODO: secure/restrict things accordingly
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return EmailDomain.objects.none()
 
         qs = EmailDomain.objects.all()

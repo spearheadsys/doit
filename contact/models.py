@@ -1,6 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from card.models import Organization
+import os
+
+
+def get_upload_path(instance, filename):
+    print("PROFILE INSTANCE", instance)
+    # path = 'uploads/{}/{}/{}'.format(related_card.board.id, related_card.id, uploaded_file)
+    return os.path.join('customer_images', "%d" % instance.user.id, "%d", "%s" % filename)
 
 
 # Create your models here.
@@ -8,7 +15,7 @@ class UserProfile(models.Model):
     """ Userprofile is a mapping to User. It adds a picture
     , relation to company, defines role (customer/admin)"""
     # This line is required. Links UserProfile to a User model instance.
-    user = models.OneToOneField(User, related_name='profile_user')
+    user = models.OneToOneField(User, related_name='profile_user', on_delete=models.CASCADE)
 
     # TODO: every profile must have an image
     # get a default working
@@ -28,7 +35,8 @@ class UserProfile(models.Model):
         Organization,
         null=True,
         blank=True,
-        related_name='organization_related_name')
+        related_name='organization_related_name',
+        on_delete=models.SET_NULL)
 
     # fav_boards = models.TextField()
 

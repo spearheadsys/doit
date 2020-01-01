@@ -83,7 +83,7 @@ def home(request):
     # We exclude Backlog items!
     # TODO: wizard, get user/pass, create board ..
     # launch wizard here
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         u = User.objects.get(username=request.user)
         noowner = Card.objects.all().filter(closed=False, owner=None).order_by('-due_date')
         cards = Card.objects.all().filter(closed=False, owner=u)
@@ -275,7 +275,7 @@ def home(request):
 
 @login_required
 def my_vue_cards(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         u = User.objects.get(username=request.user)
         cards = Card.objects.all().filter(closed=False, owner=u).filter(~Q(column__title="Backlog"))
         return JsonResponse({
@@ -284,7 +284,7 @@ def my_vue_cards(request):
 
 @login_required
 def all_my_open_cards(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         u = User.objects.get(username=request.user)
         cards = Card.objects.filter(closed=False, owner=u).filter(~Q(column__title="Backlog")).order_by('due_date')
         return JsonResponse({
@@ -307,7 +307,7 @@ def open_cards_ajax(request):
     # Note: If user != superuser we limit to company or owned/watched cards only!
     if request.user.profile_user.is_operator:
         all_records = Card.objects.all().filter(closed=False).filter(
-            ~Q(column__usage__exact=backlog)
+            ~Q(column__usage__exact=backlog[0].id)
         )
         records_total = all_records.count()
         if not all_records:
@@ -321,13 +321,13 @@ def open_cards_ajax(request):
         if company:
             all_records = Card.objects.all().filter(
                 Q(watchers__in=[request.user]) | Q(company=request.user.profile_user.company.id)
-            ).filter(closed=False).exclude(column__usage__exact=backlog).distinct()
+            ).filter(closed=False).exclude(column__usage__exact=backlog[0].id)
             records_total = all_records.count()
             if not all_records:
                 all_records = 0
         else:
             all_records = Card.objects.all().filter(closed=False).filter(
-                ~Q(column__usage__exact=backlog) &
+                ~Q(column__usage__exact=backlog[0].id) &
                 Q(watchers__in=[request.user.id])
             ).distinct()
             records_total = all_records.count()
@@ -431,10 +431,10 @@ def open_incidents_ajax(request):
     # Note: If user != superuser we limit to company or owned/watched cards only!
     if request.user.profile_user.is_operator:
         records_total = Card.objects.all().filter(closed=False).filter(type="IN").filter(
-            ~Q(column__usage__exact=backlog)
+            ~Q(column__usage__exact=backlog[0].id)
         ).count()
         all_records = Card.objects.all().filter(closed=False).filter(type="IN").filter(
-            ~Q(column__usage__exact=backlog)
+            ~Q(column__usage__exact=backlog[0].id)
         ).distinct()
         if not all_records:
             all_records = 0
@@ -446,7 +446,7 @@ def open_incidents_ajax(request):
             type="IN").filter(
             watchers__id__exact=int(request.user.id)
         ).filter(
-            ~Q(column__usage__exact=backlog)).distinct()
+            ~Q(column__usage__exact=backlog[0].id)).distinct()
         records_total = all_records.count()
         if not all_records:
             all_records = 0
@@ -533,7 +533,7 @@ def open_incidents_ajax(request):
 
 @login_required
 def my_overdue_cards_list(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         u = User.objects.get(username=request.user)
         cards = Card.objects.filter(closed=False, owner=u).filter(~Q(column__title="Backlog")).order_by('due_date').filter(due_date__lt=today_date)
         # gigi = [not card.is_overdue for card in cards]
@@ -545,7 +545,7 @@ def my_overdue_cards_list(request):
 
 @login_required
 def my_incidents(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         u = User.objects.get(username=request.user)
         # Note: If user != superuser we limit to company or owned/watched cards only!
         all_records = Card.objects.all().filter(closed=False, owner=u, type="IN").distinct()
@@ -559,7 +559,7 @@ def my_incidents(request):
 
 @login_required
 def cards_without_owner(request):
-    if request.user.is_authenticated() and request.user.profile_user.is_operator:
+    if request.user.is_authenticated and request.user.profile_user.is_operator:
         u = User.objects.get(username=request.user)
         # Note: If user != superuser we limit to company or owned/watched cards only!
         all_records = Card.objects.all().filter(closed=False, owner=None).distinct()
@@ -580,7 +580,7 @@ def cards_without_owner(request):
 
 @login_required
 def cards_without_company(request):
-    if request.user.is_authenticated() and request.user.profile_user.is_operator:
+    if request.user.is_authenticated and request.user.profile_user.is_operator:
         u = User.objects.get(username=request.user)
         # Note: If user != superuser we limit to company or owned/watched cards only!
         all_records = Card.objects.all().filter(closed=False, company=None).distinct()
@@ -616,7 +616,7 @@ def overdue_cards_ajax(request):
     # Note: If user != superuser we limit to company or owned/watched cards only!
     if request.user.profile_user.is_operator:
         all_records = Card.objects.filter(due_date__lte=today_date).filter(closed=False).filter(
-            ~Q(column__usage__exact=backlog)
+            ~Q(column__usage__exact=backlog[0].id)
         ).distinct()
         total_count = all_records.count()
         if not all_records:
@@ -625,7 +625,7 @@ def overdue_cards_ajax(request):
     # if we hit the else it means is_customer and/org is_org_admin
     else:
         all_records = Card.objects.all().filter(closed=True, company=request.user.profile_user.company.id).filter(
-            ~Q(column__usage__exact=backlog)
+            ~Q(column__usage__exact=backlog[0].id)
         ).distinct()
         total_count = all_records.count()
         if not all_records:
@@ -708,7 +708,7 @@ def closed_cards_ajax(request):
     # is_perator has more privs than is_customer ...
     if request.user.is_superuser:
         all_records = Card.objects.all().filter(closed=True).filter(
-            ~Q(column__usage__exact=backlog)
+            ~Q(column__usage__exact=backlog[0].id)
         ).distinct()
         total_count = all_records.count()
         if not all_records:
@@ -717,7 +717,7 @@ def closed_cards_ajax(request):
         all_records = Card.objects.filter(
             closed=True).filter(
             Q(owner=request.user) |
-            ~Q(column__usage__exact=backlog) |
+            ~Q(column__usage__exact=backlog[0].id) |
             Q(watchers__id__exact=request.user.id)).distinct()
         total_count = all_records.count()
         if not all_records:

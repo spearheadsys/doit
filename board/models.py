@@ -11,15 +11,19 @@ class Board(models.Model):
     description = models.TextField(null=True, blank=True)
     created_time = models.DateField(auto_now=True)
     modified_time = models.DateTimeField(auto_now_add=True)
-    company = models.ForeignKey(Organization, related_name='board_organization', null=True, blank=True)
+    company = models.ForeignKey(Organization,
+                                related_name='board_organization',
+                                null=True,
+                                blank=True,
+                                on_delete=models.SET_NULL)
     # TODO: change this to User! currently we require two dal automcomplete to 
     # handle this specific relationship
     # contacts = models.ManyToManyField(User, null=True, blank=True, related_name="contact")
     archived = models.BooleanField(default=False)
     due_date = models.DateTimeField(null=True, blank=True)
-    owner = models.ForeignKey(User, null=True, blank=True)
+    owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     order = models.IntegerField(null=True, blank=True)
-    mailbox = models.ForeignKey(Mailbox, related_name="Mailbox", null=True, blank=True)
+    mailbox = models.ForeignKey(Mailbox, related_name="Mailbox", null=True, blank=True, on_delete=models.SET_NULL)
     BOARD_CHOICES = (
         ('project_board', 'Project Board'),
         ('ongoing_board', 'Ongoing Board'),

@@ -73,6 +73,12 @@
         var strategy = getForwardStrategy(field);
         var serializedField = $(field).serializeArray();
 
+        if ((serializedField == false) && ($(field).prop('disabled'))) {
+            $(field).prop('disabled', false);
+            serializedField = $(field).serializeArray();
+            $(field).prop('disabled', true);
+        }
+
         var getSerializedFieldElementAt = function (index) {
             // Return serializedField[index]
             // or null if something went wrong
@@ -126,6 +132,8 @@
             divSelector,
             form;
         divSelector = "div.dal-forward-conf#dal-forward-conf-for-" +
+                element.attr("id") + ", " +
+                "div.dal-forward-conf#dal-forward-conf-for_" +
                 element.attr("id");
         form = element.length > 0 ? $(element[0].form) : $();
 

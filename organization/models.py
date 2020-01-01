@@ -22,7 +22,7 @@ class Organization(models.Model):
     description = models.TextField(blank=True, null=True)
     active = models.BooleanField(default=True)
     contacts = models.ManyToManyField(to=User, related_name='organization_contacts', blank=True)
-    owner = models.ForeignKey(User, related_name="organization_owner")
+    owner = models.ForeignKey(User, related_name="organization_owner", null=True, on_delete=models.SET_NULL)
     created_time = models.DateField(auto_now=True)
     modified_time = models.DateField(auto_now_add=True)
     priority = models.IntegerField(blank=True, null=True)
@@ -46,12 +46,12 @@ class Organization(models.Model):
     allow_external_contacts = models.BooleanField(default=False)
     allow_auto_contact_creation = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
 class EmailDomain(models.Model):
     domain = models.CharField(max_length=255, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.domain

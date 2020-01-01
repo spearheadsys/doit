@@ -9,7 +9,7 @@ class Comment(models.Model):
     comment = models.TextField(null=True, blank=True)
     created_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(User, null=True, blank=True)
+    owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     public = models.BooleanField(default=False)
 
     # TODO: transfer worklogs to comments app so we can more easily post using
@@ -19,9 +19,9 @@ class Comment(models.Model):
     billable = models.BooleanField(default=True)
 
     # genericforeignkey kungfu
-    content_type = models.ForeignKey(ContentType)
+    content_type = models.ForeignKey(ContentType, null=True, on_delete=models.SET_NULL)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.comment

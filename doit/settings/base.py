@@ -4,8 +4,8 @@ import sys
 
 # not sure if this will be us in the ass later or not 
 # but it does resolve our email (file uploads) issue with accents
-reload(sys)
-sys.setdefaultencoding('UTF8')
+# reload(sys)
+# sys.setdefaultencoding('UTF8')
 
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 # print("django root: ")

@@ -1,10 +1,8 @@
+from dal import autocomplete
 from django import forms
-from django.contrib.auth.models import User
 from card.models import Card, Column, Task, Organization, Reminder
-from contact.models import UserProfile
 from board.models import Board
 from django.forms.models import inlineformset_factory
-from dal import autocomplete
 
 
 class ReminderForm(forms.ModelForm):
@@ -154,21 +152,20 @@ class EditCardForm(forms.ModelForm):
             'watchers': autocomplete.Select2Multiple(
                 url='watcher-autocomplete',
                 attrs={
-                    'class': 'uk-input',
+                #     'class': 'uk-input',
                     'style': 'width: 100%',
-                    'data-placeholder': 'Select Watchers for this Card',
+                #     'data-placeholder': 'Select Watchers for this Card',
                 }
             ),
-            'company': autocomplete.Select2(
+            'company': autocomplete.ModelSelect2(
                 url='company-autocomplete',
                 attrs={
                     'class': 'uk-input uk-width-expand',
-                    'style': 'width: 100%',
-
+                    'style': 'width: 100%'
                 }
             ),
-            'owner': autocomplete.Select2(
-                url='owner-autocomplete',
+            'owner': forms.Select(
+                # url='owner-autocomplete',
                 attrs={
                     'class': 'uk-input uk-width-expand',
                     'style': 'width: 100%;',
@@ -178,7 +175,7 @@ class EditCardForm(forms.ModelForm):
             'tags': autocomplete.TaggitSelect2(
                 url='tag-autocomplete',
                 attrs={
-                    'class': 'uk-input',
+                    # 'class': 'uk-input',
                     'style': 'width: 100%;',
                 }),
             'estimate': forms.NumberInput(
@@ -187,6 +184,7 @@ class EditCardForm(forms.ModelForm):
                     'class': 'uk-input',
                 }),
         }
+
 
 
 class EditColumnForm(forms.ModelForm):

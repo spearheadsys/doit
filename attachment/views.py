@@ -41,11 +41,12 @@ def addattachments(request):
     if request.is_ajax() or request.method == 'POST':
         card = request.POST['card']
         related_card = Card.objects.get(id=card)
-        for filename, uploaded_file in request.FILES.iteritems():
+        for filename, uploaded_file in request.FILES.items():
             f = uploaded_file.content_type
             if up.is_customer:
                 if u.profile_user.company == related_card.company:
                     if u.profile_user.is_org_admin or u in related_card.watchers.all():
+                        # todo: move these outside if
                         dirspath = 'uploads/{}/{}'.format(related_card.board.id, related_card.id)
                         path = 'uploads/{}/{}/{}'.format(related_card.board.id, related_card.id, uploaded_file)
                         if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):
@@ -72,6 +73,7 @@ def addattachments(request):
             # # write file to upload dir
             ## TODO: check if file already exista otherwise we truncate and this
             # is probably NOT what we want
+            # todo: move these outside if
             dirspath = 'uploads/{}/{}'.format(related_card.board.id, related_card.id)
             path = 'uploads/{}/{}/{}'.format(related_card.board.id, related_card.id, uploaded_file)
             if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):

@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect, HttpResponse
-from django.core.urlresolvers import resolve
+from django.urls import resolve
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect, render
 from django.contrib.auth.decorators import login_required
@@ -8,7 +8,7 @@ import json
 import board
 from card.models import Column, Board, Card, Columntype
 from contact.models import UserProfile
-from forms import BoardsForm, EditBoardForm
+from board.forms import BoardsForm, EditBoardForm
 from card.forms import ColumnForm, AddColumnForm
 from django.conf import settings
 from datetime import date, datetime
@@ -345,7 +345,7 @@ def getcolumns(request):
 class BoardAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return Tag.objects.none()
 
         qs = Board.objects.all().filter(archived=False)

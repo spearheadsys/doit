@@ -133,7 +133,7 @@ For more details view https://doit.spearhead.systems/cards/editcard/%d
 https://doit.spearhead.systems
 """
         # prepare to text
-        soup_comment = BeautifulSoup(comment_object.comment)
+        soup_comment = BeautifulSoup(comment_object.comment, "html.parser")
         # who to send to
         watchers_email = related_card.watchers.values_list('email', flat=True)
         all_email_addresses = list(watchers_email)

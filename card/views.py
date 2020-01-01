@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from django.http import HttpResponseRedirect, HttpResponse
-from django.core.urlresolvers import resolve
+from django.urls import resolve
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.shortcuts import render_to_response, render
@@ -23,7 +23,7 @@ from attachment.models import Attachment
 from attachment.forms import AttachmentForm
 from comment.forms import CommentForm
 # forms
-from forms import CardsForm, ColumnForm, EditCardForm, \
+from card.forms import CardsForm, ColumnForm, EditCardForm, \
     EditColumnForm, BoardFormSet, ReminderForm
 # date stuff
 from datetime import date, datetime, timedelta
@@ -47,7 +47,6 @@ from email.utils import parseaddr, getaddresses
 from django.core.mail import send_mail
 from django.core.exceptions import ObjectDoesNotExist
 import re
-import codecs
 
 # GLOBALS
 doitVersion = settings.DOIT_VERSION
@@ -103,8 +102,8 @@ def cards(request):
         done_column = Column.objects.filter(board=board_id, order=done_order)
         # get assigned and overdue card per board for the status bar
         today_date = date.today()
-        all_cards_but_deleted = Card.objects.select_related().filter(
-            ~Q(column_id=done_column), Q(board=board_id)
+        all_cards_but_deleted = Card.objects.all().filter(
+            ~Q(closed=False), Q(board=board_id)
         )
         first_column = \
             Column.objects.all().filter(board=board_id).select_related().aggregate(
@@ -210,7 +209,7 @@ def calendar(request, year=2017, month=1):
 class TagAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return Tag.objects.none()
 
         qs = Tag.objects.all()
@@ -220,42 +219,45 @@ class TagAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs
 
+
 # watchers for autocomplete
 class WatcherAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return Tag.objects.none()
 
-        qs = User.objects.all().filter(is_active=True)
+        qs = User.objects.all().filter(is_active=True).order_by('username')
 
         if self.q:
              qs = qs.filter(username__icontains=self.q)
 
         return qs
 
+
 # company for autocomplete
 class CompanyAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
-            return Tag.objects.none()
+        if not self.request.user.is_authenticated:
+            return None
 
-        qs = Organization.objects.all().filter(active=True)
+        qs = Organization.objects.all().filter(active=True).order_by('name')
 
         if self.q:
              qs = qs.filter(name__icontains=self.q)
 
         return qs
 
+
 # owner for autocomplete
 class OwnerAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return Tag.objects.none()
 
-        qs = User.objects.all().filter(is_active=True).filter(profile_user__is_operator=True)
+        qs = User.objects.all().filter(is_active=True).filter(profile_user__is_operator=True).order_by('username')
 
         if self.q:
              qs = qs.filter(username__icontains=self.q)
@@ -874,13 +876,11 @@ def editCard(request, card=None):
         form = EditCardForm(request.POST, instance=instance)
         if form.is_valid():
             form.save()
-
             # EDIT CARD TRACKER
             # TODO: get fields that were updated and show in history
             # eureka (changed_data att of forms!)
             if instance.company_id is None:
                 company = ''
-
             if str(instance.column.usage) == "Done":
                 instance.closed = True
                 action_text = str(" closed the card ")
@@ -919,7 +919,7 @@ def editCard(request, card=None):
                 'boards': boards,
                 'SITE_URL': SITE_URL,
             }
-            return HttpResponse(render_to_string(form.errors, context_dict, RequestContext(request)))
+            return HttpResponse(form.errors)
 
         if request.is_ajax():
             return JsonResponse({'status': 'ok'})
@@ -1531,8 +1531,8 @@ def mailpost(request):
                         w.save()
                 # attachments
                 for key in request.FILES:
-                    file = u' '.join(request.FILES[key]).encode('utf-8').strip()
-                    # file = request.FILES[key]
+                    # file = u' '.join(request.FILES[key]).encode('utf-8').strip()
+                    file = request.FILES[key]
                     mime = file.content_type
                     try:
                         Attachment.objects.create(
@@ -1568,12 +1568,12 @@ def mailpost(request):
             if user and user.is_active is not False:
                 # if we have default_board use it otherwise use global)
                 if hasattr(user.profile_user.company, 'default_board'):
-                    column_type_queue = Columntype.objects.all().filter(name="Queue")
+                    column_type_queue = Columntype.objects.get(name="Queue")
                     board_columns = Column.objects.filter(board=user.profile_user.company.default_board)
                     board = user.profile_user.company.default_board
                     queue_column = board_columns.get(usage=column_type_queue)
                 else:
-                    column_type_queue = Columntype.objects.all().filter(name="Queue")
+                    column_type_queue = Columntype.objects.get(name="Queue")
                     board_columns = Column.objects.filter(board=doit_default_board)
                     queue_column = board_columns.get(usage=column_type_queue)
                     board = Board.objects.get(id=doit_default_board)
@@ -1645,8 +1645,8 @@ def mailpost(request):
                 # attachments
                 for key in request.FILES:
                     Attachment.objects.create(
-                        name=codecs.EncodedFile(request.FILES[key].name,"utf-8"),
-                        content=unicode(request.FILES[key]),
+                        name=request.FILES[key],
+                        content=request.FILES[key],
                         uploaded_by=user,
                         card=card,
                         mimetype=request.FILES[key].content_type
@@ -1782,8 +1782,7 @@ def mailpost(request):
 
                 # attachments
                 for key in request.FILES:
-                    file = u' '.join(request.FILES[key]).encode('utf-8').strip()
-                    # file = request.FILES[key]
+                    file = request.FILES[key]
                     mime = file.content_type
                     Attachment.objects.create(
                         name=file.name,

@@ -29,7 +29,7 @@ def sendmail_card_created(cardid, card_creator):
     if cardid:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
-        soup_description = BeautifulSoup(card.description, "lxml")
+        soup_description = BeautifulSoup(card.description, "html.parser")
         #
         # We are not sending to watchers anymore, too many bounces and loops
         #
@@ -90,8 +90,8 @@ def sendmail_card_updated(cardid, comment, card_creator):
     if cardid and comment:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
-        soup_description = BeautifulSoup(card.description)
-        soup_comment = BeautifulSoup(comment.comment)
+        soup_description = BeautifulSoup(card.description, "BeautifulSoup")
+        soup_comment = BeautifulSoup(comment.comment, "BeautifulSoup")
         content = {
             'card': card,
             'description': soup_description.get_text(),
