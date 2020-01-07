@@ -1,7 +1,7 @@
 # DoIT - ticketing for operations/support departments
 
-> This project is still in development and contains bugs.
-If you're interested in helping, feel free to jump in, we'd love your input.
+> This project has been archived!. The development branch includes our
+last updates which make DoIT python3 and django3 compatible.
 
 
 # Installation instructions
