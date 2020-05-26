@@ -15,8 +15,8 @@
   <div class="uk-child-width-expand@s uk-grid-small uk-flex-nowrap" uk-grid>
     {% for column in columns %}
       <div {% if column.usage.name == "Done" %} id="collapseme" {% endif %}>
-        <h4 {% if column.usage.name == "Done" %}id="collapse-header"{% endif%}>{{column}} -- {{column.id}}</h4>
-          <ul id="{{column}}" data-column-id={{column.id}} data-column-usage="{{column.usage}}" uk-sortable="cls-custom: .uk-box-shadow-large .uk-background; handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: card-placeholder" uk-overflow-auto="selContainer: .uk-flex-nowrap;selContent: .uk-flex-nowrap" uk-height-viewport="offset-bottom: 5" class="uk-background-muted uk-padding-small">
+        <h4 {% if column.usage.name == "Done" %}id="collapse-header"{% endif%}>{{column}}</h4>
+          <ul id="{{column}}" data-column-id={{column.id}} data-column-usage="{{column.usage}}" uk-sortable="cls-custom: .uk-box-shadow-large .uk-background; handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: card-placeholder" uk-overflow-auto="selContainer: .uk-flex-nowrap;selContent: .uk-flex-nowrap" uk-height-viewport="offset-bottom: 30" class="uk-background-muted uk-padding-small">
 
           <!-- DONE COLUMN AND CARDS -->
           {% if column.usage.name == "Done" %}
@@ -101,7 +101,7 @@
         </ul>
 
 
-      <footer><a class="uk-button uk-button-text uk-padding" href="addcard/?board={{boardname.id}}&company={{boardname.company.id}}&column={{column.id}}">Add a card...</a></footer>
+      <footer style="height: 20px;"><a class="uk-button uk-button-text" href="addcard/?board={{boardname.id}}&company={{boardname.company.id}}&column={{column.id}}">Add a card...</a></footer>
 
 
     </div>
