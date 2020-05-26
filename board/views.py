@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import resolve
 from django.template import RequestContext
-from django.shortcuts import render_to_response, redirect, render
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 import json
@@ -323,7 +323,8 @@ def archived(request):
         'addBoardForm': addBoardForm,
         'addColumnForm': addColumnForm,
     }
-    return render_to_response('boards/archived.html', context_dict, context)
+    # return render_to_response('boards/archived.html', context_dict, context)
+    return render(request, 'boards/archived.htm', context_dict)
 
 
 @login_required

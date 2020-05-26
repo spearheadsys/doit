@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import resolve
 from django.template import RequestContext
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 # user auth
 from django.contrib.auth.decorators import login_required, user_passes_test
 # login
@@ -115,7 +115,8 @@ def change_organization(request):
             'page_name': "Add Organization",
             'active_url': current_url,
         }
-        return render_to_response('cases/addorganization.html', context_dict, context)
+        # return render_to_response('cases/addorganization.html', context_dict, context)
+        return render(request, 'cases/addorganization.html', context_dict)
 
 @login_required
 def add_organization(request):
@@ -146,7 +147,8 @@ def add_organization(request):
             'page_name': "Add Organization",
             'active_url': current_url,
         }
-        return render_to_response('cases/addorganization.html', context_dict, context)
+        # return render_to_response('cases/addorganization.html', context_dict, context)
+        return render(request, 'cases/addorganization.html', context_dict)
 
 
 def delete_organization(request, company=None):

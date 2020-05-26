@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import resolve
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 # user auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -199,10 +199,12 @@ def calendar(request, year=2017, month=1):
         due_date__year=year, due_date__month=month
     )
     cal = CardCalendar(my_cards).formatmonth(year, month)
-    return render_to_response(
-        'cards/calendar.html',
-        {'calendar': mark_safe(cal), }
-    )
+    # return render_to_response(
+    #     'cards/calendar.html',
+    #     {'calendar': mark_safe(cal), }
+    # )
+    return render(request, 'cards/calendar.html', {'calendar': mark_safe(cal), })
+
 
 
 # tags for autocomplete

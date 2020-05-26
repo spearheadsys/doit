@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -801,33 +801,34 @@ def closed_cards_ajax(request):
     })
 
 
-# TODO: parameterize this to get template based on what we're trying to view:
-# weekly report, reminders, etc
-@login_required
-@staff_member_required
-def emailviewer(request):
-    """ View for the user Profile page."""
-    context = RequestContext(request)
-    u = User.objects.get(username=request.user)
-    # TODO: check permissions to view?
-
-    seven_days_from_now = datetime.now() + timedelta(days=7)
-    past_seven_days = datetime.now() - timedelta(days=7)
-    today_date = datetime.now()
-
-    overdueCards = Card.objects.filter(due_date__lt=today_date).filter(closed=False).filter(owner=u).count()
-    overdue_in_seven = Card.objects.filter(due_date__gte=today_date, due_date__lte=seven_days_from_now).filter(owner=u).filter(
-        closed=False).count()
-    closed = Card.objects.filter(closed=True).filter(modified_time__range=[past_seven_days, today_date]).filter(owner=u).count()
-
-    context_dict = {
-        'user': u,
-        'overdueCards': overdueCards,
-        'overdue_in_seven': overdue_in_seven,
-        'closed': closed,
-    }
-
-    return render_to_response('emails/weeklydashboardreport.html', context_dict, context)
+# # TODO: parameterize this to get template based on what we're trying to view:
+# # weekly report, reminders, etc
+# @login_required
+# @staff_member_required
+# def emailviewer(request):
+#     """ View for the user Profile page."""
+#     context = RequestContext(request)
+#     u = User.objects.get(username=request.user)
+#     # TODO: check permissions to view?
+#
+#     seven_days_from_now = datetime.now() + timedelta(days=7)
+#     past_seven_days = datetime.now() - timedelta(days=7)
+#     today_date = datetime.now()
+#
+#     overdueCards = Card.objects.filter(due_date__lt=today_date).filter(closed=False).filter(owner=u).count()
+#     overdue_in_seven = Card.objects.filter(due_date__gte=today_date, due_date__lte=seven_days_from_now).filter(owner=u).filter(
+#         closed=False).count()
+#     closed = Card.objects.filter(closed=True).filter(modified_time__range=[past_seven_days, today_date]).filter(owner=u).count()
+#
+#     context_dict = {
+#         'user': u,
+#         'overdueCards': overdueCards,
+#         'overdue_in_seven': overdue_in_seven,
+#         'closed': closed,
+#     }
+#
+#     # return render_to_response('emails/weeklydashboardreport.html', context_dict, context)
+#     return render(request, 'profile.html', context_dict)
 
 
 @login_required
