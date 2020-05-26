@@ -188,14 +188,14 @@
   <ul class="uk-breadcrumb uk-padding-small">
     <li><a href="/" class="uk-text-large">Dashboard</a></li>
     <li><a href="/boards/" class="uk-text-large">Boards</a></li>
-    <li><a href="/boards/editboard/{{boardname.id}}" class="uk-text-large">Edit board</a></li>
+    <li><a href="/boards/editboard/{{boardname.id}}" class="uk-text-large">Edit {{ boardname.name }}</a></li>
   </ul>
   {% endif %}
 
  {% if page_name == "Edit Card" %}
   <ul class="uk-breadcrumb uk-padding-small">
     <li><a href="/boards/" class="uk-text-large">Boards</a></li>
-    <li><a href="/cards/?board={{card.board.id}}" class="uk-text-large">{{card.board}}</a></li>
+    <li><a href="/cards/?board={{card.board.id}}" class="uk-text-large">{{card.board.name}}</a></li>
     <li class="uk-text-lead" class="uk-text-large">#{{card.id}} / {{card}}</li>
   </ul>
   {% endif %}

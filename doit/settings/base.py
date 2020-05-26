@@ -74,7 +74,7 @@ INSTALLED_APPS = (
     'doit',
     'bootstrap3_datetime',
     'django.contrib.humanize',
-    'django_mailbox',
+    #'django_mailbox',
     'taggit',
     'rest_framework',
 )

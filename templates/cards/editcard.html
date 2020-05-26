@@ -123,11 +123,11 @@ Is there something more specific you'd like to know?
 
         <li>
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Reminders
-            {% if card.has_open_reminders > 0 %}
+{#            {% if card.has_open_reminders > 0 %}#}
               <span class="uk-badge">
                 <span id="vue_reminders" v-cloak >[[open_reminders]]</span>
               </span>
-            {% endif %}
+{#            {% endif %}#}
             </span>
           </a>
           <div class="uk-accordion-content" id="reminders">
@@ -158,11 +158,11 @@ Is there something more specific you'd like to know?
 
         <li>
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Tasks
-            {% if card.has_open_tasks > 0 %}
+{#            {% if card.has_open_tasks > 0 %}#}
               <span class="uk-badge">
                 <span id="opentasks" v-cloak >[[open_tasks]]</span>
               </span>
-            {% endif %}
+{#            {% endif %}#}
 
             </span>
           </a>
@@ -354,54 +354,108 @@ Is there something more specific you'd like to know?
       </div>
       <br>
 
+
+
+
         <div>
-        {% for comment in comments %}
-          <div>
-            
-            <!-- <div class="uk-padding-small uk-text-small">
-              {% if comment.owner.profile_user.picture %}
-                <span class="uk-width-auto">
-                  <img class="uk-border-circle uk-margin-right" src="/media/{{ comment.owner.profile_user.picture }}" width="32" height="32" alt="{{comment.owner}}">
-                </span>
-              {% endif %}
-              <span>{{comment.owner.first_name}} on</span>
-              <span>{{comment.created_time}} said:</span>
-            </div> -->
 
-            <div class="uk-card {% if comment.public is False %} uk-background-muted{% endif %}">
-                <div class="uk-card-header uk-padding-small">
-                  <div class="uk-grid-small uk-flex-middle" uk-grid>
-                    {% if comment.owner.profile_user.picture %}
-                    <div class="uk-width-auto">
-                        <img class="uk-border-circle" width="40" height="40" src="/media/{{ comment.owner.profile_user.picture }}">
-                    </div>
-                    {% endif %}
-                    <div class="uk-width-expand">
-                        <h3 class="uk-card-title uk-margin-remove-bottom">{{comment.owner.first_name}} {{comment.owner.last_name}}</h3>
-                        <p class="uk-text-meta uk-margin-remove-top"><time >{{comment.created_time}} said:</time></p>
-                    </div>
-                  </div>
-                </div>
 
-              {% if comment.public is False %}
-                <div><span class="uk-padding-small uk-position-top-right uk-background-muted" style="color: red;" uk-icon="lock" uk-tooltip="title: This is a private note; pos: left"></span></div>
-              {% else %}
-                <div><span class="uk-padding-small uk-position-top-right uk-background-muted" style="color: green;" uk-icon="unlock" uk-tooltip="title: This comment is public; pos: left"></span></div>
-              {% endif %}
-              {% if comment.minutes > 0 %}
-                <div><span class="uk-padding-small uk-position-bottom-right uk-background-muted" uk-icon="clock" uk-tooltip="title: {{comment.minutes}} min {%if comment.billable %}  billable {% else %} non billable {% endif %}; pos: left"></span></div>
-              {% endif %}
+        {#       test#}
+        <ul uk-accordion="multiple:true">
+          {% for comment in comments %}
+          <li class="{% if forloop.last %} uk-open {%  endif %}">
+              <a class="uk-accordion-title uk-padding-small  uk-background-muted" href="#">FROM: {{ comment.owner }} on {{comment.created_time}}</a>
+              <div class="uk-accordion-content uk-padding-small">
+                <article class="uk-comment">
+                  <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                      <div class="uk-width-auto">
+                        {% if comment.owner.profile_user.picture %}
+                          <span class="uk-width-auto">
+                            <img class="uk-border-circle uk-margin-right" src="/media/{{ comment.owner.profile_user.picture }}" width="32" height="32" alt="{{comment.owner}}">
+                          </span>
+                        {% endif %}
+                      </div>
+                      <div class="uk-width-expand">
+                        <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#"><span>{{comment.owner.first_name}} {{comment.owner.last_name}}</span></a></h4>
+                        <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                          <li>{{comment.created_time}}</li>
+                          <li><a href="#">Action</a></li>
+                          <li><a href="#">Delete</a></li>
+                          {% if comment.public is False %}
+                            <li><a style="color:red;" href="#" uk-icon="icon: lock; ratio: 0.7;" uk-tooltip="title: This is a private note; pos: top"></a></li>
+                          {% else %}
+                            <li><a style="color:green;" href="#" uk-icon="icon: unlock; ratio: 0.7;" uk-tooltip="title: This is a public note; pos: top"></a></li>
+                          {% endif %}
+                          {% if comment.minutes > 0 %}
+                            <li><a href="#" uk-icon="icon: clock; ratio: 0.7;" uk-tooltip="title: {{comment.minutes}} min {%if comment.billable %}  billable {% else %} non billable {% endif %}; pos: top"></a></li>
+                          {% endif %}
 
-              <article class="uk-comment">
-                <div class="uk-comment-body uk-card-default uk-card-body">
+
+                        </ul>
+
+
+
+
+
+
+                      </div>
+                  </header>
+                  <div class="uk-comment-body">
                     <p>{{comment|safe|escape|linebreaks}}</p>
-                </div>
-              </article>
-            </div>
-          </div>
-          <br>
-        {% endfor %}
-        </div>
+                  </div>
+                </article>
+              </div>
+          </li>
+          {%  endfor %}
+        </ul>
+        {#      end test#}
+
+{#        {% for comment in comments %}#}
+{#          <div>#}
+{#            <!-- <div class="uk-padding-small uk-text-small">#}
+{#              {% if comment.owner.profile_user.picture %}#}
+{#                <span class="uk-width-auto">#}
+{#                  <img class="uk-border-circle uk-margin-right" src="/media/{{ comment.owner.profile_user.picture }}" width="32" height="32" alt="{{comment.owner}}">#}
+{#                </span>#}
+{#              {% endif %}#}
+{#              <span>{{comment.owner.first_name}} on</span>#}
+{#              <span>{{comment.created_time}} said:</span>#}
+{#            </div> -->#}
+{##}
+{#            <div class="uk-card {% if comment.public is False %} uk-background-muted{% endif %}">#}
+{#                <div class="uk-card-header uk-padding-small">#}
+{#                  <div class="uk-grid-small uk-flex-middle" uk-grid>#}
+{#                    {% if comment.owner.profile_user.picture %}#}
+{#                    <div class="uk-width-auto">#}
+{#                        <img class="uk-border-circle" width="40" height="40" src="/media/{{ comment.owner.profile_user.picture }}">#}
+{#                    </div>#}
+{#                    {% endif %}#}
+{#                    <div class="uk-width-expand">#}
+{#                        <h3 class="uk-card-title uk-margin-remove-bottom">{{comment.owner.first_name}} {{comment.owner.last_name}}</h3>#}
+{#                        <p class="uk-text-meta uk-margin-remove-top"><time >{{comment.created_time}} said:</time></p>#}
+{#                    </div>#}
+{#                  </div>#}
+{#                </div>#}
+{##}
+{#              {% if comment.public is False %}#}
+{#                <div><span class="uk-padding-small uk-position-top-right uk-background-muted" style="color: red;" uk-icon="lock" uk-tooltip="title: This is a private note; pos: left"></span></div>#}
+{#              {% else %}#}
+{#                <div><span class="uk-padding-small uk-position-top-right uk-background-muted" style="color: green;" uk-icon="unlock" uk-tooltip="title: This comment is public; pos: left"></span></div>#}
+{#              {% endif %}#}
+{#              {% if comment.minutes > 0 %}#}
+{#                <div><span class="uk-padding-small uk-position-bottom-right uk-background-muted" uk-icon="clock" uk-tooltip="title: {{comment.minutes}} min {%if comment.billable %}  billable {% else %} non billable {% endif %}; pos: left"></span></div>#}
+{#              {% endif %}#}
+{##}
+{#              <article class="uk-comment">#}
+{#                <div class="uk-comment-body uk-card-default uk-card-body">#}
+{#                    <p>{{comment|safe|escape|linebreaks}}</p>#}
+{#                </div>#}
+{#              </article>#}
+{#            </div>#}
+{#          </div>#}
+{#          <br>#}
+{#        {% endfor %}#}
+{#        </div>#}
 
         <div>
           <span>

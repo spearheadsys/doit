@@ -77,12 +77,13 @@ def cards(request):
             'cards': cards,
             'doitVersion': doitVersion,
         }
-        return render(request, 'boards/bob.html', context_dict, context)
+        return render(request, 'boards/bob.html', context_dict)
 
     boards = Board.objects.filter(archived=False)
 
     if request.user.profile_user.is_operator:
         numbers_list = Card.objects.all().filter(board=board_id).filter(closed=True)[:10]
+        print("numbers list>>>>> ", numbers_list)
         page = request.GET.get('page', 1)
         paginator = Paginator(numbers_list, 10)
         try:
@@ -102,9 +103,11 @@ def cards(request):
         done_column = Column.objects.filter(board=board_id, order=done_order)
         # get assigned and overdue card per board for the status bar
         today_date = date.today()
-        all_cards_but_deleted = Card.objects.all().filter(
-            ~Q(closed=False), Q(board=board_id)
-        )
+        # all_cards_but_deleted = Card.objects.all().filter(
+        #     ~Q(closed=False), Q(board=board_id)
+        # )
+        all_cards_but_deleted = Card.objects.all().filter(closed=False).filter(board=board_id)
+
         first_column = \
             Column.objects.all().filter(board=board_id).select_related().aggregate(
                 Min('id'))['id__min']
@@ -151,10 +154,11 @@ def cards(request):
                 Max('order'))['order__max']
         done_column = Column.objects.filter(board=board_id, order=done_order)
         today_date = date.today()
-        all_cards_but_deleted = Card.objects.select_related().filter(
-            ~Q(column_id=done_column),
-            Q(board=board_id),
-        ).filter(owner=u)
+        # all_cards_but_deleted = Card.objects.select_related().filter(
+        #     ~Q(column_id=done_column),
+        #     Q(board=board_id),
+        # ).filter(owner=u)
+        all_cards_but_deleted = Card.objects.select_related().filter(closed=False).filter(board=board_id).filter(owner=u)
         gg = Card.objects.filter(closed=False).filter(watchers__id__exact=request.user.id)
         new_cards_list = list(all_cards_but_deleted) + list(gg)
         first_column = \
@@ -189,7 +193,7 @@ def cards(request):
         'numbers': numbers,
         'boards': boards,
     }
-    return render(request, 'cards/cards.html', context_dict, context)
+    return render(request, 'cards/cards.html', context_dict)
 
 
 @login_required
@@ -439,6 +443,7 @@ def addcard(request):
                 # 'board': Board.objects.get(id=board)
             }
             return render(request, 'cards/addcard.html', context_dict)
+
         # not very helpful TODO something
         # return render(request, 'cards/addcard.html', context_dict)
 
@@ -776,7 +781,8 @@ def update_card_order(request):
             card_obj.save()
             position += 1
         # TODO: return something meaningul. maybe json
-        return render_to_response('cards/order.html')
+        # return render_to_response('cards/order.html')
+        return render(request, 'cards/order.html')
 
 
 @login_required
