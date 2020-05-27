@@ -1542,16 +1542,14 @@ def mailpost(request):
                     # file = u' '.join(request.FILES[key]).encode('utf-8').strip()
                     file = request.FILES[key]
                     mime = file.content_type
-                    try:
-                        Attachment.objects.create(
-                            name=file.name,
-                            content=file,
-                            uploaded_by=user,
-                            card=card,
-                            mimetype=mime,
-                        )
-                    except:
-                        pass
+                    Attachment.objects.create(
+                        name=file.name,
+                        content=file,
+                        uploaded_by=user,
+                        card=card,
+                        mimetype=mime,
+                    )
+
                 lib.sendmail_card_updated(existing_card.id, comment_object, user)
             else:
                 # this means that the card exists but our user is not.active
