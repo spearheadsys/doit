@@ -29,7 +29,7 @@ def sendmail_card_created(cardid, card_creator):
     if cardid:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
-        soup_description = BeautifulSoup(card.description, "html.parser")
+        soup_description = BeautifulSoup(card.description, "lxml")
         #
         # We are not sending to watchers anymore, too many bounces and loops
         #
@@ -90,8 +90,8 @@ def sendmail_card_updated(cardid, comment, card_creator):
     if cardid and comment:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
-        soup_description = BeautifulSoup(card.description, "BeautifulSoup")
-        soup_comment = BeautifulSoup(comment.comment, "BeautifulSoup")
+        soup_description = BeautifulSoup(card.description, "lxml",)
+        soup_comment = BeautifulSoup(comment.comment, "lxml")
         content = {
             'card': card,
             'description': soup_description.get_text(),
@@ -119,7 +119,7 @@ def sendmail_card_updated(cardid, comment, card_creator):
         # TODO: temporary notify support of cards created via customer portal
         if card_creator.profile_user.is_customer:
             send_mail(
-                u'DoIT #doit' + unicode(card.id) + " " + unicode(card.title),
+                u'DoIT #doit' + card.id + " " + card.title,
                 plaintext.render(content),
                 doit_myemail,
                 ["doit@spearhead.systems"],
