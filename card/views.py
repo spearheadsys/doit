@@ -1546,7 +1546,7 @@ def mailpost(request):
                         name=file.name,
                         content=file,
                         uploaded_by=user,
-                        card=card,
+                        card=existing_card,
                         mimetype=mime,
                     )
 
