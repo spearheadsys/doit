@@ -1436,9 +1436,10 @@ def mailpost(request):
         subject = request.POST.get('subject', '')
         body_plain = request.POST.get('body-plain', '')
         # body_html = request.POST.get('body-html', '')
-        body_plain_stripped = request.POST.get('stripped-text', '')
+        # body_plain_stripped = request.POST.get('stripped-text', '')
         # we use stripped html in replies
-        body_html_stripped = request.POST.get('stripped-html', '')
+        # body_html_stripped = request.POST.get('stripped-html', '')
+        body_html_stripped = request.POST.get('stripped-text', '')
 
         # TODO: maybe strip signatures on replies?
         # sender_signature = request.POST.get('stripped-html   ', '')
