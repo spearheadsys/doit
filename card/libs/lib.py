@@ -63,7 +63,7 @@ def sendmail_card_created(cardid, card_creator):
             'description': soup_description.get_text(),
         }
         try:
-            subject = ("DoIT #doit{} {}").format(card.id, card.title)
+            subject = "DoIT #doit{} {}".format(card.id, card.title)
             send_mail(
                 str(subject),
                 plaintext.render(content),
@@ -77,7 +77,7 @@ def sendmail_card_created(cardid, card_creator):
         if card_creator.profile_user.is_customer:
             text_content = plaintext.render(content)
             send_mail(
-                ("DoIT #doit{} {}").format(card.id, card.title),
+                "DoIT #doit{} {}".format(card.id, card.title),
                 plaintext.render(content),
                 doit_myemail,
                 ["doit@spearhead.systems"],
@@ -99,7 +99,8 @@ def sendmail_card_updated(cardid, comment, card_creator):
         }
         for watcher in watchers:
             send_mail(
-                'DoIT #doit' + str(card.id) + " " + card.title,
+                # 'DoIT #doit' + str(card.id) + " " + card.title,
+                f"DoIT #doit{card.id} {card.title}",
                 plaintext.render(content),
                 doit_myemail,
                 [watcher.email],
@@ -107,7 +108,8 @@ def sendmail_card_updated(cardid, comment, card_creator):
         try:
             # now send to the owner
             send_mail(
-                u'DoIT #doit' + str(card.id) + " " + card.title,
+                # u'DoIT #doit' + str(card.id) + " " + card.title,
+                f"DoIT #doit{card.id} {card.title}",
                 plaintext.render(content),
                 doit_myemail,
                 [card.owner.email],
@@ -119,7 +121,8 @@ def sendmail_card_updated(cardid, comment, card_creator):
         # TODO: temporary notify support of cards created via customer portal
         if card_creator.profile_user.is_customer:
             send_mail(
-                u'DoIT #doit' + card.id + " " + card.title,
+                # u'DoIT #doit' + card.id + " " + card.title,
+                f"DoIT #doit{card.id} {card.title}.",
                 plaintext.render(content),
                 doit_myemail,
                 ["doit@spearhead.systems"],
@@ -150,6 +153,7 @@ def org_stats(org):
 
 def operator_stats():
     operators = UserProfile.objects.all().filter(is_operator=True)
+
 
 def d_movecard(request, card, column, board=None):
     if request.is_ajax() or request.method == 'POST':
