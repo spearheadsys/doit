@@ -455,9 +455,7 @@ def open_incidents_ajax(request):
 
     # if we hit the else it means is_customer and org is_org_admin
     else:
-        all_records = Card.objects.all().filter(closed=False, type="IN", company=request.user.profile_user.company.id).filter(
-            ~Q(column__usage__exact=backlog)
-        )
+        all_records = Card.objects.all().filter(closed=False).filter(type="IN").filter(company=request.user.profile_user.company.id)
         records_total = all_records.count()
         if not all_records:
             all_records = 0
