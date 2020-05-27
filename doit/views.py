@@ -111,7 +111,6 @@ def home(request):
         customerowncards = []
         for i in allcards:
             if str(i.column.usage) != "Backlog" and u in i.watchers.all():
-                print("customerowncards >>>> ", u)
                 customerowncards.append(i)
         allcustomercards = 0
         if u.profile_user.company and u.profile_user.is_org_admin:
@@ -883,7 +882,7 @@ def profile(request):
         if form.is_valid():
             form.save()
         else:
-            print(form.errors)
+            # print(form.errors)
             context_dict = {
                 'site_title': "Profile | Spearhead Systems",
                 'page_name': "Profile",
