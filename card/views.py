@@ -1435,11 +1435,10 @@ def mailpost(request):
         cc = request.POST.getlist('Cc')
         subject = request.POST.get('subject', '')
         body_plain = request.POST.get('body-plain', '')
-        # body_html = request.POST.get('body-html', '')
+        body_html = request.POST.get('body-html', '')
         # body_plain_stripped = request.POST.get('stripped-text', '')
         # we use stripped html in replies
-        # body_html_stripped = request.POST.get('stripped-html', '')
-        body_html_stripped = request.POST.get('stripped-text', '')
+        body_html_stripped = request.POST.get('stripped-html', '')
 
         # TODO: maybe strip signatures on replies?
         # sender_signature = request.POST.get('stripped-html   ', '')
@@ -1677,10 +1676,12 @@ def mailpost(request):
                 profile.save()
 
 
-                column_type_queue = Columntype.objects.all().filter(name="Queue")
+                column_type_queue = Columntype.objects.get(name="Queue")
                 board_columns = Column.objects.filter(board=doit_default_board)
                 queue_column = board_columns.get(usage=column_type_queue)
                 board = Board.objects.get(id=doit_default_board)
+
+
                 # new card
                 card = Card.objects.create(
                     created_by_id=user.id,
