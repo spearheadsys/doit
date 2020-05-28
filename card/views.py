@@ -123,7 +123,6 @@ def cards(request):
         addCardForm.fields['watchers'].queryset = User.objects.filter(is_active=True)
         editColumnForm = EditColumnForm()
         cardslist = list(all_cards_but_deleted)
-        print(type(cardslist))
         cards = sorted(cardslist,key=lambda x: str(x))
     else:
         u = User.objects.get(username=request.user)
