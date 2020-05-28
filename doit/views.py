@@ -281,6 +281,7 @@ def my_vue_cards(request):
             "open_cards": cards.count(),
         })
 
+
 @login_required
 def all_my_open_cards(request):
     if request.user.is_authenticated:
@@ -290,7 +291,8 @@ def all_my_open_cards(request):
             "allmycards": list(cards.values('id', 'title', 'company__name', 'board__name', 'priority__title', 'created_time', 'due_date')),
         }, content_type='application/json')
 
-def open_cards_ajax(request):
+
+def open_cards_dt(request):
     draw = request.GET['draw']
     start = int(request.GET['start'])
     length = int(request.GET['length'])
@@ -357,7 +359,7 @@ def open_cards_ajax(request):
     objects = []
     if all_records != 0:
         if global_search:
-            gret = all_records.filter(
+            grep = all_records.filter(
                 Q(title__icontains=global_search) |
                 Q(company__name__icontains=global_search) |
                 Q(column__title__icontains=global_search) |
@@ -373,7 +375,7 @@ def open_cards_ajax(request):
                 'created_time',
                 'owner__username',
                 'board__name')
-            for i in gret:
+            for i in grep:
                 ret = [i[j] for j in columns]
                 objects.append(ret)
             filtered_count = all_records.filter(
@@ -413,6 +415,7 @@ def open_cards_ajax(request):
         "recordsFiltered": filtered_count,
         "data": objects,
     })
+
 
 def open_incidents_ajax(request):
     draw = request.GET['draw']
@@ -467,7 +470,7 @@ def open_incidents_ajax(request):
     # search only if there are records otherwise dt throws alerts to the user
     if all_records != 0:
         if global_search:
-            gret = all_records.filter(
+            grep = all_records.filter(
                 Q(title__icontains=global_search) |
                 Q(company__name__icontains=global_search) |
                 Q(owner__username__icontains=global_search) |
@@ -481,13 +484,13 @@ def open_incidents_ajax(request):
                 'created_time',
                 'owner__username',
                 'board__name')
-            for i in gret:
+            for i in grep:
                 ret = [i[j] for j in columns]
                 objects.append(ret)
             filtered_count = all_records.filter(
                 Q(title__icontains=global_search) |
                 Q(company__name__icontains=global_search) |
-                ~Q(column__usage__exact=backlog) |
+                Q(owner__username__icontains=global_search) |
                 Q(column__title__icontains=global_search)
             ).count()
         else:
@@ -527,6 +530,7 @@ def open_incidents_ajax(request):
 #         return JsonResponse({
 #             "overdue_cards": all_records.count(),
 #         })
+
 
 @login_required
 def my_overdue_cards_list(request):
@@ -596,6 +600,7 @@ def cards_without_company(request):
             "cards_without_company": len(cards_without_company),
         })
 
+
 def overdue_cards_ajax(request):
     draw = request.GET['draw']
     start = int(request.GET['start'])
@@ -640,7 +645,7 @@ def overdue_cards_ajax(request):
                 Q(column__title__icontains=global_search) |
                 Q(priority__title__icontains=global_search)|
                 Q(owner__username__icontains=global_search)
-            ).filter(~Q(column__usage__exact=backlog)).order_by(order_direction + column)[start:start + length].values(
+            ).order_by(order_direction + column)[start:start + length].values(
                 'id',
                 'title',
                 'company__name',
@@ -772,7 +777,6 @@ def closed_cards_ajax(request):
                 Q(title__icontains=global_search) |
                 Q(company__name__icontains=global_search) |
                 Q(column__title__icontains=global_search) |
-                ~Q(column__usage__exact=backlog) |
                 Q(priority__title__icontains=global_search)
             ).count()
         else:
