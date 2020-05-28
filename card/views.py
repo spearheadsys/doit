@@ -83,7 +83,6 @@ def cards(request):
 
     if request.user.profile_user.is_operator:
         numbers_list = Card.objects.all().filter(board=board_id).filter(closed=True)[:10]
-        print("numbers list>>>>> ", numbers_list)
         page = request.GET.get('page', 1)
         paginator = Paginator(numbers_list, 10)
         try:
@@ -124,7 +123,8 @@ def cards(request):
         addCardForm.fields['watchers'].queryset = User.objects.filter(is_active=True)
         editColumnForm = EditColumnForm()
         cardslist = list(all_cards_but_deleted)
-        cards = sorted(cardslist, key=lambda x: x.order, reverse=False)
+        print(type(cardslist))
+        cards = sorted(cardslist,key=lambda x: str(x))
     else:
         u = User.objects.get(username=request.user)
         up = UserProfile.objects.get(user=u)
@@ -176,7 +176,7 @@ def cards(request):
         addCardForm.fields['watchers'].queryset = User.objects.filter(is_active=True)
         editColumnForm = EditColumnForm()
         cardslist = list(new_cards_list)
-        cards = sorted(cardslist, key=lambda x: x.order, reverse=False)
+        cards = sorted(cardslist,key=lambda x: str(x))
 
     context = RequestContext(request)
     context_dict = {
@@ -561,7 +561,6 @@ def deleteCard(request, card=None):
     if request.user.profile_user.is_superuser or request.user.profile_user.is_operator:
         # delete all attachments
         for a in Attachment.objects.filter(card=card):
-            print("about to delete attachment: ", a)
             a.delete()
         # delete all comments
         for c in Comment.objects.filter(object_id=card):
@@ -795,13 +794,12 @@ def closecard(request, card=None):
     if request.user.profile_user.is_customer and \
         request.user.profile_user.is_org_admin:
         # check card company and watcher
+        # if card in request.user.Watchers.all():
+        #     print("we're in")
 
-        if card in request.user.Watchers.all():
-            print("we're in")
-
-    card.column = done_column[0]
-    card.closed = True
-    card.save()
+        card.column = done_column[0]
+        card.closed = True
+        card.save()
 
     action_text = "card closed by customer"
 
@@ -1129,9 +1127,9 @@ def editColumn(request, column=None):
         if editColumnForm.is_valid():
             editColumnForm.save(commit=True)
             return HttpResponseRedirect("/cards/")
-        else:
+        # else:
             # TODO: something meaningful perhaps
-            print(editColumnForm.errors)
+            # print(editColumnForm.errors)
         # this should never hit
         return HttpResponseRedirect("/home/")
     else:
@@ -1147,8 +1145,9 @@ def editColumn(request, column=None):
             'active_url': current_url,
             'editColumnForm': editColumnForm,
             'col': col, }
-        return render_to_response(
-            'cards/editcolumn.html', context_dict, context)
+        # return render_to_response(
+        #     'cards/editcolumn.html', context_dict, context)
+        return render(request, 'cards/editcolumn.html',context_dict)
 
 
 # # not currently used - but maybe could be tied into a
