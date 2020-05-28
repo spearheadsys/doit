@@ -28,15 +28,15 @@
         <div class="uk-card uk-card-default uk-width-1-2@m">
           <div class="uk-card-header">
               <div class="uk-grid-small uk-flex-middle" uk-grid>
-                  <span class="uk-position-top-right uk-padding-small" uk-icon="icon: question" uk-tooltip="title: You can currently change you picture and password."></span>
+                  <span class="uk-position-top-right uk-padding-small" uk-icon="icon: question" uk-tooltip="title: You can currently change your picture and password."></span>
                   <div class="uk-width-auto">
-                    <form id="picture-change" enctype="multipart/form-data" method="post" action="picture/" >
+                    <form id="picture-change" enctype="multipart/form-data" method="post" action="picture/" autocomplete="off">
                       {% csrf_token %}
                       <img class="uk-border-circle" width="40" height="40" src="{% if userprofile and userprofile.picture %}/media/{{ user.profile_user.picture }}{% else %}<span uk-icon='icon: user;'></span>{% endif %}">
                       <br>
                        <span class="js-upload">
                         <input type="file" name="mug" />
-                        <input name="userid" type="hidden" value="{{user.id}}">
+                        <input name="userid" type="hidden" value="{{user.id}}" autocomplete="off">
                         <button class="uk-button uk-button-link" tabindex="-1">Change</button>
                       </span>
                     </form>
@@ -72,7 +72,7 @@
 
         </div>
 
-<!--        <form autocomplete="false" id="edituserprofile_form" autocomplete="off" method="POST" action="/profile/" role="form">-->
+<!--        <form autocomplete="off" id="edituserprofile_form" autocomplete="off" method="POST" action="/profile/" role="form">-->
 <!--          {% csrf_token %}-->
 <!--        </form>-->
       </div>
