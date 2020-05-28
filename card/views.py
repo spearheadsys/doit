@@ -789,16 +789,22 @@ def closecard(request, card=None):
     done_column = Column.objects.all().filter(
         board=card.board.id).filter(usage__name="Done")
     # TODO: wtf, this needs cleaning
+    context_dict = {
+        'site_title': "Cards | Spearhead Systems",
+        'page_name': "Close Card",
+        'card': card,
+    }
     # by looking at watchers, company with is_org_admin
     if request.user.profile_user.is_customer and \
-        request.user.profile_user.is_org_admin:
+            request.user.profile_user.is_org_admin:
         # check card company and watcher
         # if card in request.user.Watchers.all():
         #     print("we're in")
-
         card.column = done_column[0]
         card.closed = True
         card.save()
+    else:
+        return render(request, 'cards/closecardnok.html', context_dict)
 
     action_text = "card closed by customer"
 
@@ -817,7 +823,7 @@ def closecard(request, card=None):
 
     context_dict = {
         'site_title': "Cards | Spearhead Systems",
-        'page_name': "Edit Card",
+        'page_name': "Close Card",
         'card': card,
     }
     return render(request, 'cards/closecard.html', context_dict)
@@ -983,7 +989,7 @@ def editCard(request, card=None):
             attachments = Attachment.objects.filter(
                 card=card.id)
             comments = Comment.objects.filter(
-                content_type__pk=ctype.id, 
+                content_type__pk=ctype.id,
                 object_id=card.id,
                 public=True
             )
