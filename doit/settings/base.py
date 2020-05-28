@@ -2,6 +2,8 @@ import os
 from os.path import basename, abspath, dirname
 import sys
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 # not sure if this will be us in the ass later or not 
 # but it does resolve our email (file uploads) issue with accents
 # reload(sys)
