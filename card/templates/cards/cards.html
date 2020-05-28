@@ -6,10 +6,15 @@
 {% block main-content %}
 {% load humanize %}
 
-<div class="uk-padding-small">
+<div class="uk-padding-small" uk-filter="target: .cardflt">
+
   <ul class="uk-subnav uk-subnav-pill">
-    <li id="filter-mine"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('.cardflt[data-owner!=\x22{{request.user|escapejs}}\x22]').toggle();$('#filter-mine').toggleClass('uk-active')">Mine</a></li>
-    <li id="filter-watching"><a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('li[data-watchers*=\x22{{request.user|escapejs}}\x22]').toggle();$('#filter-watching').toggleClass('uk-active')">Watching</a></li>
+    <li id="filter-mine">
+      <a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('.cardflt[data-owner!=\x22{{request.user|escapejs}}\x22]').toggle();$('#filter-mine').toggleClass('uk-active');$('#filter-watching').toggle()">Mine</a>
+    </li>
+    <li id="filter-watching">
+      <a class="uk-button uk-button-default uk-button-small" href="#" onclick="$('li').filter('.cardflt[data-watcher!=\x22True\x22]').toggle();$('#filter-watching').toggleClass('uk-active');$('#filter-mine').toggle()">Watching</a>
+    </li>
   </ul>
 
   <div class="uk-child-width-expand@s uk-grid-small uk-flex-nowrap" uk-grid>
@@ -41,7 +46,7 @@
 
          {% for card in cards %}
             {% if card.column.id == column.id %}
-              <li id="{{ card.id }}" data-order="{{ card.order }}" class="uk-margin uk-card uk-card-small uk-card-default cardflt" data-owner="{{card.owner}}" data-watchers="[{% for watcher in card.watchers.all %}{{watcher}}, {%endfor%}]">
+              <li id="{{ card.id }}" data-order="{{ card.order }}" class="uk-margin uk-card uk-card-small uk-card-default cardflt" data-owner="{{card.owner}}" data-watchers="{% for watcher in card.watchers.all %}{{watcher}}, {%endfor%}"  data-watcher="{% if request.user in card.watchers.all %}True{% endif %}">
               <div class="uk-card-header"
                 {% if card.type == "IN" %}
                   style="border-left: 4px solid red;"
