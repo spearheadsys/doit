@@ -6,7 +6,7 @@ from contact.views import change_password
 from django.conf.urls import include, url
 from doit.views import home
 from doit.views import getCardsCreatedToday, getWlogsCreatedToday, getTodaysTasks, closed_cards_ajax, \
-    overdue_cards_ajax, open_incidents_ajax, open_cards_ajax, settings_view, my_vue_cards, \
+    overdue_cards_ajax, open_incidents_ajax, open_cards_dt, settings_view, my_vue_cards, \
     profile_change_picture, cards_without_owner, cards_without_company, my_incidents, all_my_open_cards, my_overdue_cards_list
 from django.contrib import admin
 from .routers import router
@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^closed_cards_ajax', closed_cards_ajax, name='closed_cards_ajax'),
     url(r'^overdue_cards_ajax', overdue_cards_ajax, name='overdue_cards_ajax'),
     url(r'^open_incidents_ajax', open_incidents_ajax, name='open_incidents_ajax'),
-    url(r'^open_cards_ajax', open_cards_ajax, name='open_cards_ajax'),
+    url(r'^open_cards_dt', open_cards_dt, name='open_cards_dt'),
     url(r'^cards/all_my_open_cards', all_my_open_cards, name='all_my_open_cards'),
     url(r'^my_vue_cards', my_vue_cards, name='my_vue_cards'),
     # url(r'^my_vue_overdue', my_vue_overdue, name='my_vue_overdue'),
