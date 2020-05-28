@@ -340,7 +340,7 @@ def open_cards_dt(request):
         if company:
             all_records = Card.objects.all().filter(
                 Q(watchers__in=[request.user])
-            ).filter(closed=False).exclude(column__usage__exact=backlog).distinct()
+            ).filter(closed=False).exclude(column__usage__exact=backlog[0]).distinct()
             records_total = all_records.count()
             if not all_records:
                 all_records = 0
