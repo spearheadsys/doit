@@ -276,12 +276,9 @@ function doit_submit_form(formdata) {
     });
 
 
-    {# open_cards_ajax #}
-    $('#yourcards-table').DataTable({
-      dom: 'lBfrtip',
-      buttons: [
-          'copy', 'pdf', 'csv', 'excel'
-      ],
+    {# open_cards_dt #}
+    $('#allcards-table').DataTable({
+      dom: 'lfrtip',
       responsive: true,
       "autoWidth": true,
       "processing": true,
@@ -290,7 +287,7 @@ function doit_submit_form(formdata) {
       "order": [[ 5, "desc" ]],
       paging: true,
       "ajax": {
-        url: "/open_cards_ajax",
+        url: "/open_cards_dt",
       },
       "columnDefs": [
         {
