@@ -1,11 +1,11 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from .base import *
 
-SITE_URL = "https://doit.spearhead.systems/"
+SITE_URL = ""
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-ALLOWED_HOSTS = ['doit.spearhead.systems']
+ALLOWED_HOSTS = ['*']
 
 MEDIA_ROOT = os.path.join(os.getcwd(), "media/")
 
