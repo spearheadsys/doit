@@ -36,17 +36,17 @@ from django.contrib.contenttypes.models import ContentType
 # 		tracker.save()
 
 #
-@receiver(post_save, sender=Card)
-def card_post_created_signal(instance, **kwargs):
-    # print kwargs
-    # print "CARD_POST_CREATED_SIGNAL >>>>>>>>>>>>>> "
-    the_card = Card.objects.get(pk=instance.pk)
-    if the_card.closed:
-        print("The card %s is in state %s ") % (the_card.title, str(the_card.closed))
-    else:
-        print("This card is not closed.")
-    if kwargs.get('created', False):
-        print("This card is closed.")
+# @receiver(post_save, sender=Card)
+# def card_post_created_signal(instance, **kwargs):
+#     # print kwargs
+#     # print "CARD_POST_CREATED_SIGNAL >>>>>>>>>>>>>> "
+#     the_card = Card.objects.get(pk=instance.pk)
+#     if the_card.closed:
+#         print("The card %s is in state %s ") % (the_card.title, str(the_card.closed))
+#     else:
+#         print("This card is not closed.")
+#     if kwargs.get('created', False):
+#         print("This card is closed.")
 
 
 
