@@ -185,6 +185,7 @@ def deletecontact(request, contact=None):
     user.delete()
     return HttpResponseRedirect('/contacts/')
 
+
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
