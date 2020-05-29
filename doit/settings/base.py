@@ -16,6 +16,8 @@ SITE_NAME = basename(DJANGO_ROOT)
 # print("site name: ")
 # print(SITE_NAME)
 
+SITE_URL = "http://127.0.0.1:8000"
+
 SETTINGS_DIR = os.path.join(DJANGO_ROOT, 'settings')
 # print("settings_dir: ")
 # print(SETTINGS_DIR)
