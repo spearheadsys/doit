@@ -44,7 +44,7 @@ def addattachments(request):
         for filename, uploaded_file in request.FILES.items():
             f = uploaded_file.content_type
             if up.is_customer:
-                if u.profile_user.company == related_card.company:
+                if u.profile_user.company == related_card.company or u in related_card.watchers.all():
                     if u.profile_user.is_org_admin or u in related_card.watchers.all():
                         # todo: move these outside if
                         dirspath = 'uploads/{}/{}'.format(related_card.board.id, related_card.id)
@@ -74,6 +74,7 @@ def addattachments(request):
             ## TODO: check if file already exista otherwise we truncate and this
             # is probably NOT what we want
             # todo: move these outside if
+            print("in the PUT PF TJE OF - >>>>>>>>>>>>>")
             dirspath = 'uploads/{}/{}'.format(related_card.board.id, related_card.id)
             path = 'uploads/{}/{}/{}'.format(related_card.board.id, related_card.id, uploaded_file)
             if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):
