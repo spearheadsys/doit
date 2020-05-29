@@ -10,8 +10,6 @@ def get_upload_path(instance, filename):
     return os.path.join('uploads', "%d" % instance.card.id, "%d" % instance.card.board.id, "%s" % filename)
 
 
-
-# Create your models here.
 class Attachment(models.Model):
     created_time = models.DateField(auto_now_add=True)
     uploaded_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
