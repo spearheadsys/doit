@@ -3,9 +3,7 @@
 {% block menu %}
   {% include "menu.html" %}
 {% endblock menu %}
-
 {% block main-content %}
-
 {% load humanize %}
 {% load static %}
   {{editcard_form.media}}
@@ -205,7 +203,6 @@ Is there something more specific you'd like to know?
               {% csrf_token %}
               <div>
                 <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
-
                 <div class="js-upload uk-placeholder uk-text-center">
                   <span uk-icon="icon: cloud-upload"></span>
                   <span class="uk-text-middle">Attach files by dropping them here or</span>
@@ -276,10 +273,10 @@ Is there something more specific you'd like to know?
                   complete: function () {
                     console.log('complete', arguments);
                     var name = arguments[0].response['name'];
-                    var upurl = arguments[0].response['url'];
+                    var url = arguments[0].response['url'];
                     //alert(name);
                     content = '<li>';
-                    content += '<a href="/media/' + upurl + '" target="_blank">';
+                    content += '<a href="/media/' + url + '" target="_blank">';
                     content += '<span uk-icon="image"></span>';
                     content += '<span>' + name + '</span>';
                     content += '</a>';
@@ -360,7 +357,7 @@ Is there something more specific you'd like to know?
         <div>
 
 
-        {#       test#}
+        {#       comment accordion #}
         <ul uk-accordion="multiple:true">
           {% for comment in comments %}
           <li class="{% if forloop.last %} uk-open {%  endif %}">
@@ -389,15 +386,7 @@ Is there something more specific you'd like to know?
                           {% if comment.minutes > 0 %}
                             <li><a href="#" uk-icon="icon: clock; ratio: 0.7;" uk-tooltip="title: {{comment.minutes}} min {%if comment.billable %}  billable {% else %} non billable {% endif %}; pos: top"></a></li>
                           {% endif %}
-
-
                         </ul>
-
-
-
-
-
-
                       </div>
                   </header>
                   <div class="uk-comment-body">
@@ -408,7 +397,7 @@ Is there something more specific you'd like to know?
           </li>
           {%  endfor %}
         </ul>
-        {#      end test#}
+        {#      end comment accordion#}
 
 {#        {% for comment in comments %}#}
 {#          <div>#}
