@@ -8,7 +8,6 @@
   {{editcard_form.media}}
 {% load humanize %}
 
-
 <!--NEW -->
 <div class="uk-padding-small">
   <div class="uk-child-width-expand uk-grid-divider uk-grid-small uk-grid-collapse" uk-grid>
@@ -16,10 +15,7 @@
       <div style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
         <h4 class="uk-heading-bullet">Card details</h4>
         {% if card.closed %}
-
           <a class="uk-button-small uk-button-primary" href="/cards/reopencard/{{card.id}}">Reopen Card</a>
-
-
         {% else %}
           <a class="uk-button-small uk-button-danger" href="/cards/closecard/{{card.id}}">Close Card</a>
         {% endif %}
@@ -46,13 +42,11 @@
         <h4 class="uk-heading-bullet">Attachments</h4>
         <!-- attachments -->
         <div>
-
           <form action="/attachments/addattachments/" class="uk-form-stacked"
               enctype="multipart/form-data" id="attachment_form" method="POST">
               {% csrf_token %}
               <div>
                 <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
-
                 <div class="js-upload uk-placeholder uk-text-center">
                   <span uk-icon="icon: cloud-upload"></span>
                   <span class="uk-text-middle">Attach files by dropping them here or</span>
@@ -61,7 +55,6 @@
                     <span class="uk-link">selecting one</span>
                   </div>
                 </div>
-
               </div>
           </form>
 
@@ -90,9 +83,11 @@
                   complete: function () {
                     console.log('complete', arguments);
                     var name = arguments[0].response['name'];
-                    var url = arguments[0].response['url'];
+                    var upurl = arguments[0].response['url'];
+                    console.log(name);
+                    console.log(upurl);
                     content = '<li>';
-                    content += '<a href="/media/' + url + '" target="_blank">';
+                    content += '<a href="/media/' + upurl + '" target="_blank">';
                     content += '<span uk-icon="image"></span>';
                     content += '<span>' + name + '</span>';
                     content += '</a>';
@@ -100,23 +95,19 @@
                     $(content).appendTo("#attachmentshere");
                   },
                   loadStart: function (e) {
-                      console.log('loadStart', arguments);
                       bar.removeAttribute('hidden');
                       bar.max = e.total;
                       bar.value = e.loaded;
                   },
                   progress: function (e) {
-                      console.log('progress', arguments);
                       bar.max = e.total;
                       bar.value = e.loaded;
                   },
                   loadEnd: function (e) {
-                      console.log('loadEnd', arguments);
                       bar.max = e.total;
                       bar.value = e.loaded;
                   },
                   completeAll: function () {
-                      console.log('completeAll', arguments);
                       setTimeout(function () {
                           bar.setAttribute('hidden', 'hidden');
                       }, 1000);
@@ -167,22 +158,39 @@
           {{ card.description|safe|escape|linebreaks }}
       </div>
       <div>
-      {% for comment in comments %}
-      <h6>
-        {% if comment.owner.profile_user.picture %}
-        <img class="user-picture" src="/media/{{ comment.owner.profile_user.picture }}">
-        {% else %}
-        <span uk-icon="icon: user;"></span>
-        {% endif %}
 
-        {%if request.user == comment.owner %}
-           <strong>You</strong> replied on {{comment.created_time}}</h6>
-        {% else %}
-            {{comment.owner}} replied on {{comment.created_time}}</h6>
-        {% endif %}
-        <div %} %} False class="private-comment" comment.public endif if is {% {%>{{comment|safe|escape|linebreaks}}</div>
-      <hr>
-      {% endfor %}
+      {#       test#}
+      <ul uk-accordion="multiple:true">
+        {% for comment in comments %}
+        <li class="{% if forloop.last %} uk-open {%  endif %}">
+          <a class="uk-accordion-title uk-padding-small  uk-background-muted" href="#">FROM: {{ comment.owner }} on {{comment.created_time}}</a>
+          <div class="uk-accordion-content uk-padding-small">
+            <article class="uk-comment">
+              <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                  {% if comment.owner.profile_user.picture %}
+                    <span class="uk-width-auto">
+                      <img class="uk-border-circle uk-margin-right" src="/media/{{ comment.owner.profile_user.picture }}" width="32" height="32" alt="{{comment.owner}}">
+                    </span>
+                  {% endif %}
+                </div>
+                <div class="uk-width-expand">
+                  <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#"><span>{{comment.owner.first_name}} {{comment.owner.last_name}}</span></a></h4>
+                  <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                    <li>{{comment.created_time}}</li>
+                  </ul>
+                </div>
+              </header>
+              <div class="uk-comment-body">
+                <p>{{comment|safe|escape|linebreaks}}</p>
+              </div>
+            </article>
+          </div>
+        </li>
+        {%  endfor %}
+      </ul>
+      {#      end test#}
+
       </div>
       <div>
         <span>
@@ -198,8 +206,7 @@
                 document.addEventListener("trix-file-accept", function(event) {
                   (function() {
                     //var HOST = "http://127.0.0.1:8000/"
-                    var HOST = "{{SITE_URL}}"
-
+                    let HOST = "{{SITE_URL}}"
                     addEventListener("trix-attachment-add", function(event) {
                       if (event.attachment.file) {
                         uploadAttachment(event.attachment)
@@ -214,16 +221,13 @@
                       form.append("Content-Type", file.type);
                       form.append("image[image]", file);
                       form.append("card", {{card.id}})
-
                       xhr = new XMLHttpRequest;
                       xhr.open("POST", endpoint, true);
                       //xhr.setRequestHeader("X-CSRF-Token", csrfToken);
-
                       xhr.upload.onprogress = function(event) {
                         var progress = event.loaded / event.total * 100;
                         return attachment.setUploadProgress(progress);
                       };
-
                       xhr.onload = function() {
                         if (this.status >= 200 && this.status < 300) {
                           var data = JSON.parse(this.responseText);
@@ -232,10 +236,8 @@
                           });
                         }
                       };
-
                       return xhr.send(form);
                     };
-
                   })();
                 })
               </script>
@@ -249,32 +251,6 @@
       </div>
       <div class="uk-divider-icon"></div>
     </div>
-
-  <!-- end middle column -->
-    <!-- third column-->
-<!--    TODO: disable tracking uintil we fix issue -->
-<!--    <div class="uk-width-1-5">-->
-<!--      <div style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto >-->
-<!--        {% for i in tracker%}-->
-<!--          <div >-->
-<!--            <div class="marker">{{i.created_time}}</div>-->
-<!--            <div class="timeline-content">-->
-<!--              <h6>-->
-<!--                 {%if i.owner.profile_user.picture %}-->
-<!--                  <img class="user-picture" src="/media/{{i.owner.profile_user.picture}}"> {{i.owner.first_name}} {{i.owner.last_name}}-->
-<!--                {% else %}-->
-<!--                  <span uk-icon="icon: user;"></span> {{i.owner.first_name}} {{i.owner.last_name}}-->
-<!--                {% endif %}-->
-<!--              </h6>-->
-<!--              <span>{{i.action}} <i class="timeline-text-green">{{i.created_time | naturaltime}}</i></span>-->
-<!--              <p>{{i.updated_fields}}</p>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        {% endfor %}-->
-<!--      </div>-->
-<!--      <div class="uk-divider-icon"></div>-->
-<!--    </div>-->
-    <!-- end third column-->
 </div>
 <!--END NEW -->
 
@@ -282,7 +258,7 @@
 
 {% block footer %}
 {% include "footer.html" %}
-    <!-- todo: get this working using uikit-->
+<!-- todo: get this working using uikit-->
 <script type="text/javascript">
 $(document).ready(function(){
     $("#middle-column").animate({ scrollTop: $('#middle-column').prop("scrollHeight")}, 1000);
