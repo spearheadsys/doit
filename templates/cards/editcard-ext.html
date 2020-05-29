@@ -159,10 +159,9 @@
       </div>
       <div>
 
-      {#       test#}
       <ul uk-accordion="multiple:true">
         {% for comment in comments %}
-        <li class="{% if forloop.last %} uk-open {%  endif %}">
+        <li class="{% if forloop.last %} uk-open {% endif %}">
           <a class="uk-accordion-title uk-padding-small  uk-background-muted" href="#">FROM: {{ comment.owner }} on {{comment.created_time}}</a>
           <div class="uk-accordion-content uk-padding-small">
             <article class="uk-comment">
@@ -189,7 +188,6 @@
         </li>
         {%  endfor %}
       </ul>
-      {#      end test#}
 
       </div>
       <div>
