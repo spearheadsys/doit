@@ -24,12 +24,8 @@
         <input class="uk-input uk-text-lead" disabled value="{{editcard_form.title.value }}">
 
         <div class="uk-margin">
-          <div uk-form-custom="target: > * > span:last-child">
-            <span>
-              <span uk-icon="icon: warning"></span> {{ card.priority }} Priority
-              <span></span>
-            </span>
-          </div>
+          {# allow customer to change #}
+          <span uk-icon="icon: warning"></span> {{ card.priority }} Priority
         </div>
 
         <div class="uk-margin">
