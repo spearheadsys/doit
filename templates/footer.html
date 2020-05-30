@@ -9,19 +9,18 @@
 
 <!--editcarcdfomr dal onchange -->
 $('#editcard_form').on('change', function(event){
-	console.log("editcardform changed!!")
+	{#console.log("editcardform changed!!")#}
     event.preventDefault();
     var formdata = $('#editcard_form');
-    console.log("form submitted!")  // sanity check
-    //console.log()  // sanity check
+    {#console.log("form submitted!")  // sanity check#}
     doit_submit_form(formdata);
 });
 
 
 // AJAX for posting
 function doit_submit_form(formdata) {
-    console.log("doit_submit_form post being processed!") // sanity check
-    //console.log($(formdata).serialize())
+    {#console.log("doit_submit_form post being processed!") // sanity check#}
+    {#console.log($(formdata).serialize())#}
     var url =  window.location.href;
     postFormData = $(formdata).serialize()
     $.ajax({
@@ -62,11 +61,11 @@ function doit_submit_form(formdata) {
   {% for column in columns %}
   // add card to new column. then update order
     UIkit.util.on('#{{column}}', 'added', function (e, el, type) {
-      // console.log("card is " + e.detail[1].id);
+      {# console.log("card is " + e.detail[1].id);#}
       var card = e.detail[1].id
       var column = e.target.attributes[1].value;
-      console.log("card is " + card);
-      console.log("destination column " + column)
+      {#console.log("card is " + card);#}
+      {#console.log("destination column " + column)#}
 
       var sortResult = { elementsOrder: [] };
       $('#{{column}} > li').each(function () {
