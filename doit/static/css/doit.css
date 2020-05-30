@@ -370,7 +370,7 @@ ul {
     padding: 4px;
     max-width: 30%;
     min-width: 25%;
-    float; left;
+    float: left;
     overflow-y: scroll;
     overflow-x: scroll;
     background-color: lightgrey;
@@ -640,7 +640,7 @@ div:hover > ul {
 }
 
 .ul-dashboard-messages img {
-    padding 2px;
+    padding: 2px;
     margin: 2px;
 }
 
@@ -783,14 +783,14 @@ div:hover > ul {
 
 .verticalColumn {
     height: 75px;
-    width; 25px;
+    width: 25px;
     border: 1px dotted black;
     cursor: move;
 }
 
 .verticalColumnGhostClass {
     height: 75px;
-    width; 25px;
+    width: 25px;
     border: 1px dotted red;
     color: blue;
 }
@@ -906,7 +906,7 @@ div:hover > ul {
 .portlet-status-bar {
     position: absolute;
     height: 22px;
-    vertical-align: midlle;
+    vertical-align: middle;
     bottom: 0;
     padding: 0px;
     margin: 0px;
@@ -923,7 +923,6 @@ div:hover > ul {
 .wordwrap {
    white-space: pre-wrap;      /* CSS3 */
    white-space: -moz-pre-wrap; /* Firefox */
-   white-space: -pre-wrap;     /* Opera <7 */
    white-space: -o-pre-wrap;   /* Opera 7 */
    word-wrap: break-word;      /* IE */
 }
