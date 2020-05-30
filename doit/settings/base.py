@@ -78,7 +78,6 @@ INSTALLED_APPS = (
     'doit',
     'bootstrap3_datetime',
     'django.contrib.humanize',
-    #'django_mailbox',
     'taggit',
     'rest_framework',
 )
@@ -164,9 +163,6 @@ LOGIN_URL = '/login/'
 AUTH_PROFILE_MODULE = "contact.UserProfile"
 
 # TAGGIT_CASE_INSENSITIVE = True
-
-# DJANGO_MAILBOX_STORE_ORIGINAL_MESSAGE=True
-DJANGO_MAILBOX_ATTACHMENT_UPLOAD_TO='uploads'
 
 # GIT master branch always points to the latest stable version
 # Git development branch points to the current development version
