@@ -837,19 +837,16 @@ def reopencard(request, card=None):
     if not queue_column:
         return HttpResponse("We cannot reopen this Card for you without a Queue column! Please let \
             help@spearhead.systems now about this error.")
-    # TODO: wtf, this needs cleaning
-    # by looking at watchers, company with is_org_admin
-    if request.user.profile_user.is_customer and \
-        request.user.profile_user.is_org_admin:
-
-        if card in request.user.Watchers.all():
-            card.column = queue_column[0]
-            card.closed = False
-            card.save()
-        else:
-            return HttpResponse("Well now this is embarrassing :-/ ." \
-                                "Please let help@spearhead.systems know about this issue. " \
-                                "Error code: DoIT-obj-ref: UP0001")
+    # make sure user is part of card/warchers
+    if request.user in card.watchers.all() or request.user.profile_user.company == card.company:
+        print("request.user in card.watchers.all() >>>>")
+        card.column = queue_column[0]
+        card.closed = False
+        card.save()
+    else:
+        return HttpResponse("Well now this is embarrassing :-/ ." \
+                            "You do not seem to permissions to open this card." \
+                            "Error code: DoIT-obj-ref: UP0001")
 
     action_text = "card reopend by customer"
 
