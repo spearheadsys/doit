@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from organization.models import Organization
 from django.utils import timezone
-# from django_mailbox.models import Mailbox
+#from django_mailbox.models import Mailbox
 
 
 # Create your models here.
@@ -23,7 +23,7 @@ class Board(models.Model):
     due_date = models.DateTimeField(null=True, blank=True)
     owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     order = models.IntegerField(null=True, blank=True)
-    # mailbox = models.ForeignKey(Mailbox, related_name="Mailbox", null=True, blank=True, on_delete=models.SET_NULL)
+    #mailbox = models.ForeignKey(Mailbox, related_name="Mailbox", null=True, blank=True, on_delete=models.SET_NULL)
     BOARD_CHOICES = (
         ('project_board', 'Project Board'),
         ('ongoing_board', 'Ongoing Board'),
