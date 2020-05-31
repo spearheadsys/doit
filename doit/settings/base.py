@@ -1,46 +1,18 @@
 import os
 from os.path import basename, abspath, dirname
-import sys
-
-X_FRAME_OPTIONS = 'SAMEORIGIN'
-
-# not sure if this will be us in the ass later or not 
-# but it does resolve our email (file uploads) issue with accents
-# reload(sys)
-# sys.setdefaultencoding('UTF8')
-
-DJANGO_ROOT = dirname(dirname(abspath(__file__)))
-# print("django root: ")
-# print(DJANGO_ROOT)
-SITE_NAME = basename(DJANGO_ROOT)
-# print("site name: ")
-# print(SITE_NAME)
 
 SITE_URL = "http://127.0.0.1:8000"
-
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+DJANGO_ROOT = dirname(dirname(abspath(__file__)))
+SITE_NAME = basename(DJANGO_ROOT)
 SETTINGS_DIR = os.path.join(DJANGO_ROOT, 'settings')
-# print("settings_dir: ")
-# print(SETTINGS_DIR)
-
-# TEMPLATE_PATH = os.path.join(DJANGO_ROOT, '../templates')
-# print("template_path: ")
-# print(TEMPLATE_PATH)
-
 STATIC_PATH = os.path.join(os.getcwd(), "static/")
-# STATIC_PATH = os.path.join(DJANGO_ROOT, '../static')
-# print("static_path: ")
-# print(STATIC_PATH)
-# STATIC_ROOT = os.path.join(DJANGO_ROOT, '../static/')
 STATIC_ROOT = os.path.join(os.getcwd(), "static/")
-# print("static root: ")
-# print(STATIC_ROOT)
 STATICFILES_DIRS = (
      # os.path.join(os.getcwd(), "static/"),
     # '/opt/local/share/httpd/htdocs/doit/doit/doit/static',
 )
 
-# List of finder classes that know how to find static files in
-# various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -53,9 +25,8 @@ ADMINS = (
 
 SECRET_KEY = 'generateYOURownsecretkeyhere'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [*]
 
 # Application definition
 INSTALLED_APPS = (
@@ -97,9 +68,6 @@ ROOT_URLCONF = 'doit.urls'
 WSGI_APPLICATION = 'doit.wsgi.application'
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # todo: temporary to fix production woes
-    # 'PAGE_SIZE': 100,
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.DjangoModelPermissions'
@@ -111,8 +79,6 @@ REST_FRAMEWORK = {
     )
 }
 
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -124,16 +90,13 @@ DATABASES = {
     }
 }
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = False
 USE_L10N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(os.getcwd(), "media/")
 
@@ -158,20 +121,17 @@ TEMPLATES = [
 ]
 
 INTERNAL_IPS = ('127.0.0.1')
-
 LOGIN_URL = '/login/'
 AUTH_PROFILE_MODULE = "contact.UserProfile"
-
 # TAGGIT_CASE_INSENSITIVE = True
-
-# GIT master branch always points to the latest stable version
-# Git development branch points to the current development version
 
 # Set this to your outgoing address. Remeber to configure SPF/DKIM/DMARC accordingly
 DOIT_MYEMAIL = 'help@spearhead.systems'
 DOIT_VERSION = '0.0.4'
-# set this to whatever default board you want for cards
-# emails received will use this board as a default
+# set this to whatever default board you want for cards (id)
+# emails received will use this board as a default unless
+# sender is identified correctly and assigned to default_board
+# of said organization (if it exists)
 DOIT_DEFAULT_BOARD = '1'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1000000000
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1000000000
