@@ -6,7 +6,7 @@
 {% block main-content %}
 {% load humanize %}
 
-<div class="uk-padding-small" uk-filter="target: .cardflt">
+<div class="uk-padding-small" uk-filter="target: .cardflt" >
 
   <ul class="uk-subnav uk-subnav-pill">
     <li id="filter-mine">
@@ -17,11 +17,14 @@
     </li>
   </ul>
 
-  <div class="uk-child-width-expand@s uk-grid-small uk-flex-nowrap" uk-grid>
+  <div class="uk-child-width-expand@s uk-grid-small" uk-grid>
     {% for column in columns %}
-      <div {% if column.usage.name == "Done" %} id="collapseme" {% endif %} class="stubclass">
-        <h4 {% if column.usage.name == "Done" %}id="collapse-header"{% endif%}>{{column}}</h4>
-          <ul id="{{column}}" data-column-id={{column.id}} data-column-usage="{{column.usage}}" uk-sortable="cls-custom: .uk-box-shadow-large .uk-background; handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: card-placeholder" uk-overflow-auto="selContainer: .stubclass; selContent: .uk-card-default" uk-height-viewport="offset-bottom: 30" class="uk-background-muted uk-padding-small">
+      <div {% if column.usage.name == "Done" %} id="collapseme" {% endif %} class="sph-sel-content uk-panel uk-background-muted" >
+        <h4 {% if column.usage.name == "Done" %}id="collapse-header"{% endif%}>{{column}}
+          <a class="uk-link" href="addcard/?board={{boardname.id}}&company={{boardname.company.id}}&column={{column.id}}"><i uk-icon="plus" uk-tooltip="title: Add a card to this column"></i></a>
+        </h4>
+
+          <ul id="{{column}}" data-column-id={{column.id}} data-column-usage="{{column.usage}}" uk-sortable="cls-custom: .uk-box-shadow-large .uk-background; handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: card-placeholder" class="uk-padding-small uk-panel-scrollable" style="border: none; min-height: 70vh; resize: none;">
 
           <!-- DONE COLUMN AND CARDS -->
           {% if column.usage.name == "Done" %}
@@ -76,13 +79,13 @@
 
               <div class="uk-card-body">
                   <p class="uk-text-break">
-                    {{card.description|striptags|slice:":180"}}
+                    {{card.description|safe|slice:":180"}}
                   </p>
               </div>
               <div class="uk-card-footer" style="padding: 4px;">
                 <span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>
                 <!-- Show attachments pop-up {{card.attachment_card.values}} -->
-                <!--<span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: attachments"></span>-->
+                <!--<span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: file"></span>-->
                 <!-- Show delete button for admins? <a href="#" class="uk-icon-link" uk-icon="trash"></a> -->
                 <!-- add possibility to favoritye/star a card <span class="uk-margin-small-right uk-icon" uk-icon="star"></span> -->
                 <a href="/cards/editcard/{{card.id}}" class="uk-button uk-button-text">Edit Card</a>
@@ -105,13 +108,10 @@
         {% endfor %}
         </ul>
 
-
-      <footer style="height: 20px;"><a class="uk-button uk-button-text" href="addcard/?board={{boardname.id}}&company={{boardname.company.id}}&column={{column.id}}">Add a card...</a></footer>
-
-
     </div>
     {% endfor %}
   </div>
+
 </div>
 
 {% endblock main-content %}
