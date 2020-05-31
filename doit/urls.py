@@ -18,8 +18,6 @@ urlpatterns = [
     # email viewer
     # url(r'emailviewer$', emailviewer, name='emailviewer'),
 
-    # url(r'^summernote/', include('django_summernote.urls')),
-
     # Todo: merge with cards (urls, etc)
     url(r'^closed_cards_ajax', closed_cards_ajax, name='closed_cards_ajax'),
     url(r'^overdue_cards_ajax', overdue_cards_ajax, name='overdue_cards_ajax'),
