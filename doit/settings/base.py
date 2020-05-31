@@ -24,9 +24,8 @@ ADMINS = (
 )
 
 SECRET_KEY = 'generateYOURownsecretkeyhere'
-
 DEBUG = False
-ALLOWED_HOSTS = ['*']
+
 
 # Application definition
 INSTALLED_APPS = (
