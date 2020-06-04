@@ -88,7 +88,7 @@ def home(request):
         noowner = Card.objects.all().filter(closed=False, owner=None).order_by('-due_date')
         cards = Card.objects.all().filter(closed=False, owner=u)
         boards = Board.objects.all().filter(archived=False)
-        allcards = Card.objects.all().filter(closed=False)
+        allcards = Card.objects.all().filter(closed=False).distinct()
         allincidents = Card.objects.all().filter(closed=False, type="IN")
         allmyincidents = Card.objects.all().filter(closed=False, type="IN", owner=u)
         myboards = Board.objects.all().filter(archived=False, owner=u)
@@ -109,9 +109,13 @@ def home(request):
             if (c and c.due_date)
             else timezone.now())
         customerowncards = []
-        for i in allcards:
-            if str(i.column.usage) != "Backlog" and u in i.watchers.all():
+        for i in allcards.distinct():
+            if i.column.usage.name != "Backlog" and u in i.watchers.all():
+                # print(i.column.usage.name)
                 customerowncards.append(i)
+
+
+        # print("customerowncards >> ", len(customerowncards))
         allcustomercards = 0
         if u.profile_user.company and u.profile_user.is_org_admin:
             for i in allcards:
