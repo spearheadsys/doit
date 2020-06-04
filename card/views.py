@@ -1531,7 +1531,7 @@ def mailpost(request):
                         send_mail(
                             'Your new DoIT account is ready',
                             formatted_message,
-                            "no-reply@spearhead.system",
+                            "no-reply@spearhead.systems",
                             [user.email],
                             fail_silently=False)
                 if watchers:
@@ -1567,7 +1567,7 @@ def mailpost(request):
                 send_mail(
                     'Failed to deliver your message',
                     message,
-                    "no-reply@spearhead.system",
+                    "no-reply@spearhead.systems",
                     [parsed_sender_email],
                     fail_silently=False)
         else:
@@ -1641,7 +1641,7 @@ def mailpost(request):
                         send_mail(
                             'Your new DoIT account is ready',
                             formatted_message,
-                            "no-reply@spearhead.system",
+                            "no-reply@spearhead.systems",
                             [user.email],
                             fail_silently=False)
                 if watchers:
@@ -1717,7 +1717,7 @@ def mailpost(request):
                 send_mail(
                     'Your new DoIT account is ready',
                     formatted_message,
-                    "no-reply@spearhead.system",
+                    "no-reply@spearhead.systems",
                     [user.email],
                     fail_silently=False)
 
@@ -1781,7 +1781,7 @@ def mailpost(request):
                         send_mail(
                             'Your new DoIT account is ready',
                             formatted_message,
-                            "no-reply@spearhead.system",
+                            "no-reply@spearhead.systems",
                             [user.email],
                             fail_silently=False)
                 if watchers:
