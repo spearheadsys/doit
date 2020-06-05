@@ -378,7 +378,7 @@ def addcard(request):
             # choose in the following order: queue, working
             default_org_board =  u.profile_user.company.default_board
             # TODO: every board MUST have a QUEUE type!
-            column_type_usage = Columntype.objects.all().filter(name="Queue")
+            column_type_usage = Columntype.objects.get(name="Queue")
             board_columns = Column.objects.filter(board=default_org_board.id)
             column = board_columns.get(usage=column_type_usage)
             g = Board.objects.get(id=board.id)
