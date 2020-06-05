@@ -168,6 +168,9 @@ superuser use the following command:
 
 `django-admin createsuperuser`
 
+.. or better yet, use the provided doit/fixtures which takes care of creating a 
+userprofile for the admin user. Alternatively you can create the userprofile 
+on your own (TBD) ...
 
 You can now use the user you just created to access the DoIT UI as well as the
 django admin ui.
