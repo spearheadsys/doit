@@ -109,23 +109,21 @@ def home(request):
             if (c and c.due_date)
             else timezone.now())
         customerowncards = []
-        for i in allcards.distinct():
+        for i in allcards:
             if i.column.usage.name != "Backlog" and u in i.watchers.all():
                 # print(i.column.usage.name)
                 customerowncards.append(i)
 
-
-        # print("customerowncards >> ", len(customerowncards))
         allcustomercards = 0
         if u.profile_user.company and u.profile_user.is_org_admin:
             for i in allcards:
-                if str(i.column.usage) != "Backlog" and i.company == u.profile_user.company:
+                if i.column.usage.name != "Backlog" and i.company == u.profile_user.company:
                     allcustomercards += 1
-                if str(i.column.usage) != "Backlog" and u in i.watchers.all():
+                if i.column.usage.name != "Backlog" and u in i.watchers.all():
                     allcustomercards += 1
         else:
             for i in allcards:
-                if str(i.column.usage) != "Backlog" and u in i.watchers.all():
+                if i.column.usage.name != "Backlog" and u in i.watchers.all():
                     allcustomercards += 1
 
         myoverduecards = []
@@ -324,14 +322,16 @@ def open_cards_dt(request):
         except:
             company = None
         if company:
-            all_records = Card.objects.all().filter(
-                Q(watchers__in=[request.user]) | Q(company=request.user.profile_user.company.id)
-            ).filter(closed=False).exclude(column__usage__exact=backlog[0].id)
+            all_records = Card.objects.filter(closed=False).filter(
+                ~Q(column__usage__exact=backlog[0].id),
+                Q(company=request.user.profile_user.company.id) | Q(watchers__id__exact=request.user.id)
+            ).distinct()
             records_total = all_records.count()
+
             if not all_records:
                 all_records = 0
         else:
-            all_records = Card.objects.all().filter(closed=False).filter(
+            all_records = Card.objects.filter(closed=False).filter(
                 ~Q(column__usage__exact=backlog[0].id) &
                 Q(watchers__in=[request.user.id])
             ).distinct()
