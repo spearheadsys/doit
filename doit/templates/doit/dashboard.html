@@ -11,63 +11,63 @@
 
 <!-- new uikit -->
 {% if user.profile_user.is_customer is not True %}
-<!-- first row  / PERSONAL -->
-<div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-left uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
-  <div id="my-open-incidents">
-    <my-open-incidents-component></my-open-incidents-component>
-  </div>
-  <div id="my-overdue-cards">
-    <my-overdue-cards-component></my-overdue-cards-component>
-  </div>
-  <div id="my-open-cards">
-    <my-open-cards-component></my-open-cards-component>
-  </div>
-  <div id="my-overdue-boards">
-    <my-overdue-boards-component></my-overdue-boards-component>
-  </div>
-  <div id="no-owner-or-company">
-    <cards-without-owner-or-company-component></cards-without-owner-or-company-component>
-  </div>
-  <div id="cards-watcher">
-    <cards-im-watching></cards-im-watching>
-  </div>
-</div>
-
-<!-- second row / GLOBAL -->
-<div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
-  <div id="all-open-incidents">
-    <all-open-incidents-component></all-open-incidents-component>
-  </div>
-
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-body">
-      <p class="uk-text-center">All Overdue Cards</p>
-      <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1);" uk-scroll>{{alloverduecards}}</a></h1>
+  <!-- first row  / PERSONAL -->
+  <div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-left uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
+    <div id="my-open-incidents">
+      <my-open-incidents-component></my-open-incidents-component>
+    </div>
+    <div id="my-overdue-cards">
+      <my-overdue-cards-component></my-overdue-cards-component>
+    </div>
+    <div id="my-open-cards">
+      <my-open-cards-component></my-open-cards-component>
+    </div>
+    <div id="my-overdue-boards">
+      <my-overdue-boards-component></my-overdue-boards-component>
+    </div>
+    <div id="no-owner-or-company">
+      <cards-without-owner-or-company-component></cards-without-owner-or-company-component>
+    </div>
+    <div id="cards-watcher">
+      <cards-im-watching></cards-im-watching>
     </div>
   </div>
 
-  <div id="my-backlog-cards">
-    <my-backlog-component></my-backlog-component>
-  </div>
-
-  <div>
-    <div class="uk-card-small uk-card-default  uk-card-body"">
-      <p class="uk-text-center">All Overdue Boards</p>
-      <h1 class="uk-text-danger uk-text-center">
-        <a class="uk-text-warning" href="#alloverdueboards-modal" uk-toggle>{{alloverdueboards|length}}</a>
-      </h1>
+  <!-- second row / GLOBAL -->
+  <div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
+    <div id="all-open-incidents">
+      <all-open-incidents-component></all-open-incidents-component>
     </div>
-  </div>
 
-  <div id="all-backlog-cards">
-    <all-backlog-component></all-backlog-component>
-  </div>
+    <div>
+      <div class="uk-card-small uk-card-default uk-card-body">
+        <p class="uk-text-center">All Overdue Cards</p>
+        <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1);" uk-scroll>{{alloverduecards}}</a></h1>
+      </div>
+    </div>
 
-  <div id="cards-no-due-date">
-    <cards-no-due-date-component></cards-no-due-date-component>
-  </div>
+    <div id="my-backlog-cards">
+      <my-backlog-component></my-backlog-component>
+    </div>
 
-</div>
+    <div>
+      <div class="uk-card-small uk-card-default  uk-card-body"">
+        <p class="uk-text-center">All Overdue Boards</p>
+        <h1 class="uk-text-danger uk-text-center">
+          <a class="uk-text-warning" href="#alloverdueboards-modal" uk-toggle>{{alloverdueboards|length}}</a>
+        </h1>
+      </div>
+    </div>
+
+    <div id="all-backlog-cards">
+      <all-backlog-component></all-backlog-component>
+    </div>
+
+    <div id="cards-no-due-date">
+      <cards-no-due-date-component></cards-no-due-date-component>
+    </div>
+
+  </div>
 
 <!-- third row / labels -->
   <!-- <div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
@@ -81,39 +81,39 @@
 
 
 {% if user.profile_user.is_customer is True %}
-<div class="uk-child-width-1-4@m uk-grid-small uk-grid-match uk-padding-small" uk-grid>
-  <div uk-sticky="animation: uk-animation-slide-top; offset: 80">
-    <a class="uk-button uk-button-primary uk-button-small" href="cards/addcard">Submit a request</a>
-  </div>
-</div>
-
-<div class="uk-child-width-1-6@m uk-grid-small uk-grid-match uk-padding-small" uk-grid>
-
-  {% if myincidents %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">My Open Incindents</h3>
-      <h1 class="uk-text-danger uk-text-center">{{myincidents|length}}</h1>
+  <div class="uk-child-width-1-4@m uk-grid-small uk-grid-match uk-padding-small" uk-grid>
+    <div uk-sticky="animation: uk-animation-slide-top; offset: 80">
+      <a class="uk-button uk-button-primary uk-button-small" href="cards/addcard">Submit a request</a>
     </div>
   </div>
-  {% endif %}
 
-  {% if customerowncards %}
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">My Cards</h3>
-      <h1 class="uk-text-center"><a class="uk-text-danger" href="#customerowncards-modal" uk-toggle>{{customerowncards|length}}</a></h1>
+  <div class="uk-child-width-1-6@m uk-grid-small uk-grid-match uk-padding-small" uk-grid>
+
+    {% if myincidents %}
+    <div>
+      <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+        <h3 class="uk-card-title uk-text-center">My Open Incindents</h3>
+        <h1 class="uk-text-danger uk-text-center">{{myincidents|length}}</h1>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if customerowncards %}
+    <div>
+      <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+        <h3 class="uk-card-title uk-text-center">My Cards</h3>
+        <h1 class="uk-text-center"><a class="uk-text-danger" href="#customerowncards-modal" uk-toggle>{{customerowncards|length}}</a></h1>
+      </div>
+    </div>
+    {% endif %}
+
+    <div>
+      <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
+        <h3 class="uk-card-title uk-text-center">All Cards</h3>
+        <h1 class="uk-text-center"><a href="#allcards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1);" uk-scroll>{{allcustomercards}}</a></h1>
+      </div>
     </div>
   </div>
-  {% endif %}
-
-  <div>
-    <div class="uk-card-small uk-card-default uk-card-hover uk-card-body">
-      <h3 class="uk-card-title uk-text-center">All Cards</h3>
-      <h1 class="uk-text-center"><a href="#allcards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1);" uk-scroll>{{allcustomercards}}</a></h1>
-    </div>
-  </div>
-</div>
 {% endif %}
 
 <!-- Begin page content -->
