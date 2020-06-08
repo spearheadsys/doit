@@ -4,9 +4,10 @@ from django.template import RequestContext
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
-import json
+import json, os
 import board
-from card.models import Column, Board, Card, Columntype
+from card.models import Column, Board, Card, Columntype, Task, Reminder, \
+    Comment, Attachment
 from contact.models import UserProfile
 from board.forms import BoardsForm, EditBoardForm
 from card.forms import ColumnForm, AddColumnForm
@@ -265,27 +266,32 @@ def deleteBoard(request, board=None):
     """
     Delete a board.
     """
-    if request.user.profile_user.is_superuser or request.user.profile_user.is_operator:        
+    if request.user.profile_user.is_superuser or request.user.profile_user.is_operator:
+        print("deleteBoard >>>>> ", board)
         # delete associated cards
-        for card in Card.objects.all.filter(board=board.id):
+        for card in Card.objects.filter(board=board):
             # delete all tasks
-            for t in Task.objects.filter(object_id=card):
+            for t in Task.objects.filter(object_id=card.id):
                 t.delete()
             # delete all reminders
-            for r in Reminder.objects.filter(card=card):
+            for r in Reminder.objects.filter(card=card.id):
                 r.delete()
             # delete all comments
-            for c in Comment.objects.filter(object_id=card):
+            for c in Comment.objects.filter(object_id=card.id):
                 c.delete()
             # delete all attachments
-            for a in Attachment.objects.filter(card=card):
+            for a in Attachment.objects.filter(card=card.id):
                 a.delete()
             # finally delete the card
             card.delete()
         # now we can remove the board
-        Board.objects.get(id=board.id).delete()
-    # Todo: to where you came from
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        Board.objects.get(id=board).delete()
+        # remove board from filesystem
+        try:
+            os.rmdir('media/uploads/{}'.format(card.board.id))
+        except OSError as e:
+            print("Error: board_id: %s : %s" % (card.board.id, e.strerror))
+    return HttpResponseRedirect('/boards')
 
 
 # archived boards are here
