@@ -29,7 +29,7 @@
           <!-- DONE COLUMN AND CARDS -->
           {% if column.usage.name == "Done" %}
             {% for card in numbers %}
-            <li id={{card.id}} class="uk-margin uk-card-default cardflt" data-owner="{{card.owner}}">
+            <li id="{{card.id}}" class="uk-margin uk-card-default cardflt" data-owner="{{card.owner}}">
               <div class="uk-card uk-card-default uk-card-body uk-card-small">{{card.title}}</div>
               <div class="uk-card-footer" style="padding: 4px;">
                   <span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>
@@ -63,7 +63,7 @@
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                   <div class="uk-width-auto" style="padding: 4px;">
                     {% if card.owner.profile_user.picture %}
-                      <img class="user-picture" src="/media/{{card.owner.profile_user.picture}}">
+                      <img class="user-picture" src="/media/{{card.owner.profile_user.picture}}" alt="Card owner">
                     {% else %}
                       <span uk-icon="icon: user;"></span>
                     {% endif %}
