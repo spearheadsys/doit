@@ -136,7 +136,7 @@ def addBoard(request):
             coldict = OrderedDict(zip(coltitles, colusages))
             corder = 1
             #todo: fix m2m for contacts
-            for k, v in coldict.iteritems():
+            for k, v in coldict.items():
                 if k:
                     new_col = Column(
                         order=corder,

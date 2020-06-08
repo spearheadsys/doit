@@ -4,57 +4,59 @@
   {% include "menu.html" %}
 {% endblock menu %}
 {% block main-content %}
-{{addBoardForm.media}}
+  {% load static %}
+  <script src="{% static 'board/js/doit.js' %}"></script>
+  {{addBoardForm.media}}
 
-
-{% if addBoardForm.errors %}
+  {% if addBoardForm.errors %}
     {% for field in addBoardForm %}
-        {% for error in field.errors %}
-            <div class="alert alert-danger">
-                <strong>{{ error|escape }}</strong>
-            </div>
-        {% endfor %}
+      {% for error in field.errors %}
+          <div class="uk-alert uk-alert-danger">
+              <strong>{{ error|escape }}</strong>
+          </div>
+      {% endfor %}
     {% endfor %}
     {% for error in addBoardForm.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
+      <div class="alert alert-danger">
+          <strong>{{ error|escape }}</strong>
+      </div>
     {% endfor %}
-{% endif %}
-<!--TODO: add to board dropdownmenu-->
-<!--  uikit -->
-<div class="uk-container">
+  {% endif %}
 
-  <h1 class="uk-heading-bullet">Create a new board</h1>
-    <form id="addboard_form" method="POST" role="form" action="/boards/addboard/">
-      {% csrf_token %}
-        <div class="input-group input-group-sm">
-        {{ addBoardForm.as_p }}
-    
-      <h2 class="uk-heading-bullet">Columns <span uk-icon="question" uk-tooltip="Please note currently you cannot
-        use spaces within Column names and you MUST  select a usage for your column!"></span></h2>
+  <!--TODO: add to board dropdownmenu-->
+  <!--  uikit -->
+  <div class="uk-container">
+    <h1 class="uk-heading-bullet">Create a new board</h1>
+      <form id="addboard_form" method="POST" role="form" action="/boards/addboard/">
+        {% csrf_token %}
+          <div class="input-group input-group-sm">
+          {{ addBoardForm.as_p }}
 
-      <!-- begin add/rem-->
-      <div id="column_form" class="">
+        <h2 class="uk-heading-bullet">Columns <span uk-icon="question" uk-tooltip="Please note currently you cannot
+          use spaces within Column names and you MUST select a usage for your column!"></span></h2>
+
+        <!-- begin add/rem-->
+        <div id="column_form" class="">
+          <p id="initial-column">
+            <input type="text" name="title" placeholder="Column name">
+            {{ addColumnForm.usage.label }}
+            {{ addColumnForm.usage }}
+            <input type="button" id="remove_column" value="Remove column">
+          </p>
+        </div>
+
         <p>
-          <input type="text" name="title" placeholder="Column name">
-          {{ addColumnForm.usage.label }}
-          {{ addColumnForm.usage }}
-          <input type="button" id="remove_column" value="Remove column">
+          <input type="button" value="Add column" id="add_column">
         </p>
-      </div>
-      <p>
-        <input type="button" value="Add column" id="add_column">
-      </p>
 
-      <!-- end add/rem-->
-      </div>
-        <br />
-        <input type="submit" class="uk-button uk-button-default uk-text-bold" name="submit" value="Create Board" />
-    </form>
 
-</div>
-<!-- end uikit -->
+        <!-- end add/rem-->
+        </div>
+          <br />
+          <input type="submit" class="uk-button uk-button-default uk-text-bold" name="submit" value="Create Board" />
+      </form>
+  </div>
+  <!-- end uikit -->
 
 {% endblock main-content %}
 
