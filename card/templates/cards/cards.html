@@ -17,14 +17,14 @@
     </li>
   </ul>
 
-  <div class="uk-child-width-expand@s uk-grid-small" uk-grid>
+  <div class="uk-child-width-expand@m uk-grid-small" uk-grid>
     {% for column in columns %}
       <div {% if column.usage.name == "Done" %} id="collapseme" {% endif %} class="sph-sel-content uk-panel uk-background-muted" >
         <h4 {% if column.usage.name == "Done" %}id="collapse-header"{% endif%}>{{column}}
           <a class="uk-link" href="addcard/?board={{boardname.id}}&company={{boardname.company.id}}&column={{column.id}}"><i uk-icon="plus" uk-tooltip="title: Add a card to this column"></i></a>
         </h4>
 
-          <ul id="{{column}}" data-column-id={{column.id}} data-column-usage="{{column.usage}}" uk-sortable="cls-custom: .uk-box-shadow-large .uk-background; handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: card-placeholder" class="uk-padding-small uk-panel-scrollable" style="border: none; min-height: 70vh; resize: none;">
+          <ul id="{{column}}" data-column-id="{{column.id}}" data-column-usage="{{column.usage}}" uk-sortable="cls-custom: .uk-box-shadow-large .uk-background; handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: card-placeholder" class="uk-padding-small uk-panel-scrollable" style="border: none; min-height: 70vh; resize: none;">
 
           <!-- DONE COLUMN AND CARDS -->
           {% if column.usage.name == "Done" %}
