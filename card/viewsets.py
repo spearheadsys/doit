@@ -12,7 +12,7 @@ today_date = timezone.now()
 
 class CardViewSet(viewsets.ModelViewSet):
     # Todo: restrict to user object (i.e. admin sees all, operator sees all, customers see only their own)
-    queryset = Card.objects.all().filter(closed=False)
+    queryset = Card.objects.filter(closed=False)
     serializer_class = CardSerializer
 
 
@@ -105,7 +105,7 @@ class CardsWithoutDueDateViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
 
     def get_queryset(self):
-        queryset = Card.objects.filter(closed=False).filter(due_date__isnull=True)
+        queryset = Card.objects.all().filter(closed=False).filter(due_date=None)
         return queryset
 
 class OverdueTodayViewSet(viewsets.ModelViewSet):

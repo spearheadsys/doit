@@ -15,6 +15,7 @@ from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
 from bs4 import BeautifulSoup
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 doit_myemail = settings.DOIT_MYEMAIL
 
@@ -160,18 +161,32 @@ https://doit.spearhead.systems
                     [recipient],
                     fail_silently=True)
             else:
-                account_type = User.objects.get(email=recipient)
                 # we send only to operators and superuser
-                if account_type.is_superuser or account_type.profile_user.is_operator:
-                    formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
-                    # TODO: you get email whether you like it or not!
-                    # should probably due something about this
-                    send_mail(
-                        'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
-                        formatted_message,
-                        doit_myemail,
-                        [recipient],
-                        fail_silently=True)
+                account_type = User.objects.all().get(email=recipient)
+                try:
+                    if account_type.is_superuser:
+                        formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
+                        # TODO: you get email whether you like it or not!
+                        # should probably due something about this
+                        send_mail(
+                            'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
+                            formatted_message,
+                            doit_myemail,
+                            [recipient],
+                            fail_silently=True)
+                        # todo: this is sad
+                    elif account_type.profile_user.is_operator:
+                        formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
+                        # TODO: you get email whether you like it or not!
+                        # should probably due something about this
+                        send_mail(
+                            'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
+                            formatted_message,
+                            doit_myemail,
+                            [recipient],
+                            fail_silently=True)
+                except ObjectDoesNotExist:
+                    pass
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     else:

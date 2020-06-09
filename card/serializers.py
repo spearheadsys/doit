@@ -12,4 +12,5 @@ class CardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Card
-        fields = '__all__'
+        # fields = '__all__'
+        fields = ('id', 'title', 'company', 'owner', 'board')

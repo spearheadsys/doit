@@ -426,7 +426,7 @@
               </thead>
               <tbody>
                 <tr v-for="card in cards">
-                  <td>[[card.board__name]]</td>
+                  <td>[[card.board.name]]</td>
                   <td v-if="card.company__name" >[[card.company__name]]</td>
                   <td v-else="card.company__name" class="uk-text-danger">no company</td>
                   <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
