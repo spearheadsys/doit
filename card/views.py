@@ -1574,12 +1574,12 @@ def mailpost(request):
             # the card does not exist , check if the user exists
             if user and user.is_active is not False:
                 # if we have default_board use it otherwise use global)
-                if hasattr(user.profile_user.company, 'default_board'):
+                try:
                     column_type_queue = Columntype.objects.get(name="Queue")
                     board_columns = Column.objects.filter(board=user.profile_user.company.default_board)
                     board = user.profile_user.company.default_board
                     queue_column = board_columns.get(usage=column_type_queue)
-                else:
+                except ObjectDoesNotExist:
                     column_type_queue = Columntype.objects.get(name="Queue")
                     board_columns = Column.objects.filter(board=doit_default_board)
                     queue_column = board_columns.get(usage=column_type_queue)
