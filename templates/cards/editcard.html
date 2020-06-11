@@ -6,8 +6,9 @@
 {% block main-content %}
 {% load humanize %}
 {% load static %}
-{{editcard_form.media}}
-{{comment_form.media}}
+  <link rel="stylesheet" href="{% static "card/css/cardapp.css" %}"/>
+  {{editcard_form.media}}
+  {{comment_form.media}}
 
 <!-- Todo:
 trix-attachment-remove fires when an attachment is removed from the document. You can access the Trix attachment object through the attachment property on the event. You may wish to use this event to clean up remotely stored files
