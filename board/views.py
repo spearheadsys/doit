@@ -330,7 +330,7 @@ def archived(request):
         'addColumnForm': addColumnForm,
     }
     # return render_to_response('boards/archived.html', context_dict, context)
-    return render(request, 'boards/archived.htm', context_dict)
+    return render(request, 'boards/archived.html', context_dict)
 
 
 @login_required
