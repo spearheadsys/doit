@@ -894,14 +894,7 @@ div:hover > ul {
     padding-top:0px;
     top:0px;
 }
-.card-placeholder {
-    border: 1px dashed lightslategray;
-    background-color: rgba(212, 198, 198, 0.438);
-    opacity: 0.5;
-    /* padding: 10px; */
-    /* padding-bottom: 10px; */
-    /* margin-bottom: 15px; */
-}
+
 
 .portlet-status-bar {
     position: absolute;
