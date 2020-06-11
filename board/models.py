@@ -48,7 +48,7 @@ class Board(models.Model):
     )
     color = models.CharField(max_length=12, choices=COLOR_CHOICES, default='CORNSILK', blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_archived(self):
