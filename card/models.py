@@ -50,7 +50,6 @@ class Card(models.Model):
     start_time = models.DateTimeField(null=True, blank=True)
     due_date = models.DateTimeField(null=True, blank=True)
     priority = models.ForeignKey("Priority", blank=True, null=True, on_delete=models.SET_NULL)
-    # todo. migrate to datetimefield
     created_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
     board = models.ForeignKey(Board, related_name="card_board", on_delete=models.CASCADE)
