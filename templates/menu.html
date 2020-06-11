@@ -4,7 +4,7 @@
   <div uk-sticky>
     <header>
       <!-- Main Navbar -->
-      <nav class="uk-navbar-container" uk-navbar>
+      <nav class="uk-navbar-container" uk-navbar="offset: 0; ">
         <div class="uk-navbar-left">
             <ul class="uk-navbar-nav uk-visible@s">
               <span class="uk-navbar-item uk-logo" href="#">DoIT</span>
@@ -22,7 +22,7 @@
                 </a>
 
                 {% if page_name != "Boards" %}
-                <div class="uk-navbar-dropdown uk-width-1-3" >
+                <div class="uk-navbar-dropdown uk-width-1-3 uk-padding-small" >
                     <ul class="uk-nav uk-navbar-dropdown-nav">
                       {% for board in boards %}
                          <li><span class="uk-margin-small-right">
@@ -169,41 +169,41 @@
   </div>
 
   {% if page_name == "Boards" %}
-  <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/boards/" class="uk-text-large">Boards</a></li>
-    <li><a href="/boards/archived/" class="uk-text-large">Archived Boards</a></li>
-    <li><a href="/boards/addboard/" class="uk-text-large">Add a board</a></li>
+  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom">
+    <li><a href="/boards/">Boards</a></li>
+    <li><a href="/boards/archived/">Archived Boards</a></li>
+    <li><a href="/boards/addboard/">Add a board</a></li>
   </ul>
   {% endif %}
 
   {% if page_name == "Organizations" %}
-  <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/organizations/" class="uk-text-large">Companies</a></li>
-    <li><a href="/organizations/addboard/" data-toggle="modal" data-target="#addOrganizationModal" class="uk-text-large">Add Company</a></li>
+  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom">
+    <li><a href="/organizations/" >Companies</a></li>
+    <li><a href="/organizations/addboard/" data-toggle="modal" data-target="#addOrganizationModal">Add Company</a></li>
   </ul>
   {% endif %}
 
   
   {% if page_name == "Cards" %}
-  <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/" class="uk-text-large">Dashboard</a></li>
-    <li><a href="/boards/" class="uk-text-large">Boards</a></li>
-    <li><a href="/boards/editboard/{{boardname.id}}" class="uk-text-large">Edit {{ boardname.name }}</a></li>
+  <ul class="uk-breadcrumb uk-padding-remove-bottom">
+    <li><a href="/">Dashboard</a></li>
+    <li><a href="/boards/">Boards</a></li>
+    <li><a href="/boards/editboard/{{boardname.id}}">Edit {{ boardname.name }}</a></li>
   </ul>
   {% endif %}
 
  {% if page_name == "Edit Card" %}
-  <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/boards/" class="uk-text-large">Boards</a></li>
-    <li><a href="/cards/?board={{card.board.id}}" class="uk-text-large">{{card.board.name}}</a></li>
-    <li class="uk-text-lead" class="uk-text-large">#{{card.id}} / {{card}}</li>
+  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom">
+    <li><a href="/boards/">Boards</a></li>
+    <li><a href="/cards/?board={{card.board.id}}" >{{card.board.name}}</a></li>
+    <li>#{{card.id}} / {{card}}</li>
   </ul>
   {% endif %}
 
   {% if page_name == "Profile" %}
-  <ul class="uk-breadcrumb uk-padding-small">
-    <li><a href="/" class="uk-text-large">Dashboard</a></li>
-    <li><a href="/profile" class="uk-active" class="uk-text-large">{{page_name}}</a></li>
+  <ul class="uk-breadcrumb ">
+    <li><a href="/" >Dashboard</a></li>
+    <li><a href="/profile" class="uk-active">{{page_name}}</a></li>
   </ul>
   {% endif %}
 
