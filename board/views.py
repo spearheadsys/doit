@@ -269,6 +269,7 @@ def deleteBoard(request, board=None):
     if request.user.profile_user.is_superuser or request.user.profile_user.is_operator:
         # print("deleteBoard >>>>> ", board)
         # delete associated cards
+        board_obj = Board.objects.get(id=board)
         for card in Card.objects.filter(board=board):
             # delete all tasks
             for t in Task.objects.filter(object_id=card.id):
@@ -284,13 +285,13 @@ def deleteBoard(request, board=None):
                 a.delete()
             # finally delete the card
             card.delete()
-        # now we can remove the board
+            # now we can remove the board
         Board.objects.get(id=board).delete()
-        # remove board from filesystem
         try:
-            os.rmdir('media/uploads/{}'.format(board.id))
+            # remove board from filesystem
+            os.rmdir('media/uploads/{}'.format(board_obj.id))
         except OSError as e:
-            print("Error: board_id: %s : %s" % (board.id, e.strerror))
+            print("Error: board_id: %s : %s" % (board_obj.id, e.strerror))
     return HttpResponseRedirect('/boards')
 
 
