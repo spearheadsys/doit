@@ -8,6 +8,9 @@
 {% block main-content %}
 {% load static %}
 {% load humanize %}
+  <script type="text/javascript" src="{% static "js/datatables.min.js" %}"></script>
+  <link rel="stylesheet" type="text/css" href="{% static "css/datatables.min.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "css/uikitdatatables.css" %}" rel="stylesheet">
 
 <!-- new uikit -->
 {% if user.profile_user.is_customer is not True %}
