@@ -39,13 +39,42 @@ def reports(request):
         organization = request.POST['organization'] or None
         reportperiod = request.POST['daterange'] or None
         reportuser = request.POST['user'] or None
-        if reportperiod:
-            start, stop = reportperiod.split(' - ', 1)
+        start, stop = reportperiod.split(' - ', 1)
         startperiod = (datetime.strptime(start, '%Y-%m-%d %H:%M'))
         stopperiod = (datetime.strptime(stop, '%Y-%m-%d  %H:%M') + timedelta(days=1))
-        reportresult = Comment.objects.prefetch_related().filter(
-            created_time__range=(startperiod, stopperiod)
-        ).filter(minutes__gt=0)
+
+
+        # TODO: report.html it does not make sense to select both user and company
+        # or does it? whichvever the case may be this is not possible yet.
+        # just daterange
+        if not organization and not reportuser:
+            reportresult = Comment.objects.prefetch_related().filter(
+                created_time__range=(startperiod, stopperiod)
+            ).filter(minutes__gt=0)
+        # owner
+        elif not organization and reportuser:
+            reportresult = Comment.objects.prefetch_related().filter(
+                created_time__range=(startperiod, stopperiod)
+            ).filter(owner=reportuser).filter(minutes__gt=0)
+
+        # company
+        elif organization:
+            company = Organization.objects.get(id=organization)
+            print("company >>> ", company, company.id)
+            tempreportresult = Comment.objects.prefetch_related().filter(
+                created_time__range=(startperiod, stopperiod)
+            ).filter(minutes__gt=0)
+            to_remove = []
+            for i in tempreportresult:
+                if Card.objects.get(id=i.object_id).company.id != company.id:
+                    to_remove.append(i.id)
+            reportresult = tempreportresult.exclude(id__in=to_remove)
+        else:
+            reportresult = Comment.objects.prefetch_related().filter(
+                created_time__range=(startperiod, stopperiod)
+            ).filter(minutes__gt=0)
+
+
         totalminutes = reportresult.aggregate(Sum('minutes'))
         nonbillable = reportresult.filter(billable=False).aggregate(Sum('minutes'))
         totalworkingminutes = reportresult.filter(overtime=False).aggregate(Sum('minutes'))
