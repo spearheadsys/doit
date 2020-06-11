@@ -3,45 +3,37 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">    
-    <!-- <link rel="shortcut icon" href="../../assets/ico/favicon.ico"> -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="shortcut icon" href="../../assets/ico/favicon.ico"> -->
+  <title>{{ site_title }}</title>
 
-    <title>{{ site_title }}</title>
+  <!-- uikit -->
+  <link rel="stylesheet" href="{% static "uikit/css/uikit.min.css" %}"/>
+  <script type="text/javascript"  src="{% static "uikit/js/uikit.min.js" %}"></script>
+  <script type="text/javascript"  src="{% static "uikit/js/uikit-icons.min.js" %}"></script>
 
-    <!-- uikit -->
-    <link rel="stylesheet" href="{% static "uikit/css/uikit.min.css" %}"/>
-    <script src="{% static "uikit/js/uikit.min.js" %}"></script>
-    <script src="{% static "uikit/js/uikit-icons.min.js" %}"></script>
+  <!-- Bootstrap core JavaScript ================================================== -->
+  <script type="text/javascript"  src="{% static "js/jquery.min.js" %}"></script>
+  <script src="{% static "js/jquery-ui.min.js" %}"></script>
+  <link href="{% static "css/jquery-ui.min.css" %}" rel="stylesheet">
 
-    <!-- Bootstrap core JavaScript ================================================== -->
-    <script src="{% static "js/jquery.min.js" %}"></script>
-    <script src="{% static "js/jquery-ui.min.js" %}"></script>
+  <script type="text/javascript"  src="{% static "js/moment.min.js" %}"></script>
 
-    <!--  trix-editor  -->
-    <link rel="stylesheet" type="text/css" href="{% static "css/trix.css" %}">
-    <script type="text/javascript" src="{% static "js/trix.js" %}"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-    <!-- vuejs : switch to prod when in prod!-->
-    <script src="{% static "js/vue.min.js" %}"></script>
-    <!-- TODO: include locally   -->
-<!--    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js"></script>
 
-    <!-- Bootstrap core CSS -->
-    <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
-    <link href="{% static "css/bootstrap-datepicker.css" %}" rel="stylesheet">
 
-    <!-- TODO: include locally  -->
-    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <!--  trix-editor  -->
+  <link rel="stylesheet" type="text/css" href="{% static "css/trix.css" %}">
+  <script type="text/javascript" src="{% static "js/trix.js" %}"></script>
 
-    <link href="{% static "css/jquery-ui-1.10.4.min.css" %}" rel="stylesheet">
-
-    <!-- select2 -->
-    <!--<link href="{% static "select2-4.0.4/dist/css/select2.min.css" %}" rel="stylesheet" />-->
-
-    <!-- date range picker -->
-    <link rel="stylesheet" type="text/css" href="{% static "css/daterangepicker.css" %}"/>
+  <!-- vuejs : switch to prod when in prod!-->
+  <script src="{% static "js/vue.min.js" %}"></script>
+  <!-- TODO: include locally   -->
+  <!--    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js"></script>
 
 </head>
