@@ -9,7 +9,7 @@ import pytz
 from django.template.loader import get_template
 from bs4 import BeautifulSoup
 from django.conf import settings
-
+from django.core.exceptions import ObjectDoesNotExist
 
 doit_myemail = settings.DOIT_MYEMAIL
 
@@ -74,14 +74,17 @@ def sendmail_card_created(cardid, card_creator):
             pass
 
         # TODO: temporary notify support of cards created via customer portal
-        if card_creator.profile_user.is_customer:
-            text_content = plaintext.render(content)
-            send_mail(
-                "DoIT #doit{} {}".format(card.id, card.title),
-                plaintext.render(content),
-                doit_myemail,
-                ["doit@spearhead.systems"],
-                fail_silently=True)
+        try:
+            if card_creator.profile_user.is_customer:
+                text_content = plaintext.render(content)
+                send_mail(
+                    "DoIT #doit{} {}".format(card.id, card.title),
+                    plaintext.render(content),
+                    doit_myemail,
+                    ["doit@spearhead.systems"],
+                    fail_silently=True)
+        except ObjectDoesNotExist:
+            pass
 
 
 def sendmail_card_updated(cardid, comment, card_creator):
@@ -116,7 +119,6 @@ def sendmail_card_updated(cardid, comment, card_creator):
                 fail_silently=True)
         except AttributeError:
             pass
-
 
         # TODO: temporary notify support of cards created via customer portal
         if card_creator.profile_user.is_customer:
