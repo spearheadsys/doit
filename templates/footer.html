@@ -1,8 +1,5 @@
 {% load static %}
 
-<!-- TODO - add datepicker stuff only to necessary pages -->
-<script src="{% static "js/bootstrap-datepicker.js" %}"></script>
-<script src="{% static "js/daterangepicker.js" %}"></script>
 
 {% if page_name == "Edit Card" %}
 <script type="text/javascript">
@@ -122,53 +119,6 @@ function doit_submit_form(formdata) {
 
 
 {%  if page_name == "DoIT" or page_name == "Reports" %}
-  <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.css"/>-->
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/r-2.2.2/datatables.min.css"/>
-{#  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.css"/>#}
-  <link rel="stylesheet" type="text/css" href="{% static "css/uikitdatatables.css" %}" rel="stylesheet">
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/r-2.2.2/datatables.min.js"></script>
-
-
-  <script type="text/javascript">
-  $(document).ready( function () {
-    var report = $('#reports').DataTable({
-        buttons: [
-            'copy', 'pdf', 'csv', 'excel'
-        ]
-  });
-    report.buttons().container().appendTo( $('.col-sm-6:eq(0)', report.table().container() ) );
-  } );
-
-  $(function() {
-    $('input[name="daterange"]').daterangepicker(
-    {
-      timePicker: true,
-      timePicker24Hour: true,
-      locale: {
-          format: 'YYYY-MM-DD H:mm'
-      },
-      ranges: {
-       'Today': [moment(), moment()],
-       'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-       'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-       'This Month': [moment().startOf('month'), moment().endOf('month')],
-       'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-      }
-    }
-    );
-  });
-  </script>
-
-<script>
-      <!-- updated due date -->
-      $(function() {
-        $( "#id_period_from" ).datepicker();
-        $( "#id_period_to" ).datepicker();
-      });
-</script>
 
     <!-- datatables ajax -->
     {# NOTE / TODO: there is probably a much better way to do this.#}
