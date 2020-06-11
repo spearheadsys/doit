@@ -288,9 +288,9 @@ def deleteBoard(request, board=None):
         Board.objects.get(id=board).delete()
         # remove board from filesystem
         try:
-            os.rmdir('media/uploads/{}'.format(card.board.id))
+            os.rmdir('media/uploads/{}'.format(board.id))
         except OSError as e:
-            print("Error: board_id: %s : %s" % (card.board.id, e.strerror))
+            print("Error: board_id: %s : %s" % (board.id, e.strerror))
     return HttpResponseRedirect('/boards')
 
 
