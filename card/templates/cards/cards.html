@@ -63,7 +63,7 @@
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                   <div class="uk-width-auto" style="padding: 4px;">
                     {% if card.owner.profile_user.picture %}
-                      <img class="uk-border-circle" width="40" height="40" src="/media/{{card.owner.profile_user.picture}}" alt="Card owner">
+                      <img class="user-picture" src="/media/{{card.owner.profile_user.picture}}" alt="Card owner">
                     {% else %}
                       <span uk-icon="icon: user;"></span>
                     {% endif %}
