@@ -117,7 +117,6 @@ function doit_submit_form(formdata) {
 {% endif %}
 <!--END NEW UIKIT -->
 
-
 <!-- our js -->
 <script src="{% static "js/cards.js" %}"></script>
 
@@ -125,11 +124,12 @@ function doit_submit_form(formdata) {
 {%  if page_name == "DoIT" or page_name == "Reports" %}
   <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.css"/>-->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/r-2.2.2/datatables.min.css"/>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.css"/>
+{#  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.css"/>#}
+  <link rel="stylesheet" type="text/css" href="{% static "css/uikitdatatables.css" %}" rel="stylesheet">
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/r-2.2.2/datatables.min.js"></script>
-  <!--<script type="text/javascript" src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.18/b-1.5.4/b-html5-1.5.4/b-print-1.5.4/datatables.min.js"></script>-->
+
 
   <script type="text/javascript">
   $(document).ready( function () {
@@ -185,6 +185,9 @@ function doit_submit_form(formdata) {
   $(document).ready( function () {
     {# incidents_table #}
     $('#incidents-table').DataTable({
+      "drawCallback": function () {
+        $('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');
+      },
       "processing": true,
       "deferRender": true,
       "serverSide": true,
@@ -215,6 +218,9 @@ function doit_submit_form(formdata) {
 
     {# closed_cards_ajax #}
     $('#closedcards-table').DataTable({
+      "drawCallback": function () {
+        $('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');
+      },
       "processing": true,
       "deferRender": true,
       "serverSide": true,
@@ -239,6 +245,9 @@ function doit_submit_form(formdata) {
 
     {# overdue_cards_ajax #}
     $('#overdue-table').DataTable({
+      "drawCallback": function () {
+        $('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');
+      },
       responsive: true,
       "autoWidth": true,
       "processing": true,
@@ -273,6 +282,9 @@ function doit_submit_form(formdata) {
 
     {# open_cards_dt #}
     $('#allcards-table').DataTable({
+      "drawCallback": function () {
+        $('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');
+      },
       dom: 'lfrtip',
       responsive: true,
       "autoWidth": true,
