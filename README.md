@@ -161,6 +161,13 @@ and /static directories.
       }
     }
 
+## collectstatic
+Run `django-admin collectstatic` and move the static folder over it into doit/static when 
+running in production/staging. This will gather the static files from 
+all apps, site-packages, admin, etc. 
+
+On our setups this command will generate a folder named static within the root of the 
+django project.
 
 ## Create the Django admin USER
 The Django superuser will be used to manage the application. To create the
