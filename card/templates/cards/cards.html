@@ -20,7 +20,7 @@
   <div class="uk-child-width-expand@m uk-grid-small" uk-grid>
     {% for column in columns %}
       <div {% if column.usage.name == "Done" %} id="collapseme" {% endif %} class="sph-sel-content uk-panel uk-background-muted" >
-        <h4 {% if column.usage.name == "Done" %}id="collapse-header"{% endif%}>{{column}}
+        <h4 {% if column.usage.name == "Done" %}id="collapse-header"{% endif%} class="uk-text uk-padding-small">{{column}}
           <a class="uk-link" href="addcard/?board={{boardname.id}}&company={{boardname.company.id}}&column={{column.id}}"><i uk-icon="plus" uk-tooltip="title: Add a card to this column"></i></a>
         </h4>
 
