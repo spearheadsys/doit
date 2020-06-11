@@ -68,7 +68,7 @@ def reports(request):
             'nonbillable': nonbillable,
             'boards': boards,
         }
-        return render(request, 'reports/reports.html', context_dict)
+        return render(request, 'report/reports.html', context_dict)
 
     else:
         context_dict = {
@@ -81,5 +81,5 @@ def reports(request):
             'reportusers': reportusers,
             'boards': boards,
         }
-        return render(request, 'reports/reports.html', context_dict)
+        return render(request, 'report/reports.html', context_dict)
 
