@@ -162,7 +162,7 @@ https://doit.spearhead.systems
                     fail_silently=True)
             else:
                 # we send only to operators and superuser
-                account_type = User.objects.all().get(email=recipient)
+                account_type = User.objects.get(email=recipient)
                 try:
                     if account_type.is_superuser:
                         formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
