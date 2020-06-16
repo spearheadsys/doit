@@ -1572,11 +1572,19 @@ def mailpost(request):
                     fail_silently=False)
         else:
             # the card does not exist , check if the user exists
-            if user and user.is_active is not False:
+            if user and user.is_active is not False and user.profile_user.company.default_board:
                 # if we have default_board use it otherwise use global)
                 try:
-                    column_type_queue = Columntype.objects.get(name="Queue")
                     board_columns = Column.objects.filter(board=user.profile_user.company.default_board)
+                except AttributeError:
+                    board_columns = Column.objects.filter(board=doit_default_board)
+
+                # if board_columns.get(id) == doit_default_board:
+                #     print("board_columns == doit_default_board")
+
+                try:
+                    column_type_queue = Columntype.objects.get(name="Queue")
+                    # board_columns = Column.objects.filter(board=user.profile_user.company.default_board)
                     board = user.profile_user.company.default_board
                     queue_column = board_columns.get(usage=column_type_queue)
                 except ObjectDoesNotExist:
