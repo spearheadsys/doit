@@ -46,7 +46,7 @@
       <div class="uk-card-small uk-inline uk-card-default uk-card-body">
         <p class="uk-text-center">All Overdue Cards</p>
         <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: These are all the Cards in the system. This is here to help you get an overall understanding of team workloads. If you find yourself with free time or happen to know how to help your colleagues advance with one of their Cards, feel free to provide a helping hand."></span>
-        <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1);" uk-scroll>{{alloverduecards}}</a></h1>
+        <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1); $($.fn.dataTable.tables(true)).DataTable().columns.adjust();" uk-scroll>{{alloverduecards}}</a></h1>
       </div>
     </div>
 
@@ -180,7 +180,7 @@
     </li>
     {% endif %}
     <li>
-      <a class="uk-accordion-title" href="#"><h3>All Cards</h3></a>
+      <a class="uk-accordion-title" href="#" onchange="$($.fn.dataTable.tables(true)).DataTable().columns.adjust();"><h3>All Cards</h3></a>
       <div class="uk-accordion-content" id="allcards">
           <div class="border">
             <div class="well">

@@ -136,12 +136,17 @@ function doit_submit_form(formdata) {
     {# incidents_table #}
     $('#incidents-table').DataTable({
       "drawCallback": function () {
-        $('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');
+        {#$('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');#}
       },
-      "processing": true,
+      "processing": false,
       "deferRender": true,
       "serverSide": true,
+      "lengthChange": false,
       "paging": true,
+      "scroller": {
+        loadingIndicator: true
+      },
+      "scrollY":        100,
       "ordering": true,
       {% if request.user.profile_user.is_operator %}
        "order": [[ 5, "asc" ]],
@@ -169,12 +174,17 @@ function doit_submit_form(formdata) {
     {# closed_cards_ajax #}
     $('#closedcards-table').DataTable({
       "drawCallback": function () {
-        $('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');
+        {#$('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');#}
       },
-      "processing": true,
+      "responsive": true,
+      "lengthChange": false,
       "deferRender": true,
       "serverSide": true,
       "paging": true,
+      "scroller": {
+        loadingIndicator: true
+      },
+      "scrollY":        300,
       "ajax": {
         url: "/closed_cards_ajax",
       },
@@ -193,12 +203,15 @@ function doit_submit_form(formdata) {
       ]
     });
 
+    {#overduecards redraw on accordion shown #}
+
     {# overdue_cards_ajax #}
     $('#overdue-table').DataTable({
       "drawCallback": function () {
-        $('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');
+        {#$('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');#}
       },
-      responsive: true,
+      "responsive": true,
+      "lengthChange": false,
       "autoWidth": true,
       "processing": true,
       "deferRender": true,
@@ -206,7 +219,12 @@ function doit_submit_form(formdata) {
       {% if user.profile_user.is_operator %}
       "order": [[ 5, "desc" ]],
       {% endif %}
-      paging: true,
+      "paging": true,
+      "scroller": {
+        loadingIndicator: true
+      },
+      "scrollY":        300,
+      "scrollX": true,
       "ajax": {
         url: "/overdue_cards_ajax",
       },
@@ -233,15 +251,20 @@ function doit_submit_form(formdata) {
     {# open_cards_dt #}
     $('#allcards-table').DataTable({
       "drawCallback": function () {
-        $('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');
+        {#$('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');#}
       },
-      responsive: true,
+      "responsive": true,
+      "lengthChange": false,
       "autoWidth": true,
       "processing": true,
       "deferRender": true,
       "serverSide": true,
       "order": [[ 5, "desc" ]],
-      paging: true,
+      "paging": true,
+      "scroller": {
+        loadingIndicator: true
+      },
+      "scrollY":        300,
       "ajax": {
         url: "/open_cards_dt",
       },
@@ -259,7 +282,14 @@ function doit_submit_form(formdata) {
         }
       ]
     });
+    {# we hide pagination buttons since we use scroller #}
+    $('.dataTables_paginate').hide()
+    {# redraw on accordion changes #}
+    $('#dashboard-accordion').on('show', function () {
+      $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+    });
   });
+
 </script>
 
 {%  endif %}
