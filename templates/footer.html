@@ -1,69 +1,97 @@
 {% load static %}
 
-
 {% if page_name == "Edit Card" %}
-<script type="text/javascript">
+  <script type="text/javascript">
 
-<!--editcarcdfomr dal onchange -->
-$('#editcard_form').on('change', function(event){
-	{#console.log("editcardform changed!!")#}
-    event.preventDefault();
-    var formdata = $('#editcard_form');
-    {#console.log("form submitted!")  // sanity check#}
-    doit_submit_form(formdata);
-});
+  {# editcarcdfomr dal onchange #}
+  $('#editcard_form').on('change', function(event){
+    {#console.log("editcardform changed!!")#}
+      event.preventDefault();
+      var formdata = $('#editcard_form');
+      {#console.log("form submitted!")  // sanity check#}
+      doit_submit_form(formdata);
+  });
 
 
-// AJAX for posting
-function doit_submit_form(formdata) {
-    {#console.log("doit_submit_form post being processed!") // sanity check#}
-    {#console.log($(formdata).serialize())#}
-    var url =  window.location.href;
-    postFormData = $(formdata).serialize()
-    $.ajax({
-        url : url, // the endpoint
-        type : "POST", // http method
-        data : postFormData, // data sent with the post request
+  // AJAX for posting
+  function doit_submit_form(formdata) {
+      {#console.log("doit_submit_form post being processed!") // sanity check#}
+      {#console.log($(formdata).serialize())#}
+      var url =  window.location.href;
+      postFormData = $(formdata).serialize()
+      $.ajax({
+          url : url, // the endpoint
+          type : "POST", // http method
+          data : postFormData, // data sent with the post request
 
-        // handle a successful response
-        success : function(json) {
-            //$('#post-text').val(''); // remove the value from the input
-            console.log("success"); // another sanity check
-        },
+          // handle a successful response
+          success : function(json) {
+              //$('#post-text').val(''); // remove the value from the input
+              console.log("success"); // another sanity check
+          },
 
-        // handle a non-successful response
-        error : function(xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
-    });
-};
-<!--editcarcdfomr dal onchange -->
-</script>
-{% endif %}
+          // handle a non-successful response
+          error : function(xhr,errmsg,err) {
+              $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                  " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+          }
+      });
+  };
+  <!--editcarcdfomr dal onchange -->
+  </script>
+  {% endif %}
 
-{% if page_name == "Cards" %}
-<!-- BEGIN NEW UIKIT -->
-<script type="text/javascript">
-    // generic: log start, added, removed, stop (useful for debugging)
-    // var util = UIkit.util;
-    // util.ready(function () {
-    //     util.on(document.body, 'start moved added removed stop', function (e, sortable, el) {
-    //         //console.log(e.type, sortable, el);
-    //     });
-    // });
-    // end generic
+  {% if page_name == "Cards" %}
+  <!-- BEGIN NEW UIKIT -->
+  <script type="text/javascript">
+      // generic: log start, added, removed, stop (useful for debugging)
+      // var util = UIkit.util;
+      // util.ready(function () {
+      //     util.on(document.body, 'start moved added removed stop', function (e, sortable, el) {
+      //         //console.log(e.type, sortable, el);
+      //     });
+      // });
+      // end generic
 
-  {% for column in columns %}
-  // add card to new column. then update order
-    UIkit.util.on('#{{column}}', 'added', function (e, el, type) {
-      {# console.log("card is " + e.detail[1].id);#}
-      var card = e.detail[1].id
-      var column = e.target.attributes[1].value;
-      {#console.log("card is " + card);#}
-      {#console.log("destination column " + column)#}
+    {% for column in columns %}
+    // add card to new column. then update order
+      UIkit.util.on('#{{column}}', 'added', function (e, el, type) {
+        {# console.log("card is " + e.detail[1].id);#}
+        var card = e.detail[1].id
+        var column = e.target.attributes[1].value;
+        {#console.log("card is " + card);#}
+        {#console.log("destination column " + column)#}
 
+        var sortResult = { elementsOrder: [] };
+        $('#{{column}} > li').each(function () {
+            var currentEl = $(this);
+            sortResult.elementsOrder.push(currentEl[0].id);
+        });
+        $.ajax({
+            type: "POST",
+            //async: true,
+            url: "/cards/updatecardorder/",
+            //traditional: true,
+            data: {
+              arr: JSON.stringify(sortResult)
+              }
+        });
+
+        //UIkit.notification(`"${item.detail[1].id}" was added.`, 'success');
+        $.ajax({
+        type: "POST",
+        url: "/cards/movecard/",
+        data: {
+          card: card,
+          column: column,
+          }
+        });
+      });
+      // end add card to new column
+
+    //  update card order (move within column)
+    UIkit.util.on('#{{column}}', 'moved', function (e, sortable, el) {
       var sortResult = { elementsOrder: [] };
       $('#{{column}} > li').each(function () {
           var currentEl = $(this);
@@ -78,207 +106,177 @@ function doit_submit_form(formdata) {
             arr: JSON.stringify(sortResult)
             }
       });
+    });
+    // end update card order
+    {% endfor %}
+  </script>
+  {% endif %}
+  <!--END NEW UIKIT -->
 
-      //UIkit.notification(`"${item.detail[1].id}" was added.`, 'success');
-      $.ajax({
-      type: "POST",
-      url: "/cards/movecard/",
-      data: {
-        card: card,
-        column: column,
-        }
+  <!-- our js -->
+  <script src="{% static "js/cards.js" %}"></script>
+
+
+  {%  if page_name == "DoIT" or page_name == "Reports" %}
+
+      <!-- datatables ajax -->
+      {# NOTE / TODO: there is probably a much better way to do this.#}
+  <script type="text/javascript">
+
+    $.extend( $.fn.dataTable.defaults, {
+      "responsive": true,
+      "autoWidth": true,
+      "searching": true,
+      "paging":    false,
+      "stateSave": false
+    } );
+
+    $(document).ready( function () {
+      {# incidents_table #}
+      $('#incidents-table').DataTable({
+        "processing": false,
+        "deferRender": true,
+        "serverSide": true,
+        "lengthChange": false,
+        "paging": true,
+        "scroller": {
+          loadingIndicator: true
+        },
+        "scrollY":        100,
+        "ordering": true,
+        {% if request.user.profile_user.is_operator %}
+         "order": [[ 5, "asc" ]],
+        {% endif %}
+        "ajax": {
+          url: "/open_incidents_ajax",
+        },
+        // TODO: operators and superuser have different columns to view
+        // we should probably have different columnDefs for each type of user
+        "columnDefs": [
+          {
+            "targets": 0,
+            "render": function ( data, type, row, meta ) {
+              return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
+          },
+          {
+            "targets": 4,
+            "render": function ( data, type, row, meta ) {
+              return moment(data).fromNow();
+            }
+          }
+        ]
+      });
+
+      {# closed_cards_ajax #}
+      $('#closedcards-table').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "deferRender": true,
+        "serverSide": true,
+        "paging": true,
+        "scroller": {
+          loadingIndicator: true
+        },
+        "scrollY":        300,
+        "ajax": {
+          url: "/closed_cards_ajax",
+        },
+        "columnDefs": [
+          {
+            "targets": 0,
+            "render": function ( data, type, row, meta ) {
+              return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
+          },
+          {
+            "targets": 4,
+            "render": function ( data, type, row, meta ) {
+              return moment(data).fromNow();
+            }
+          }
+        ]
+      });
+
+      {#overduecards redraw on accordion shown #}
+
+      {# overdue_cards_ajax #}
+      $('#overdue-table').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": true,
+        "processing": false,
+        "deferRender": true,
+        "serverSide": true,
+        {% if user.profile_user.is_operator %}
+        "order": [[ 5, "desc" ]],
+        {% endif %}
+        "paging": true,
+        "scroller": {
+          loadingIndicator: true
+        },
+        "scrollY":        300,
+        "ajax": {
+          url: "/overdue_cards_ajax",
+        },
+        "columnDefs": [
+          {
+            "targets": 0,
+            "render": function ( data, type, row, meta ) {
+              return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
+          },
+          {
+            "targets": [1, 2, 3, 4, 6, 7],
+            "orderable": false,
+          },
+          {
+            "targets": 5,
+            "render": function ( data, type, row, meta ) {
+              return moment(data).fromNow();
+            }
+          }
+        ]
+      });
+
+
+      {# open_cards_dt #}
+      $('#allcards-table').DataTable({
+        "responsive": true,
+        "lengthChange": false,
+        "autoWidth": true,
+        "processing": false,
+        "deferRender": true,
+        "serverSide": true,
+        "order": [[ 5, "desc" ]],
+        "paging": true,
+        "scroller": {
+          loadingIndicator: true
+        },
+        "scrollY":        300,
+        "ajax": {
+          url: "/open_cards_dt",
+        },
+        "columnDefs": [
+          {
+            "targets": 0,
+            "render": function ( data, type, row, meta ) {
+              return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
+          },
+          {
+            "targets": 5,
+            "render": function ( data, type, row, meta ) {
+              return moment(data).fromNow();
+            }
+          }
+        ]
+      });
+      {# we hide pagination buttons since we use scroller #}
+      $('.dataTables_paginate').hide()
+      {# redraw on accordion changes #}
+      $('#dashboard-accordion').on('shown', function () {
+        $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
       });
     });
-    // end add card to new column
 
-  //  update card order (move within column)
-  UIkit.util.on('#{{column}}', 'moved', function (e, sortable, el) {
-    var sortResult = { elementsOrder: [] };
-    $('#{{column}} > li').each(function () {
-        var currentEl = $(this);
-        sortResult.elementsOrder.push(currentEl[0].id);
-    });
-    $.ajax({
-        type: "POST",
-        //async: true,
-        url: "/cards/updatecardorder/",
-        //traditional: true,
-        data: {
-          arr: JSON.stringify(sortResult)
-          }
-    });
-  });
-  // end update card order
-  {% endfor %}
-</script>
-{% endif %}
-<!--END NEW UIKIT -->
-
-<!-- our js -->
-<script src="{% static "js/cards.js" %}"></script>
-
-
-{%  if page_name == "DoIT" or page_name == "Reports" %}
-
-    <!-- datatables ajax -->
-    {# NOTE / TODO: there is probably a much better way to do this.#}
-<script type="text/javascript">
-
-  $.extend( $.fn.dataTable.defaults, {
-    "responsive": true,
-    "autoWidth": true,
-    "searching": true,
-    "paging":    false,
-    "stateSave": true
-  } );
-
-  $(document).ready( function () {
-    {# incidents_table #}
-    $('#incidents-table').DataTable({
-      "processing": false,
-      "deferRender": true,
-      "serverSide": true,
-      "lengthChange": false,
-      "paging": true,
-      "scroller": {
-        loadingIndicator: true
-      },
-      "scrollY":        100,
-      "ordering": true,
-      {% if request.user.profile_user.is_operator %}
-       "order": [[ 5, "asc" ]],
-      {% endif %}
-      "ajax": {
-        url: "/open_incidents_ajax",
-      },
-      // TODO: operators and superuser have different columns to view
-      // we should probably have different columnDefs for each type of user
-      "columnDefs": [
-        {
-          "targets": 0,
-          "render": function ( data, type, row, meta ) {
-            return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
-        },
-        {
-          "targets": 4,
-          "render": function ( data, type, row, meta ) {
-            return moment(data).fromNow();
-          }
-        }
-      ]
-    });
-
-    {# closed_cards_ajax #}
-    $('#closedcards-table').DataTable({
-      "responsive": true,
-      "lengthChange": false,
-      "deferRender": true,
-      "serverSide": true,
-      "paging": true,
-      "scroller": {
-        loadingIndicator: true
-      },
-      "scrollY":        300,
-      "ajax": {
-        url: "/closed_cards_ajax",
-      },
-      "columnDefs": [
-        {
-          "targets": 0,
-          "render": function ( data, type, row, meta ) {
-            return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
-        },
-        {
-          "targets": 4,
-          "render": function ( data, type, row, meta ) {
-            return moment(data).fromNow();
-          }
-        }
-      ]
-    });
-
-    {#overduecards redraw on accordion shown #}
-
-    {# overdue_cards_ajax #}
-    $('#overdue-table').DataTable({
-      "responsive": true,
-      "lengthChange": false,
-      "autoWidth": true,
-      "processing": false,
-      "deferRender": true,
-      "serverSide": true,
-      {% if user.profile_user.is_operator %}
-      "order": [[ 5, "desc" ]],
-      {% endif %}
-      "paging": true,
-      "scroller": {
-        loadingIndicator: true
-      },
-      "scrollY":        300,
-      "ajax": {
-        url: "/overdue_cards_ajax",
-      },
-      "columnDefs": [
-        {
-          "targets": 0,
-          "render": function ( data, type, row, meta ) {
-            return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
-        },
-        {
-          "targets": [1, 2, 3, 4, 6, 7],
-          "orderable": false,
-        },
-        {
-          "targets": 5,
-          "render": function ( data, type, row, meta ) {
-            return moment(data).fromNow();
-          }
-        }
-      ]
-    });
-
-
-    {# open_cards_dt #}
-    $('#allcards-table').DataTable({
-      "responsive": true,
-      "lengthChange": false,
-      "autoWidth": true,
-      "processing": false,
-      "deferRender": true,
-      "serverSide": true,
-      "order": [[ 5, "desc" ]],
-      "paging": true,
-      "scroller": {
-        loadingIndicator: true
-      },
-      "scrollY":        300,
-      "ajax": {
-        url: "/open_cards_dt",
-      },
-      "columnDefs": [
-        {
-          "targets": 0,
-          "render": function ( data, type, row, meta ) {
-            return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
-        },
-        {
-          "targets": 5,
-          "render": function ( data, type, row, meta ) {
-            return moment(data).fromNow();
-          }
-        }
-      ]
-    });
-    {# we hide pagination buttons since we use scroller #}
-    $('.dataTables_paginate').hide()
-    {# redraw on accordion changes #}
-    $('#dashboard-accordion').on('show', function () {
-      $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
-    });
-  });
-
-</script>
-
+  </script>
 {%  endif %}
 
   </body>
