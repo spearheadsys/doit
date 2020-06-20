@@ -135,9 +135,6 @@ function doit_submit_form(formdata) {
   $(document).ready( function () {
     {# incidents_table #}
     $('#incidents-table').DataTable({
-      "drawCallback": function () {
-        {#$('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');#}
-      },
       "processing": false,
       "deferRender": true,
       "serverSide": true,
@@ -173,9 +170,6 @@ function doit_submit_form(formdata) {
 
     {# closed_cards_ajax #}
     $('#closedcards-table').DataTable({
-      "drawCallback": function () {
-        {#$('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');#}
-      },
       "responsive": true,
       "lengthChange": false,
       "deferRender": true,
@@ -246,9 +240,6 @@ function doit_submit_form(formdata) {
 
     {# open_cards_dt #}
     $('#allcards-table').DataTable({
-      "drawCallback": function () {
-        {#$('.dataTables_paginate > .pagination').addClass('uk-pagination uk-pagination-right uk-flex-right');#}
-      },
       "responsive": true,
       "lengthChange": false,
       "autoWidth": true,
