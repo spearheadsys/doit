@@ -1572,7 +1572,7 @@ def mailpost(request):
                     fail_silently=False)
         else:
             # the card does not exist , check if the user exists
-            if user and user.is_active is not False and user.profile_user.company.default_board:
+            if user and user.is_active is not False:
                 # if we have default_board use it otherwise use global)
                 try:
                     board_columns = Column.objects.filter(board=user.profile_user.company.default_board)
