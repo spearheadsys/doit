@@ -30,7 +30,7 @@
           {% if column.usage.name == "Done" %}
             {% for card in numbers %}
             <li id="{{card.id}}" class="uk-margin uk-card-default cardflt" data-owner="{{card.owner}}">
-              <div class="uk-card uk-card-default uk-card-body uk-card-small">{{card.title}}</div>
+              <div class="uk-card uk-card-default uk-card-body uk-card-small"><span class="uk-text-small">[{{card.id}}]</span> {{card.title}}</div>
               <div class="uk-card-footer" style="padding: 4px;">
                   <span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>
                     <a href="/cards/editcard/{{card.id}}" class="uk-button uk-button-text">Edit Card</a>
@@ -69,7 +69,7 @@
                     {% endif %}
                   </div>
                   <div class="uk-width-expand">
-                    <h3 class="uk-card-title uk-margin-remove-bottom uk-text-break">{{card.title}}</h3>
+                    <h3 class="uk-card-title uk-margin-remove-bottom uk-text-break"><span class="uk-text-small">[{{card.id}}]</span> {{card.title}}</h3>
                     {% if card.due_date %}
                       <p class="uk-text-meta uk-margin-remove-top"><time>{{card.due_date}}</time></p>
                     {% endif %}
