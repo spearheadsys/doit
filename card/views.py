@@ -1587,6 +1587,11 @@ def mailpost(request):
                     # board_columns = Column.objects.filter(board=user.profile_user.company.default_board)
                     board = user.profile_user.company.default_board
                     queue_column = board_columns.get(usage=column_type_queue)
+                except AttributeError:
+                    column_type_queue = Columntype.objects.get(name="Queue")
+                    board_columns = Column.objects.filter(board=doit_default_board)
+                    queue_column = board_columns.get(usage=column_type_queue)
+                    board = Board.objects.get(id=doit_default_board)
                 except ObjectDoesNotExist:
                     column_type_queue = Columntype.objects.get(name="Queue")
                     board_columns = Column.objects.filter(board=doit_default_board)
