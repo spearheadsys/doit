@@ -52,6 +52,108 @@ var my_incidents = new Vue({
 	}
 })
 
+// my_majorcards
+var my_majorcards = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#my-majorcards',
+	data: {
+		my_majorcards: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/api2/mymajorcards', function (response) {
+				this.my_majorcards = response;
+			}.bind(this));
+		},
+		moment: function () {
+    	return moment();
+  	}
+	},
+	created: function () {
+		this.loadData();
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	filters: {
+  	moment: function (date) {
+    	return moment(date).format('MMM Do YYYY, k:m');
+		}
+	}
+})
+//end my_majorcards
+
+// my_normalcards
+var my_normalcards = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#my-normalcards',
+	data: {
+		my_normalcards: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/api2/mynormalcards', function (response) {
+				this.my_normalcards = response;
+			}.bind(this));
+		},
+		moment: function () {
+    	return moment();
+  	}
+	},
+	created: function () {
+		this.loadData();
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	filters: {
+  	moment: function (date) {
+    	return moment(date).format('MMM Do YYYY, k:m');
+		}
+	}
+})
+// end my_normalcards
+
+// my_normalcards
+var my_minorcards = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#my-minorcards',
+	data: {
+		my_minorcards: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/api2/myminorcards', function (response) {
+				this.my_minorcards = response;
+			}.bind(this));
+		},
+		moment: function () {
+    	return moment();
+  	}
+	},
+	created: function () {
+		this.loadData();
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	filters: {
+  	moment: function (date) {
+    	return moment(date).format('MMM Do YYYY, k:m');
+		}
+	}
+})
+// end my_minorcards
+
 // my_cards
 //var my_open = new Vue({
 //	delimiters: ['[[', ']]'],

@@ -47,6 +47,30 @@ class MyOpenIncidentsViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class MyMajorCardsViewSet(viewsets.ModelViewSet):
+    serializer_class = CardSerializer
+
+    def get_queryset(self):
+        queryset = Card.objects.all().filter(closed=False).filter(priority__title="Major").filter(owner=self.request.user)
+        return queryset
+
+
+class MyNormalCardsViewSet(viewsets.ModelViewSet):
+    serializer_class = CardSerializer
+
+    def get_queryset(self):
+        queryset = Card.objects.all().filter(closed=False).filter(priority__title="Normal").filter(owner=self.request.user)
+        return queryset
+
+
+class MyMinorCardsViewSet(viewsets.ModelViewSet):
+    serializer_class = CardSerializer
+
+    def get_queryset(self):
+        queryset = Card.objects.all().filter(closed=False).filter(priority__title="Minor").filter(owner=self.request.user)
+        return queryset
+
+
 class MyOverdueCardsViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
 

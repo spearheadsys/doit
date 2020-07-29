@@ -34,7 +34,7 @@ Vue.component('all-open-incidents-component',{
 	beforeDestroy: function(){
 		clearInterval(this.interval);
 	},
-	template: '<div class="uk-inline uk-card-small uk-card-default  uk-card-body v-cloak"> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: Incidents represent a significant impact to productivity. Keeping on eye on these is important and when such an incident occurs it usually requires an \'all hands on deck\' approach so be ready to reach out and help your colleagues, even if they do not ask for it. If you are the owner, leave what you were doing and focus on getting these squared away before moving on to something else."></span> <p class="uk-text-center">All Incidents</p> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#incidents" onclick="UIkit.accordion(`#dashboard-accordion`).toggle(0);" uk-scroll>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg" > </div>'
+	template: '<div class="uk-inline uk-card-small uk-card-default  uk-card-body v-cloak" style="background-color: lightcoral"> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: Incidents represent a significant impact to productivity."></span> <p class="uk-text-center">All Incidents</p> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#incidents" onclick="UIkit.accordion(`#dashboard-accordion`).toggle(0);" uk-scroll>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg" > </div>'
 });
 
 var allopenincidents = new Vue({
@@ -76,12 +76,145 @@ Vue.component('my-open-incidents-component',{
 	beforeDestroy: function(){
 		clearInterval(this.interval);
 	},
-	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body v-cloak"> <p class="uk-text-center">My Incidents</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: Incidents represent a significant impact to productivity. These are your incidents and as such must be your first priority. Focus on getting these out of the way before moving on to something else. If you need a hand remember to ask for it."></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#myincidents-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
+	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body v-cloak" style="background-color: lightcoral"> <p class="uk-text-center">My Incidents</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: Incidents represent a significant impact to productivity. These are your highest priority."></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#myincidents-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
 });
 
 var myopenincidents = new Vue({
 	el: '#my-open-incidents',
 });
+
+
+// my-major-cards-component
+Vue.component('my-major-cards-component',{
+	delimiters: ['[[', ']]'],
+	props: '',
+	data: function () {
+		return {
+			cards: []
+		}
+	},
+	mounted: function() {
+		this.getCards();
+	},
+	methods: {
+		getCards: function() {
+			this.loading = true;
+			this.$http.get('/api2/mymajorcards/')
+				.then((response) => {
+					this.cards = response.data.length;
+					this.loading = false;
+				})
+				.catch((err) => {
+				 this.loading = false;
+				 //console.log(err);
+				})
+		},
+	},
+	created: function () {
+		this.getCards();
+
+		setInterval(function () {
+			this.getCards();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body v-cloak" style="background-color: lightsalmon;"> <p class="uk-text-center">My Major Cards</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: Major priority cards, these have business impact."></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#mymajorcards-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
+});
+
+var mymajorcards = new Vue({
+	el: '#my-major-cards',
+});
+// end my-major-cards-component
+
+// mynormalcards
+Vue.component('my-normal-cards-component',{
+	delimiters: ['[[', ']]'],
+	props: '',
+	data: function () {
+		return {
+			cards: []
+		}
+	},
+	mounted: function() {
+		this.getCards();
+	},
+	methods: {
+		getCards: function() {
+			this.loading = true;
+			this.$http.get('/api2/mynormalcards/')
+				.then((response) => {
+					this.cards = response.data.length;
+					this.loading = false;
+				})
+				.catch((err) => {
+				 this.loading = false;
+				 //console.log(err);
+				})
+		},
+	},
+	created: function () {
+		this.getCards();
+
+		setInterval(function () {
+			this.getCards();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body v-cloak" style="background-color: lightgoldenrodyellow;"> <p class="uk-text-center">My Normal Cards</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: Normal priority cards, these have limited business impact."></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#mynormalcards-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
+});
+
+var mynormalcards = new Vue({
+	el: '#my-normal-cards',
+});
+// end mynormalcards
+
+// mylminorcards
+Vue.component('my-minor-cards-component',{
+	delimiters: ['[[', ']]'],
+	props: '',
+	data: function () {
+		return {
+			cards: []
+		}
+	},
+	mounted: function() {
+		this.getCards();
+	},
+	methods: {
+		getCards: function() {
+			this.loading = true;
+			this.$http.get('/api2/myminorcards/')
+				.then((response) => {
+					this.cards = response.data.length;
+					this.loading = false;
+				})
+				.catch((err) => {
+				 this.loading = false;
+				 //console.log(err);
+				})
+		},
+	},
+	created: function () {
+		this.getCards();
+
+		setInterval(function () {
+			this.getCards();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body v-cloak" style="background-color: lightgrey;"> <p class="uk-text-center">My Minor Cards</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: Minor priority cards."></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#myminorcards-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
+});
+
+var myminorcards = new Vue({
+	el: '#my-minor-cards',
+});
+// end myminorcards
 
 Vue.component('my-backlog-component',{
 	delimiters: ['[[', ']]'],
@@ -328,7 +461,7 @@ Vue.component('cards-without-owner-or-company-component',{
 	beforeDestroy: function(){
 		clearInterval(this.interval);
 	},
-	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body v-cloak"> <p class="uk-text-center">No Owner or Company</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: These represent incoming tickets, usually created by our email integrations. These are highly important tickets as they have not been prioritised and as such may include incidents or other major priority issues. There should be a dedicated person reviewing these as often as every few minutes. A card in this situation represents a customer who has not been responded to. We do not want to let Cards si in this position longer than 15 minutes."></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#noowner-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
+	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body v-cloak uk-background-secondary"> <p class="uk-text-center">No Owner or Company</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: These cards may go unnoticed. Make sure there is an owner an ssociated company."></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#noowner-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
 });
 
 var noownerorcompany = new Vue({
@@ -370,7 +503,7 @@ Vue.component('cards-im-watching',{
 	beforeDestroy: function(){
 		clearInterval(this.interval);
 	},
-	template: '<div class="uk-card-small uk-inline uk-card-default uk-card-body"> <p class="uk-text-center">Cards I\'m Watching</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: These are Cards you are watching. Watching means just that, you are not expected to resolve them, that is the Owners job, however you may be there to offer some help or other input or possibly to learn. Make sure you understand why you are a watcher and if you have no value, remove yourself from these cards as they will just generate noise. If you are there for a reason however, treat these as if they were your own and ask the Owner where you can help. Do whatever you can to make sure we do not miss deadlines and keep things moving.; pos: bottom-left;"></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#cardswatcher-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
+	template: '<div class="uk-card-small uk-inline uk-card-default uk-card-body v-cloak"> <p class="uk-text-center">Cards I\'m Watching</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: These are Cards you are watching. Watching means just that, you are not expected to resolve them, that is the Owners job, however you may be there to offer some help or other input or possibly to learn. Make sure you understand why you are a watcher and if you have no value, remove yourself from these cards as they will just generate noise. If you are there for a reason however, treat these as if they were your own and ask the Owner where you can help. Do whatever you can to make sure we do not miss deadlines and keep things moving.; pos: bottom-left;"></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#cardswatcher-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
 });
 
 var cardswatcher = new Vue({
@@ -413,7 +546,7 @@ Vue.component('cards-no-due-date-component',{
 	beforeDestroy: function(){
 		clearInterval(this.interval);
 	},
-	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body v-cloak"> <p class="uk-text-center">Cards Without Due Date</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: These Cards are missing a due date. Every card in the system should have a due date. Make sure you assign a due date to all cards that you take over or are watching. Do not just put an unrealistic due date, it is better to leave no due date than to exaggerate and try to put a very long one however note that cards without due dates are considered bad practice and are negatively accounted for in our scoreboards.; pos: bottom-left;"></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#cardswithoutduedate-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
+	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body v-cloak"> <p class="uk-text-center">Cards Without Due Date</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: These Cards are missing a due date. Every card in the system should have a due date. Make sure you assign a due date to all cards that you take over or are watching. Do not just put an unrealistic due date, it is better to leave no due date than to exaggerate and try to put a very long one however note that cards without due dates are considered bad practice and are negatively accounted for in our scoreboards.Ω; pos: bottom-left;"></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <a class="uk-text-danger" href="#cardswithoutduedate-modal" uk-toggle>[[cards]]</a> </h1> <img v-else src="/static/img/icons/sph-zero.svg"> </div>'
 });
 
 var cardsnoduedate = new Vue({

@@ -15,7 +15,19 @@
 <!-- new uikit -->
 {% if user.profile_user.is_customer is not True %}
   <!-- first row  / PERSONAL -->
-  <div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-left uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
+  <div class="uk-padding uk-child-width-1-6@m uk-child-width-1-3@s uk-grid-small uk-grid-match uk-flex-left uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
+    <div id="no-owner-or-company">
+      <cards-without-owner-or-company-component></cards-without-owner-or-company-component>
+    </div>
+    <div id="my-major-cards">
+      <my-major-cards-component></my-major-cards-component>
+    </div>
+    <div id="my-normal-cards">
+      <my-normal-cards-component></my-normal-cards-component>
+    </div>
+    <div id="my-minor-cards">
+      <my-minor-cards-component></my-minor-cards-component>
+    </div>
     <div id="my-open-incidents">
       <my-open-incidents-component></my-open-incidents-component>
     </div>
@@ -28,16 +40,10 @@
     <div id="my-overdue-boards">
       <my-overdue-boards-component></my-overdue-boards-component>
     </div>
-    <div id="no-owner-or-company">
-      <cards-without-owner-or-company-component></cards-without-owner-or-company-component>
-    </div>
     <div id="cards-watcher">
       <cards-im-watching></cards-im-watching>
     </div>
-  </div>
 
-  <!-- second row / GLOBAL -->
-  <div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
     <div id="all-open-incidents">
       <all-open-incidents-component></all-open-incidents-component>
     </div>
@@ -562,6 +568,166 @@
 
 </div>
 <!-- end myincidents-modal  -->
+
+{# mymajorcards-modal #}
+ <div id="mymajorcards-modal" class="uk-modal-container" uk-modal>
+
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">My Major Cards</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+
+        <div class="uk-list-striped">
+          <table id="my-majorcards" class="uk-table uk-table-striped">
+            <thead>
+              <tr>
+                <th>Board</th>
+                <th>Customer</th>
+                <th>Owner</th>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Due</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="card in my_majorcards">
+                <td>[[card.board.name]]</td>
+                <td v-if="card.company.name" >[[card.company.name]]</td>
+                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-if="card.owner">[[card.owner.username]]</td>
+                <td v-else="card.owner" class="uk-text-danger">no owner</td>
+                <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
+                <td>[[card.title]]</td>
+                <td>[[card.created_time | moment]]</td>
+                <td v-cloak v-if="card.due_date">[[card.due_date | moment ]]</td>
+                <td v-cloak v-else="card.due_date" class="uk-text-danger">no due date</td>
+                <td>
+                  <a v-on:click="deleteCard(card.id)">
+                    <span uk-icon="trash" style="color:red" onclick="return confirm('This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?')"></span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+      <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
+    </div>
+  </div>
+
+</div>
+{# end mymajorcards-modal #}
+
+{# mynormal-modal #}
+<div id="mynormalcards-modal" class="uk-modal-container" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">My Normal Cards</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+
+        <div class="uk-list-striped">
+          <table id="my-normalcards" class="uk-table uk-table-striped">
+            <thead>
+              <tr>
+                <th>Board</th>
+                <th>Customer</th>
+                <th>Owner</th>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Due</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="card in my_normalcards">
+                <td>[[card.board.name]]</td>
+                <td v-if="card.company.name" >[[card.company.name]]</td>
+                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-if="card.owner">[[card.owner.username]]</td>
+                <td v-else="card.owner" class="uk-text-danger">no owner</td>
+                <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
+                <td>[[card.title]]</td>
+                <td>[[card.created_time | moment]]</td>
+                <td v-cloak v-if="card.due_date">[[card.due_date | moment ]]</td>
+                <td v-cloak v-else="card.due_date" class="uk-text-danger">no due date</td>
+                <td>
+                  <a v-on:click="deleteCard(card.id)">
+                    <span uk-icon="trash" style="color:red" onclick="return confirm('This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?')"></span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+      <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
+    </div>
+  </div>
+
+</div>
+{# end mynormal-modal #}
+
+{# myminorcards-modal #}
+<div id="myminorcards-modal" class="uk-modal-container" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">My Minor priority Cards</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+
+        <div class="uk-list-striped">
+          <table id="my-minorcards" class="uk-table uk-table-striped">
+            <thead>
+              <tr>
+                <th>Board</th>
+                <th>Customer</th>
+                <th>Owner</th>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Due</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="card in my_minorcards">
+                <td>[[card.board.name]]</td>
+                <td v-if="card.company.name" >[[card.company.name]]</td>
+                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-if="card.owner">[[card.owner.username]]</td>
+                <td v-else="card.owner" class="uk-text-danger">no owner</td>
+                <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
+                <td>[[card.title]]</td>
+                <td>[[card.created_time | moment]]</td>
+                <td v-cloak v-if="card.due_date">[[card.due_date | moment ]]</td>
+                <td v-cloak v-else="card.due_date" class="uk-text-danger">no due date</td>
+                <td>
+                  <a v-on:click="deleteCard(card.id)">
+                    <span uk-icon="trash" style="color:red" onclick="return confirm('This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?')"></span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+      <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
+    </div>
+  </div>
+</div>
+{# end myminorcards-modal #}
+
 
 {% if customerowncards %}
 <!-- customerowncars-modal-->
