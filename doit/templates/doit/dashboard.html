@@ -272,7 +272,7 @@
               <tr v-for="card in no_owner_or_company">
                 <td>[[card.board.name]]</td>
                 <td v-if="card.company" >[[card.company.name]]</td>
-                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-else="card.company" class="uk-text-danger">no company</td>
                 <td v-if="card.owner">[[card.owner.username]]</td>
                 <td v-else="card.owner" class="uk-text-danger">no owner</td>
                 <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
@@ -488,7 +488,7 @@
             <tbody>
               <tr v-for="card in cards">
                 <td>[[card.board.name]]</td>
-                <td v-if="card.company.name" >[[card.company.name]]</td>
+                <td v-if="card.company" >[[card.company.name]]</td>
                 <td v-else="card.company" class="uk-text-danger">no company</td>
                 <td v-if="card.owner">[[card.owner.username]]</td>
                 <td v-else="card.owner" class="uk-text-danger">no owner</td>
@@ -542,8 +542,8 @@
             <tbody>
               <tr v-for="card in my_incidents">
                 <td>[[card.board.name]]</td>
-                <td v-if="card.company.name" >[[card.company.name]]</td>
-                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-if="card.company" >[[card.company.name]]</td>
+                <td v-else="card.company" class="uk-text-danger">no company</td>
                 <td v-if="card.owner">[[card.owner.username]]</td>
                 <td v-else="card.owner" class="uk-text-danger">no owner</td>
                 <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
@@ -596,8 +596,8 @@
             <tbody>
               <tr v-for="card in my_majorcards">
                 <td>[[card.board.name]]</td>
-                <td v-if="card.company.name" >[[card.company.name]]</td>
-                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-if="card.company" >[[card.company.name]]</td>
+                <td v-else="card.company" class="uk-text-danger">no company</td>
                 <td v-if="card.owner">[[card.owner.username]]</td>
                 <td v-else="card.owner" class="uk-text-danger">no owner</td>
                 <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
@@ -649,8 +649,8 @@
             <tbody>
               <tr v-for="card in my_normalcards">
                 <td>[[card.board.name]]</td>
-                <td v-if="card.company.name" >[[card.company.name]]</td>
-                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-if="card.company" >[[card.company.name]]</td>
+                <td v-else="card.company" class="uk-text-danger">no company</td>
                 <td v-if="card.owner">[[card.owner.username]]</td>
                 <td v-else="card.owner" class="uk-text-danger">no owner</td>
                 <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
@@ -702,8 +702,8 @@
             <tbody>
               <tr v-for="card in my_minorcards">
                 <td>[[card.board.name]]</td>
-                <td v-if="card.company.name" >[[card.company.name]]</td>
-                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-if="card.company" >[[card.company.name]]</td>
+                <td v-else="card.company" class="uk-text-danger">no company</td>
                 <td v-if="card.owner">[[card.owner.username]]</td>
                 <td v-else="card.owner" class="uk-text-danger">no owner</td>
                 <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
@@ -783,8 +783,8 @@
             <tbody>
               <tr v-for="card in cards">
                 <td>[[card.board.name]]</td>
-                <td v-if="card.company.name" >[[card.company.name]]</td>
-                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-if="card.company" >[[card.company.name]]</td>
+                <td v-else="card.company" class="uk-text-danger">no company</td>
                 <td v-if="card.owner">[[card.owner.username]]</td>
                 <td v-else="card.owner" class="uk-text-danger">no owner</td>
                 <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
@@ -839,8 +839,8 @@
             <tbody>
               <tr v-for="card in cards">
                 <td>[[card.board.name]]</td>
-                <td v-if="card.company.name" >[[card.company.name]]</td>
-                <td v-else="card.company.name" class="uk-text-danger">no company</td>
+                <td v-if="card.company" >[[card.company.name]]</td>
+                <td v-else="card.company" class="uk-text-danger">no company</td>
                 <td v-if="card.owner">[[card.owner.username]]</td>
                 <td v-else="card.owner" class="uk-text-danger">no owner</td>
                 <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
