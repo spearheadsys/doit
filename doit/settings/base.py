@@ -6,17 +6,15 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 SITE_NAME = basename(DJANGO_ROOT)
 SETTINGS_DIR = os.path.join(DJANGO_ROOT, 'settings')
-STATIC_PATH = os.path.join(os.getcwd(), "static/")
+STATIC_PATH = os.path.join(os.getcwd(), "doit/static/")
 STATIC_ROOT = os.path.join(os.getcwd(), "static/")
 STATICFILES_DIRS = (
-     # os.path.join(os.getcwd(), "static/"),
-    # '/opt/local/share/httpd/htdocs/doit/doit/doit/static',
+     STATIC_PATH,
 )
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 ADMINS = (

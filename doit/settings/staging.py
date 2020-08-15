@@ -1,14 +1,9 @@
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from .base import *
 
-SITE_URL = "http://127.0.0.1:8000"
-# SECURITY WARNING: don't run with debug turned on in production!
+SITE_URL = "http://dev.doit.spearhead.systems/"
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = ['*']
-
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -21,5 +16,5 @@ DATABASES = {
     }
 }
 
-EMAIL_HOST = 'localhost'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_HOST = 'localhost'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

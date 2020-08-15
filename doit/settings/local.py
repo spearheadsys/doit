@@ -1,7 +1,6 @@
 from .base import *
 
 SITE_URL = "http://127.0.0.1:8000/"
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 INSTALLED_APPS += (
