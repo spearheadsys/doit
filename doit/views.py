@@ -1,4 +1,5 @@
 from datetime import date, datetime, timedelta
+from django.views.static import serve
 from django.utils import timezone
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
@@ -1024,3 +1025,8 @@ def profile_change_picture(request, user=None):
         userprofile.picture = picture
         userprofile.save()
     return HttpResponseRedirect('/profile/')
+
+
+@login_required
+def protected_serve(request, path, document_root=None, show_indexes=False):
+    return serve(request, path, document_root, show_indexes)
