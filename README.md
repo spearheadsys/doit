@@ -127,6 +127,9 @@ and /static directories.
         }
 
         # path for our media files
+        # Note: you may want to disable this and use the
+        # provided view (protected_view) as it will require users
+        # to be authenticated. Otherwise this view will be public 
         location /media {
         autoindex off;
             alias /path/to/doit/media;
