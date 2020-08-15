@@ -7,8 +7,7 @@ from django.conf.urls import include, url
 from doit.views import home
 from doit.views import getCardsCreatedToday, getWlogsCreatedToday, getTodaysTasks, closed_cards_ajax, \
     overdue_cards_ajax, open_incidents_ajax, open_cards_dt, settings_view, my_vue_cards, \
-    profile_change_picture, cards_without_owner, cards_without_company, my_incidents, all_my_open_cards, \
-    my_overdue_cards_list, protected_media
+    profile_change_picture, cards_without_owner, cards_without_company, my_incidents, all_my_open_cards, my_overdue_cards_list
 from django.contrib import admin
 from .routers import router
 admin.autodiscover()
@@ -51,9 +50,6 @@ urlpatterns = [
     url(r'^profile/password/$', change_password, name='change_password'),
     url(r'^profile/picture/$', profile_change_picture, name='profile_change_picture'),
 
-    # protected media
-    url(r'^media/(?P<board>\d+)/(?P<card>\d+)', protected_media, name='protected_media'),
-
     # admindocs
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # admin page
@@ -77,7 +73,6 @@ urlpatterns = [
     # test rest,vue
     #
     url(r'^api2/', include(router.urls)),
-
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

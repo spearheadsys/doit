@@ -1024,15 +1024,3 @@ def profile_change_picture(request, user=None):
         userprofile.picture = picture
         userprofile.save()
     return HttpResponseRedirect('/profile/')
-
-
-@login_required()
-def protected_media(request, board, card, user=None):
-    if request.user.is_active:
-        response = HttpResponse()
-        response['Content-Type'] = ''
-        response['X-Accel-Redirect'] = '/media/uploads/{board}/{card}/'.format(board, card) + request.path
-        return response
-
-    else:
-        return HttpResponse(status=400)
