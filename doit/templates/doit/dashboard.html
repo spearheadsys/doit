@@ -8,9 +8,9 @@
 {% block main-content %}
 {% load static %}
 {% load humanize %}
-  <script type="text/javascript" src="{% static "js/datatables.min.js" %}"></script>
-  <link rel="stylesheet" type="text/css" href="{% static "css/datatables.min.css" %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static "css/uikitdatatables.css" %}" rel="stylesheet">
+  <script type="text/javascript" src="{% static "doit/js/datatables.min.js" %}"></script>
+  <link rel="stylesheet" type="text/css" href="{% static "doit/css/datatables.min.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "doit/css/uikitdatatables.css" %}" rel="stylesheet">
 
 <!-- new uikit -->
 {% if user.profile_user.is_customer is not True %}
@@ -923,8 +923,8 @@
 {% block footer %}
 
 {% if user.profile_user.is_customer is not True %}
-<script src="{% static "js/vue-dashboard.js" %}"></script>
-<script src="{% static "js/components.js" %}"></script>
+<script src="{% static "doit/js/vue-dashboard.js" %}"></script>
+<script src="{% static "doit/js/components.js" %}"></script>
 {%endif%}
 
 {% include "footer.html" %}
