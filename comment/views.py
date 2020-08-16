@@ -264,3 +264,21 @@ def comment(request):
         data = 'fail'
     # mimetype = 'application/json'
     return HttpResponse(data, content_type='application/json')
+
+
+@login_required
+def delete_comment(request, comment):
+    if comment:
+        cid = Comment.objects.get(id=comment)
+        card = Card.objects.get(id=cid.object_id)
+        # only superuser, comment owner, org admin and operator can delete
+        if request.user.id == cid.owner_id \
+                or request.user.is_superuser \
+                or request.user.profile_user.is_superuser \
+                or request.user.profile_user.is_operator \
+                or request.user.id == card.owner \
+                or request.user.id in card.watchers.all():
+            cid.delete()
+        else:
+            print("You are not authorized for this operation.")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
