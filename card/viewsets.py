@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAdminUser
 from .models import Card, Board
 from .serializers import CardSerializer
 from board.serializers import BoardSerializer
@@ -19,14 +20,10 @@ class CardViewSet(viewsets.ModelViewSet):
 class MyCardViewSet(viewsets.ModelViewSet):
     # queryset = Card.objects.all().filter(closed=False)
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         queryset = Card.objects.all().filter(closed=False).filter(owner=self.request.user).filter(~Q(column__title="Backlog"))
-
-        # another_param = self.request.GET.get('another_param')
-        # if another_param:
-        #     queryset = queryset.filter(another_field=another_param)
-
         return queryset
 
 
@@ -41,6 +38,7 @@ class AllOpenIncidentsViewSet(viewsets.ModelViewSet):
 
 class MyOpenIncidentsViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         queryset = Card.objects.all().filter(closed=False).filter(type="IN").filter(owner=self.request.user)
@@ -49,6 +47,7 @@ class MyOpenIncidentsViewSet(viewsets.ModelViewSet):
 
 class MyMajorCardsViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         queryset = Card.objects.all().filter(closed=False).filter(priority__title="Major").filter(owner=self.request.user)
@@ -57,6 +56,7 @@ class MyMajorCardsViewSet(viewsets.ModelViewSet):
 
 class MyNormalCardsViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         queryset = Card.objects.all().filter(closed=False).filter(priority__title="Normal").filter(owner=self.request.user)
@@ -65,6 +65,7 @@ class MyNormalCardsViewSet(viewsets.ModelViewSet):
 
 class MyMinorCardsViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         queryset = Card.objects.all().filter(closed=False).filter(priority__title="Minor").filter(owner=self.request.user)
@@ -73,6 +74,7 @@ class MyMinorCardsViewSet(viewsets.ModelViewSet):
 
 class MyOverdueCardsViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         queryset = Card.objects.filter(closed=False, owner=self.request.user).filter(~Q(column__title="Backlog")).order_by('due_date').filter(due_date__lt=today_date)
@@ -90,6 +92,7 @@ class MyOverdueBoardsViewSet(viewsets.ModelViewSet):
 
 class NoOwnerOrCompanyViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         queryset = Card.objects.filter(closed=False).filter(
@@ -101,6 +104,7 @@ class NoOwnerOrCompanyViewSet(viewsets.ModelViewSet):
 
 class CardsWatcherViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         queryset = Card.objects.filter(closed=False).filter(Q(watchers__in=[self.request.user])).distinct()
@@ -109,6 +113,7 @@ class CardsWatcherViewSet(viewsets.ModelViewSet):
 
 class MyBacklogCardsViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         backlog = Columntype.objects.all().filter(name="Backlog")
@@ -118,6 +123,7 @@ class MyBacklogCardsViewSet(viewsets.ModelViewSet):
 
 class AllBacklogCardsViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         backlog = Columntype.objects.all().filter(name="Backlog")
@@ -127,6 +133,7 @@ class AllBacklogCardsViewSet(viewsets.ModelViewSet):
 
 class CardsWithoutDueDateViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         queryset = Card.objects.all().filter(closed=False).filter(due_date=None)

@@ -32,6 +32,20 @@ var my_incidents = new Vue({
 				this.my_incidents = response;
 			}.bind(this));
 		},
+		deleteCard: function(id) {
+			this.loading = true;
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/myopenincidents/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
+		},
 		moment: function () {
     	return moment();
   	}
@@ -64,6 +78,20 @@ var my_majorcards = new Vue({
 			$.get('/api2/mymajorcards', function (response) {
 				this.my_majorcards = response;
 			}.bind(this));
+		},
+		deleteCard: function(id) {
+			this.loading = true;
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/mymajorcards/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
 		},
 		moment: function () {
     	return moment();
@@ -99,6 +127,20 @@ var my_normalcards = new Vue({
 				this.my_normalcards = response;
 			}.bind(this));
 		},
+		deleteCard: function(id) {
+			this.loading = true;
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/mynormalcards/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
+		},
 		moment: function () {
     	return moment();
   	}
@@ -133,6 +175,20 @@ var my_minorcards = new Vue({
 				this.my_minorcards = response;
 			}.bind(this));
 		},
+		deleteCard: function(id) {
+			this.loading = true;
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/myminorcards/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
+		},
 		moment: function () {
     	return moment();
   	}
@@ -154,32 +210,6 @@ var my_minorcards = new Vue({
 })
 // end my_minorcards
 
-// my_cards
-//var my_open = new Vue({
-//	delimiters: ['[[', ']]'],
-//	el: '#my_vue_cards',
-//	data: {
-//		my_open_cards: ''
-//	},
-//	methods: {
-//		loadData: function () {
-//			$.get('/my_vue_cards', function (response) {
-//				this.my_open_cards = response.open_cards;
-//			}.bind(this));
-//		}
-//	},
-//	created: function () {
-//		this.loadData();
-//
-//		setInterval(function () {
-//			this.loadData();
-//		}.bind(this), 20000);
-//	},
-//	beforeDestroy: function(){
-//		clearInterval(this.interval);
-//	}
-//})
-
 //all_my_open_cards
 var all_my_open_cards = new Vue({
 	delimiters: ['[[', ']]'],
@@ -195,15 +225,17 @@ var all_my_open_cards = new Vue({
 		},
 		deleteCard: function(id) {
 			this.loading = true;
-			this.$http.delete(`/api2/mycards/${[[id]]}/`)
-				.then((response) => {
-					this.loading = false;
-					this.loadData();
-				})
-				.catch((err) => {
-					this.loading = false;
-					console.log(err);
-				})
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/mycards/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
 		},
 		moment: function () {
     	return moment();
@@ -273,7 +305,7 @@ var my_backlog = new Vue({
 })
 
 //all_backlogs
-var my_backlog = new Vue({
+var all_backlog = new Vue({
 	delimiters: ['[[', ']]'],
 	el: '#all-backlog',
 	data: {
@@ -287,15 +319,17 @@ var my_backlog = new Vue({
 		},
 		deleteCard: function(id) {
 			this.loading = true;
-			this.$http.delete(`/api2/allbacklog/${[[id]]}/`)
-				.then((response) => {
-					this.loading = false;
-					this.loadData();
-				})
-				.catch((err) => {
-					this.loading = false;
-					console.log(err);
-				})
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/allbacklog/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
 		},
 		moment: function () {
     	return moment();
@@ -335,15 +369,17 @@ var my_overdue_cards_list = new Vue({
 		},
 		deleteCard: function(id) {
 			this.loading = true;
-			this.$http.delete(`/api2/cards/${[[id]]}/`)
-				.then((response) => {
-					this.loading = false;
-					this.loadData();
-				})
-				.catch((err) => {
-					this.loading = false;
-					console.log(err);
-				})
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/mycards/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
 		},
 		moment: function () {
     	return moment();
@@ -446,15 +482,17 @@ var cards_without_owner_or_company = new Vue({
 		},
 	deleteCard: function(id) {
 			this.loading = true;
-			this.$http.delete(`/api2/cards/${[[id]]}/`)
-				.then((response) => {
-					this.loading = false;
-					this.loadData();
-				})
-				.catch((err) => {
-					this.loading = false;
-					console.log(err);
-				})
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/noownerorcompany/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
 		},
 	},
 	created: function () {
@@ -491,13 +529,26 @@ var cards_watcher = new Vue({
 				// console.log(response.data);
 			}.bind(this));
 		},
+		deleteCard: function(id) {
+			this.loading = true;
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/cardswatcher/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
+		},
 		moment: function () {
     	return moment();
   	}
 	},
 	created: function () {
 		this.loadData();
-
 		setInterval(function () {
 			this.loadData();
 		}.bind(this), 90000);
@@ -529,15 +580,17 @@ var no_duedate = new Vue({
 		},
 		deleteCard: function(id) {
 			this.loading = true;
-			this.$http.delete(`/api2/cardswoduedate/${[[id]]}/`)
-				.then((response) => {
-					this.loading = false;
-					this.loadData();
-				})
-				.catch((err) => {
-					this.loading = false;
-					console.log(err);
-				})
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/cardswoduedate/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
 		},
 		moment: function () {
     		return moment();
