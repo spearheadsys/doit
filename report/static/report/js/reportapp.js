@@ -2,8 +2,9 @@ $(document).ready(function(){
   console.log("DoIT :: loading reportapp.js")
 
   var report = $('#reports').DataTable({
+    dom: 'Bfrtip',
     buttons: [
-        'copy', 'csv'
+        'copy', 'csv', 'excel'
     ]
   });
   report.buttons().container().appendTo( $('.col-sm-6:eq(0)', report.table().container() ) );
