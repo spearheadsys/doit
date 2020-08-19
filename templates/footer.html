@@ -159,7 +159,7 @@
               return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
           },
           {
-            "targets": 4,
+            "targets": [4,5],
             "render": function ( data, type, row, meta ) {
               return moment(data).fromNow();
             }
@@ -188,7 +188,7 @@
               return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
           },
           {
-            "targets": 4,
+            "targets": [4,5],
             "render": function ( data, type, row, meta ) {
               return moment(data).fromNow();
             }
@@ -207,7 +207,7 @@
         "deferRender": true,
         "serverSide": true,
         {% if user.profile_user.is_operator %}
-        "order": [[ 5, "desc" ]],
+        "order": [[ 6, "desc" ]],
         {% endif %}
         "paging": true,
         "scroller": {
@@ -224,11 +224,11 @@
               return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
           },
           {
-            "targets": [1, 2, 3, 4, 6, 7],
+            "targets": [1, 2, 3, 4, 5, 7, 8],
             "orderable": false,
           },
           {
-            "targets": 5,
+            "targets": [5,6],
             "render": function ( data, type, row, meta ) {
               return moment(data).fromNow();
             }
@@ -265,7 +265,7 @@
               return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
           },
           {
-            "targets": 5,
+            "targets": [5,6],
             "render": function ( data, type, row, meta ) {
               return moment(data).fromNow();
             }

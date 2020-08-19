@@ -360,7 +360,7 @@ def open_cards_dt(request):
     # columns = [i.name for i in Card._meta.get_fields()][1:]
     # I also know this is ugly, writing/hardcoding this 3 times like this.
     columns = ['id', 'title', 'company__name', 'column__title', 'priority__title',
-               'created_time', 'owner__username', 'board__name']
+               'created_time', 'modified_time', 'owner__username', 'board__name']
     objects = []
     if all_records != 0:
         if global_search:
@@ -378,6 +378,7 @@ def open_cards_dt(request):
                 'column__title',
                 'priority__title',
                 'created_time',
+                'modified_time',
                 'owner__username',
                 'board__name')
             for i in grep:
@@ -401,6 +402,7 @@ def open_cards_dt(request):
                         'column__title',
                         'priority__title',
                         'created_time',
+                        'modified_time',
                         'owner__username',
                         'board__name'):
                     ret = [i[j] for j in columns]
@@ -470,7 +472,7 @@ def open_incidents_ajax(request):
     # NOTE: not sure how this is supposed to work or if it works
     # columns = [i.name for i in Card._meta.get_fields()][1:]
     # I also know this is ugly, writing/hardcoding this 3 times like this.
-    columns = ['id', 'title', 'company__name', 'column__title', 'created_time', 'owner__username', 'board__name']
+    columns = ['id', 'title', 'company__name', 'column__title', 'created_time', 'modified_time', 'owner__username', 'board__name']
     objects = []
     # search only if there are records otherwise dt throws alerts to the user
     if all_records != 0:
@@ -487,6 +489,7 @@ def open_incidents_ajax(request):
                 'company__name',
                 'column__title',
                 'created_time',
+                'modified_time',
                 'owner__username',
                 'board__name')
             for i in grep:
@@ -507,6 +510,7 @@ def open_incidents_ajax(request):
                         'company__name',
                         'column__title',
                         'created_time',
+                        'modified_time',
                         'owner__username',
                         'board__name'):
                     ret = [i[j] for j in columns]
@@ -640,7 +644,7 @@ def overdue_cards_ajax(request):
     # NOTE: not sure how this is supposed to work or if it works
     # columns = [i.name for i in Card._meta.get_fields()][1:]
     # I also know this is ugly, writing/hardcoding this 3 times like this.
-    columns = ['id', 'title', 'company__name', 'column__title', 'priority__title', 'created_time', 'owner__username', 'board__name']
+    columns = ['id', 'title', 'company__name', 'column__title', 'priority__title', 'created_time', 'modified_time', 'owner__username', 'board__name']
     objects = []
     if all_records != 0:
         if global_search:
@@ -657,6 +661,7 @@ def overdue_cards_ajax(request):
                 'column__title',
                 'priority__title',
                 'created_time',
+                'modified_time',
                 'owner__username',
                 'board__name')
             for i in gret:
@@ -677,6 +682,7 @@ def overdue_cards_ajax(request):
                     'column__title',
                     'priority__title',
                     'created_time',
+                    'modified_time',
                     'owner__username',
                     'board__name'):
                 ret = [i[j] for j in columns]
@@ -709,7 +715,7 @@ def closed_cards_ajax(request):
     # NOTE: not sure how this is supposed to work or if it works
     # columns = [i.name for i in Card._meta.get_fields()][1:]
     # I also know this is ugly, writing/hardcoding this 3 times like this.
-    columns = ['id', 'title', 'company__name', 'priority__title', 'created_time', 'owner__username', 'board__name']
+    columns = ['id', 'title', 'company__name', 'priority__title', 'created_time', 'modified_time', 'owner__username', 'board__name']
 
     # NOTE order is important here. superuser will almost always have is_operator so check this first.
     # is_perator has more privs than is_customer ...
@@ -773,6 +779,7 @@ def closed_cards_ajax(request):
                 'company__name',
                 'priority__title',
                 'created_time',
+                'modified_time',
                 'owner__username',
                 'board__name')
             for i in gret:
@@ -791,6 +798,7 @@ def closed_cards_ajax(request):
                     'company__name',
                     'priority__title',
                     'created_time',
+                    'modified_time',
                     'owner__username',
                     'board__name'):
                 ret = [i[j] for j in columns]
