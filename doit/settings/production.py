@@ -1,6 +1,6 @@
 from .base import *
 
-SITE_URL = "https://your.production"
+SITE_URL = "https://your.production/"
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = ['*']

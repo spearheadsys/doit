@@ -1,7 +1,7 @@
 import os
 from os.path import basename, abspath, dirname
 
-SITE_URL = "http://127.0.0.1:8000"
+SITE_URL = "http://127.0.0.1:8000/"
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 SITE_NAME = basename(DJANGO_ROOT)
