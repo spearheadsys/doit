@@ -6,7 +6,7 @@
 {% block main-content %}
 {% load humanize %}
 
-<div class="uk-padding-small" uk-filter="target: .cardflt" >
+<div class="uk-padding-small" uk-filter="target: .cardflt">
 
   <ul class="uk-subnav uk-subnav-pill">
     <li id="filter-mine">
@@ -17,9 +17,9 @@
     </li>
   </ul>
 
-  <div class="uk-grid-small uk-grid-collapse uk-background-muted" uk-grid>
+  <div class="uk-flex-nowrap" uk-grid>
     {% for column in columns %}
-      <div class="sph-sel-content uk-panel uk-width-1-6" >
+      <div class="sph-sel-content uk-panel uk-width-medium uk-background-muted ">
         <h4 class="uk-text uk-padding-small">{{column}}
           <a class="uk-link" href="addcard/?board={{boardname.id}}&company={{boardname.company.id}}&column={{column.id}}"><i uk-icon="plus" uk-tooltip="title: Add a card to this column"></i></a>
         </h4>
