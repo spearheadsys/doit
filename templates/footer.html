@@ -240,21 +240,18 @@
       {# open_cards_dt #}
       $('#allcards-table').DataTable({
         "responsive": true,
-        "lengthChange": false,
-        "autoWidth": true,
-        "processing": false,
+        "lengthChange": true,
+        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+        // "autoWidth": true,
+        // "processing": false,
         "deferRender": true,
         "serverSide": true,
         "order": [[ 5, "desc" ]],
         "paging": true,
-        "dom": 'Bfrtip',
+        "dom": 'Bfrltip',
         "buttons": [
-          'excel',
+          "excel",
         ],
-        "scroller": {
-          loadingIndicator: true
-        },
-        "scrollY":        300,
         "ajax": {
           url: "/open_cards_dt",
         },
@@ -264,16 +261,8 @@
             "render": function ( data, type, row, meta ) {
               return '<a href="/cards/editcard/'+data+'">' + data +'</a>';}
           },
-          {
-            "targets": [5,6],
-            "render": function ( data, type, row, meta ) {
-              return moment(data).fromNow();
-            }
-          }
         ]
       });
-      {# we hide pagination buttons since we use scroller #}
-      $('.dataTables_paginate').hide()
       {# redraw on accordion changes #}
       $('#dashboard-accordion').on('shown', function () {
         $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
