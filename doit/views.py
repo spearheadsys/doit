@@ -294,7 +294,7 @@ def all_my_open_cards(request):
             "allmycards": list(cards.values('id', 'title', 'company__name', 'board__name', 'priority__title', 'created_time', 'due_date')),
         }, content_type='application/json')
 
-
+@login_required
 def open_cards_dt(request):
     draw = request.GET['draw']
     start = int(request.GET['start'])
@@ -423,7 +423,7 @@ def open_cards_dt(request):
         "data": objects,
     })
 
-
+@login_required
 def open_incidents_ajax(request):
     draw = request.GET['draw']
     start = int(request.GET['start'])
