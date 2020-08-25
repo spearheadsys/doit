@@ -299,6 +299,7 @@ def open_cards_dt(request):
     draw = request.GET['draw']
     start = int(request.GET['start'])
     length = int(request.GET['length'])
+
     # Note: Ordering is implicit on created_time. If we we are passed a new ordering column,
     # it is not taken into account!
     # order_column = int(request.GET['order[0][column]'])
@@ -361,6 +362,9 @@ def open_cards_dt(request):
     # I also know this is ugly, writing/hardcoding this 3 times like this.
     columns = ['id', 'title', 'company__name', 'column__title', 'priority__title',
                'created_time', 'modified_time', 'owner__username', 'board__name']
+    # if user selects all (-1 in datatables) we need to figure out our length here
+    if length < 0:
+        length = all_records.count()
     objects = []
     if all_records != 0:
         if global_search:
@@ -394,7 +398,7 @@ def open_cards_dt(request):
             ).count()
         else:
             # TODO: this same check is required in the other &_ajax views
-            if all_records != 0:
+            if all_records != 0 or all_records < 0:
                 for i in all_records.order_by(order_direction + column)[start:start + length].values(
                         'id',
                         'title',
