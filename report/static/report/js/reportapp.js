@@ -9,7 +9,6 @@ $(document).ready(function(){
   });
   report.buttons().container().appendTo( $('.col-sm-6:eq(0)', report.table().container() ) );
 
-
   $(function() {
     $('input[name="daterange"]').daterangepicker(
     {
@@ -29,6 +28,5 @@ $(document).ready(function(){
     }
     );
   });
-
   console.log("DoIT :: loaded reportapp.js")
 });
