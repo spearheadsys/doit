@@ -114,7 +114,16 @@ def get_attachments(request):
         if not q:
             return HttpResponse("This feature is not enabled.")
         card = Card.objects.get(id=q)
-        ctype = ContentType.objects.get_for_model(card)
+        # TODO: create function for this check
+        if not request.user.is_staff or not request.user.profile_user.is_operator:
+            if request.user not in card.watchers.all():
+                if request.user.profile_user.company.id is not card.company_id:
+                    return HttpResponse("You are not authorized.")
+                elif request.user.profile_user.is_org_admin:
+                    pass
+                else:
+                    return HttpResponse("This feature is not enabled.")
+
         attachments = Attachment.objects.filter(
             card_id=card.id
         )
