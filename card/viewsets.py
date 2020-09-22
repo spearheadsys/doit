@@ -107,7 +107,7 @@ class CardsWatcherViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_queryset(self):
-        queryset = Card.objects.filter(closed=False).filter(Q(watchers__in=[self.request.user])).distinct()
+        queryset = Card.objects.filter(closed=False).filter(~Q(column__title="Backlog")).filter(Q(watchers__in=[self.request.user])).distinct()
         return queryset
 
 
