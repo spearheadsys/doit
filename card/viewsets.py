@@ -41,7 +41,7 @@ class MyOpenIncidentsViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_queryset(self):
-        queryset = Card.objects.all().filter(closed=False).filter(type="IN").filter(owner=self.request.user)
+        queryset = Card.objects.all().filter(closed=False).filter(~Q(column__title="Backlog")).filter(type="IN").filter(owner=self.request.user)
         return queryset
 
 
@@ -50,7 +50,7 @@ class MyMajorCardsViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_queryset(self):
-        queryset = Card.objects.all().filter(closed=False).filter(priority__title="Major").filter(owner=self.request.user)
+        queryset = Card.objects.all().filter(closed=False).filter(~Q(column__title="Backlog")).filter(priority__title="Major").filter(owner=self.request.user)
         return queryset
 
 
@@ -59,7 +59,7 @@ class MyNormalCardsViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_queryset(self):
-        queryset = Card.objects.all().filter(closed=False).filter(priority__title="Normal").filter(owner=self.request.user)
+        queryset = Card.objects.all().filter(closed=False).filter(~Q(column__title="Backlog")).filter(priority__title="Normal").filter(owner=self.request.user)
         return queryset
 
 
@@ -68,7 +68,7 @@ class MyMinorCardsViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_queryset(self):
-        queryset = Card.objects.all().filter(closed=False).filter(priority__title="Minor").filter(owner=self.request.user)
+        queryset = Card.objects.all().filter(closed=False).filter(~Q(column__title="Backlog")).filter(priority__title="Minor").filter(owner=self.request.user)
         return queryset
 
 
@@ -136,13 +136,14 @@ class CardsWithoutDueDateViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_queryset(self):
-        queryset = Card.objects.all().filter(closed=False).filter(due_date=None)
+        queryset = Card.objects.all().filter(closed=False).filter(~Q(column__title="Backlog")).filter(due_date=None)
         return queryset
+
 
 class OverdueTodayViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
 
     def get_queryset(self):
         if self.request.user.profile_user.is_operator or self.request.user.profile_user.is_superuser:
-            queryset = Card.objects.filter(closed=False).filter(due_date__year=today_date.year, due_date__month=today_date.month, due_date__day=today_date.day)
+            queryset = Card.objects.filter(closed=False).filter(~Q(column__title="Backlog")).filter(due_date__year=today_date.year, due_date__month=today_date.month, due_date__day=today_date.day)
             return queryset
