@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block main-content %}
-
-  <div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-animation-fade" uk-height-viewport>
+{% if unsplash %}
+<div class="uk-cover-container" uk-height-viewport>
+  <img src="https://source.unsplash.com/daily" alt="unsplash" uk-cover>
+{% endif %}
+  <div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-height-viewport">
     <div class="uk-width-1-1">
-      <div class="uk-container">
+      <div class="uk-container  uk-position-center">
         <div class="uk-grid-margin uk-grid uk-grid-stack" uk-grid>
           <div class="uk-width-1-1@m">
             <div class="uk-margin uk-width-large uk-margin-auto uk-card uk-card-default uk-card-body uk-box-shadow-large">
@@ -27,6 +30,7 @@
                 </div>
                 <div class="uk-margin">
                   <button class="uk-button uk-button-primary uk-button-large uk-width-1-1">Login</button>
+                  <p>If you need help logging in please send an email to <a href="mailto:help@spearhead.systems?subject=Help logging in to doit">help@spearhead.systems</a>.</p>
                 </div>
                 <!-- <div class="uk-text-small uk-text-center">
                   Not registered? <a href="#">Create an account</a>
@@ -38,7 +42,9 @@
       </div>
     </div>
   </div>
-
+{% if unsplash %}
+</div>
+{% endif %}
 {% endblock main-content %}
 
 {% block footer %}
