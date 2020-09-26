@@ -26,6 +26,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # GLOBALS
 doitVersion = settings.DOIT_VERSION
+doit_unsplash = settings.DOIT_UNSPLASH
 today_date = timezone.now()
 
 
@@ -33,6 +34,9 @@ today_date = timezone.now()
 def user_login(request):
     redirect_to = request.POST.get('next')
     context = RequestContext(request)
+    context_dict = {
+        "unsplash": doit_unsplash,
+    }
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -49,7 +53,7 @@ def user_login(request):
         else:
             return HttpResponse("Invalid login details supplied.")
     else:
-        return render(request, 'doit/login.html')
+        return render(request, 'doit/login.html', context=context_dict)
 
 
 # Use the login_required() decorator to ensure only those logged in can

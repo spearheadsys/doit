@@ -131,5 +131,9 @@ DOIT_VERSION = '0.0.4'
 # sender is identified correctly and assigned to default_board
 # of said organization (if it exists)
 DOIT_DEFAULT_BOARD = '1'
+# want a fullscreen picture from unsplash?
+# todo: we can use source.unspasl to do more
+# https://source.unsplash.com
+DOIT_UNSPLASH = True
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1000000000
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1000000000
