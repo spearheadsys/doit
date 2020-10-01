@@ -39,12 +39,16 @@ def add_comment(request):
         public = request.POST.get('public', False)
         public_close = request.POST.get('public_close', False)
         print("this is a public_close???? > ", public_close)
+
         if public is not False:
             public = True
+        if public_close is not False:
+            public_close = True
         if billable is not False:
             billable = True
         if overtime is not False:
             overtime = True
+
         userid = request.user
         # TODO: make sure user has permission to add this comment
         # by looking at watchers, company with is_org_admin
