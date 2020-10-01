@@ -22,6 +22,7 @@ class UserProfile(models.Model):
     # The additional attributes we wish to include.
     picture = models.ImageField(
         # change to profile
+        # cardpath='uploads/{}/{}'.format(instance.board.id, instance.id)
         upload_to='customer_images',
         blank=True,)
 
