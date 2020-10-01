@@ -941,7 +941,7 @@ def editCard(request, card=None):
         attachments = Attachment.objects.filter(
             card=card.id)
         # print("attachments >>>> ", attachments)
-        comments = Comment.objects.filter(content_type__pk=ctype.id, object_id=card.id)
+        comments = Comment.objects.filter(content_type__pk=ctype.id, object_id=card.id).order_by('-created_time')
         editcard_form = EditCardForm(instance=instance)
         editcard_form.fields['watchers'].queryset = User.objects.filter(is_active=True)
         editcard_form.fields['owner'].queryset = User.objects.filter(is_staff=True)
