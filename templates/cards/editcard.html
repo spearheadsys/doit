@@ -4,6 +4,7 @@
   {% include "menu.html" %}
 {% endblock menu %}
 {% block main-content %}
+{% load cards_extras %}
 {% load humanize %}
 {% load static %}
   <link rel="stylesheet" href="{% static "card/css/cardapp.css" %}"/>
@@ -349,71 +350,8 @@ Is there something more specific you'd like to know?
     <!-- middle column -->
 
     <div class="uk-width-expand">
-      <div id="middle-column" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
-        
-        <div class="uk-card-header uk-padding-small">
-          <div class="uk-grid-small uk-flex-middle" uk-grid>
-              <div class="uk-width-auto">
-                  <img class="uk-border-circle" width="40" height="40" src="/media/{{ card.created_by.profile_user.picture }}">
-              </div>
-              <div class="uk-width-expand">
-                  <h3 class="uk-card-title uk-margin-remove-bottom">{{card.created_by.first_name}} {{card.created_by.last_name}}</h3>
-                  <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">{{card.created_time}} said:</time></p>
-              </div>
-          </div>
-        </div>
-
-       <div class="uk-card uk-card-default uk-card-body">
-        <div>
-          {{ card.description|safe|linebreaks }}
-        </div>
-      </div>
-      <div>
-        <ul uk-accordion="multiple:true">
-          {% for comment in comments %}
-          <li class="{% if forloop.last %} uk-open {%  endif %}">
-              <a class="uk-accordion-title uk-padding-small uk-background-muted" href="#">FROM: {{ comment.owner }} on {{comment.created_time}}</a>
-              <div class="uk-accordion-content uk-padding-small">
-                <article class="uk-comment">
-                  <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
-                      <div class="uk-width-auto">
-                        {% if comment.owner.profile_user.picture %}
-                          <span class="uk-width-auto">
-                            <img class="uk-border-circle uk-margin-right" src="/media/{{ comment.owner.profile_user.picture }}" width="32" height="32" alt="{{comment.owner}}">
-                          </span>
-                        {% endif %}
-                      </div>
-                      <div class="uk-width-expand">
-                        <h4 class="uk-comment-title uk-margin-remove">
-                          <a class="uk-link-reset" href="#"><span>{{comment.owner.first_name}} {{comment.owner.last_name}}</span></a>
-                        </h4>
-                        <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
-                          <li>{{comment.created_time}}</li>
-                          <li><a href="#">Action</a></li>
-                          <li><a href="/comments/delete/{{ comment.id }}" uk-icon="icon: trash; ratio: 0.7;" uk-tooltip="Delete this comment"></a></li>
-                          {% if comment.public is False %}
-                            <li><a style="color:red;" href="#" uk-icon="icon: lock; ratio: 0.7;" uk-tooltip="title: This is a private note; pos: top"></a></li>
-                          {% else %}
-                            <li><a style="color:green;" href="#" uk-icon="icon: unlock; ratio: 0.7;" uk-tooltip="title: This is a public note; pos: top"></a></li>
-                          {% endif %}
-                          {% if comment.minutes > 0 %}
-                            <li><a href="#" uk-icon="icon: clock; ratio: 0.7;" uk-tooltip="title: {{comment.minutes}} min {%if comment.billable %}  billable {% else %} non billable {% endif %}; pos: top"></a></li>
-                          {% endif %}
-                        </ul>
-                      </div>
-                  </header>
-                  <div class="uk-comment-body">
-                    <p>{{comment|safe|escape|linebreaks}}</p>
-                  </div>
-                </article>
-              </div>
-          </li>
-          {%  endfor %}
-        </ul>
-      </div>
-      <div>
+      <div id="middle-column" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto><div>
         <span>
-          <a class="target-scroll-on-load" id="target-scroll-on-load"></a>
           <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post">
             {% csrf_token %}
             <input id="x" type="hidden" name="comment">
@@ -424,7 +362,6 @@ Is there something more specific you'd like to know?
             // Todo: update content-attachments as well
               document.addEventListener("trix-file-accept", function(event) {
                 (function() {
-                  //var HOST = "http://127.0.0.1:8000/"
                   var HOST = "{{SITE_URL}}"
 
                   addEventListener("trix-attachment-add", function(event) {
@@ -484,10 +421,70 @@ Is there something more specific you'd like to know?
         </span>
       </div>
 
-
-
+      <div>
+        <ul uk-accordion="multiple:true">
+          {% for comment in comments %}
+          <li>
+              <a class="uk-accordion-title uk-text-meta uk-padding-small uk-background-muted" href="#">From: {{ comment.owner }} on {{comment.created_time}}</a>
+              <div class="uk-accordion-content uk-padding-small">
+                <article class="uk-comment">
+                  <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                      <div class="uk-width-auto">
+                        {% if comment.owner.profile_user.picture %}
+                          <span class="uk-width-auto">
+                            <img class="uk-border-circle uk-margin-right" src="{{ comment.owner.email|gravatar_url }}" width="32" height="32" alt="{{comment.owner}}">
+                          </span>
+                        {% endif %}
+                      </div>
+                      <div class="uk-width-expand">
+                        <h4 class="uk-comment-title uk-margin-remove">
+                          <a class="uk-link-reset" href="#"><span>{{comment.owner.first_name}} {{comment.owner.last_name}}</span></a>
+                        </h4>
+                        <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                          <li>{{comment.created_time}}</li>
+                          <li><a href="#">Action</a></li>
+                          <li><a href="/comments/delete/{{ comment.id }}" uk-icon="icon: trash; ratio: 0.7;" uk-tooltip="Delete this comment"></a></li>
+                          {% if comment.public is False %}
+                            <li><a style="color:red;" href="#" uk-icon="icon: lock; ratio: 0.7;" uk-tooltip="title: This is a private note; pos: top"></a></li>
+                          {% else %}
+                            <li><a style="color:green;" href="#" uk-icon="icon: unlock; ratio: 0.7;" uk-tooltip="title: This is a public note; pos: top"></a></li>
+                          {% endif %}
+                          {% if comment.minutes > 0 %}
+                            <li><a href="#" uk-icon="icon: clock; ratio: 0.7;" uk-tooltip="title: {{comment.minutes}} min {%if comment.billable %}  billable {% else %} non billable {% endif %}; pos: top"></a></li>
+                          {% endif %}
+                        </ul>
+                      </div>
+                  </header>
+                  <div class="uk-comment-body">
+                    <p>{{comment|safe|escape|linebreaks}}</p>
+                  </div>
+                </article>
+              </div>
+          </li>
+          {%  endfor %}
+        </ul>
       </div>
-    <div class="uk-divider-icon"></div>
+
+      <div class="uk-card-header uk-padding-small">
+        <div class="uk-grid-small uk-flex-middle" uk-grid>
+          <div class="uk-width-auto">
+              <img class="uk-border-circle" width="40" height="40" src="{{ comment.owner.email|gravatar_url }}">
+          </div>
+          <div class="uk-width-expand">
+              <h3 class="uk-card-title uk-margin-remove-bottom">{{card.created_by.first_name}} {{card.created_by.last_name}}</h3>
+              <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">{{card.created_time}} said:</time></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="uk-card-body">
+        <div>
+          {{ card.description|safe|linebreaks }}
+        </div>
+      </div>
+
+    </div>
+
   </div>
 
   <!-- end middle column -->
@@ -553,10 +550,7 @@ Is there something more specific you'd like to know?
 
 
 {% endblock main-content %}
-
 {% block footer %}
-
-
 {% include "footer.html" %}
   <script type="application/javascript">
     // for editcard datepicker, autosubmit
@@ -632,11 +626,5 @@ var card = "{{card.id}}";
 </script>
 <script src="{% static "card/js/vue-editcard.js" %}">
 </script>
-<script type="text/javascript">
-$(document).ready(function(){
-    $("#middle-column").animate({ scrollTop: $('#middle-column').prop("scrollHeight")}, 1000);
-});
-</script>
-
 
 {% endblock footer %}
