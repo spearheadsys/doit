@@ -11,34 +11,36 @@
       var formdata = $('#editcard_form');
       {#console.log("form submitted!")  // sanity check#}
       doit_submit_form(formdata);
+      unSetFormSubmitting();
   });
 
 
   // AJAX for posting
   function doit_submit_form(formdata) {
-      {#console.log("doit_submit_form post being processed!") // sanity check#}
-      setFormSubmitting();
-      {#console.log($(formdata).serialize())#}
-      var url =  window.location.href;
-      postFormData = $(formdata).serialize()
-      $.ajax({
-          url : url, // the endpoint
-          type : "POST", // http method
-          data : postFormData, // data sent with the post request
+    setFormSubmitting();
+    var url =  window.location.href;
+    postFormData = $(formdata).serialize()
+    $.ajax({
+      url : url, // the endpoint
+      type : "POST", // http method
+      data : postFormData, // data sent with the post request
 
-          // handle a successful response
-          success : function(json) {
-              //$('#post-text').val(''); // remove the value from the input
-              console.log("success"); // another sanity check
-          },
+      // handle a successful response
+      success : function(json) {
+        //$('#post-text').val(''); // remove the value from the input
+        console.log("success doit_form_submit"); // another sanity check
+        var formSubmitting = false;
+      },
 
-          // handle a non-successful response
-          error : function(xhr,errmsg,err) {
-              $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                  " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-          }
-      });
+      // handle a non-successful response
+      error : function(xhr,errmsg,err) {
+        $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+            " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+
+      }
+    });
+    unSetFormSubmitting();
   };
   <!--editcarcdfomr dal onchange -->
   </script>

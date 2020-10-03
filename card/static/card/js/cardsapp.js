@@ -6,6 +6,7 @@
   // if we navigate away with changes, let the user know
   var formSubmitting = false;
   var setFormSubmitting = function() { formSubmitting = true; };
+  var unSetFormSubmitting = function() { formSubmitting = false; };
   window.addEventListener('beforeunload', function (e) {
     if (formSubmitting) {
       console.log('form submitting is true')
@@ -177,6 +178,9 @@
   window.addEventListener('beforeunload', function (e) {
     // the absence of a returnValue property on the event will guarantee the browser unload happens
     delete e['returnValue'];
+    console.log('unloading ... ')
+    unSetFormSubmitting();
+    var formSubmitting = false;
   });
 
   // closing down here
