@@ -8,6 +8,7 @@
 
 {% load humanize %}
 {% load static %}
+<script src='{% static "card/js/cardsapp.js" %}'></script>
 {{addcardform.media}}
 
 <!-- DISABLE trix file uploads here -->
@@ -44,7 +45,7 @@ document.addEventListener("trix-file-accept", function(event) {
 </script>
 
   <!-- Begin page content -->
-  <div class="container">
+  <div class="uk-container">
     <div id="cdetails">
       <div class="uk-alert-warning" uk-alert>
         <a class="uk-alert-close" uk-close></a>
@@ -53,7 +54,7 @@ document.addEventListener("trix-file-accept", function(event) {
       </div>
       <br>
       <form id="addcard_form" method="POST"
-          action="/cards/addcard/" role="form">
+          action="/cards/addcard/" role="form" onsubmit="setFormSubmitting()">
                   {% csrf_token %}
           <input id="description" type="hidden" name="description">
           <input type="text" name="title" style="width: 86%; border: 0px; font-size: 16pt; background-color: lightgrey; padding: 5px;" required="True" placeholder="Enter card title" id="id_title" maxlength="255">
@@ -64,9 +65,9 @@ document.addEventListener("trix-file-accept", function(event) {
         <br><br>
         {{ addcardform.as_p}}
           <br><br>
-          <input type="submit" class="btn btn-primary"
+          <input type="submit" class="uk-button uk-button-default"
               name="submit" value="Save Card" />
-          <a type="button" class="btn btn-info"
+          <a type="button" class="uk-button uk-label-warning"
               name="back" href="{{request.META.HTTP_REFERER}}" value="Back">Back</a>
           <br><br>
       </form>
