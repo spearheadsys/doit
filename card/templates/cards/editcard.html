@@ -48,7 +48,7 @@
         <li class="uk-open">
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Card details</span></a>
           <div class="uk-accordion-content" id="carddetails">
-            <form action="" class="uk-form-stacked" id="editcard_form" method="POST" role="form">
+            <form action="" class="uk-form-stacked" id="editcard_form" method="POST" role="form" onsubmit="setFormSubmitting()">
               {% csrf_token %}
               {{ editcard_form.media }}
               {{ editcard_form.board }}
@@ -144,7 +144,7 @@
             </span>
           </a>
           <div class="uk-accordion-content" id="reminders">
-            <form action="/cards/addreminder/" class="uk-form-stacked" id="addreminder_form" method="post">
+            <form action="/cards/addreminder/" class="uk-form-stacked" id="addreminder_form" method="post" onsubmit="setFormSubmitting()">
               {% csrf_token %}
               {{ addreminder_form.as_p }}
               <input name="card" type="hidden" value="{{card.id}}">
@@ -191,18 +191,18 @@
 <!--                </li>-->
 <!--              </ul>-->
 
-            <form action="/cards/addtask/" id="add_task_form" method="post" >
+            <form action="/cards/addtask/" id="add_task_form" method="post">
               <!-- csrf token here -->
               {% csrf_token %}
               <input name="card" type="hidden" value="{{card.id}}">
               <input class="uk-input" name="task" placeholder="Add a task" type="text"/>
                <!-- TODO: assign tasks to owner! -->
-              <a class="uk-button-small uk-button-default" href="#" onclick="send_task()"
-              type="submit">Add Task</a>
+              <a class="uk-button-small uk-button-default" href="#" onclick="send_task(); setFormSubmitting();" type="submit">Add Task </a>
               <a aria-controls="collapseTasks" aria-expanded="false"
-              class="uk-button-small uk-button-secondary"
-              data-toggle="collapse" href="#collapseTasks"
-              onclick="get_tasks({{ card.id }})">View Tasks</a>
+                class="uk-button-small uk-button-secondary"
+                data-toggle="collapse" href="#collapseTasks"
+                onclick="get_tasks({{ card.id }})">View Tasks
+              </a>
             </form>
             <div class="hidden alert alert-success" id="task-mess-success" role="alert"></div>
             <div class="hidden alert alert-danger" id="task-mess-failed" role="alert"></div>
@@ -213,8 +213,7 @@
         <li>
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Attachments</span></a>
           <div class="uk-accordion-content" id="attachments">
-            <form action="/attachments/addattachments/" class="uk-form-stacked"
-              enctype="multipart/form-data" id="attachment_form" method="POST">
+            <form action="/attachments/addattachments/" class="uk-form-stacked" enctype="multipart/form-data" id="attachment_form" method="POST" >
               {% csrf_token %}
               <div>
                 <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
@@ -408,9 +407,9 @@
               <span>Minutes worked: </span>
               {{ comment_form.minutes }}
 
-              <input class="uk-button uk-button-default" name="public" type="submit" value="Share"/>
-              <input class="uk-button uk-button-primary" name="internal" type="submit" value="Note"/>
-              <input class="uk-button uk-button-danger" name="public_close" type="submit" value="Share and close" />
+              <input class="uk-button uk-button-default" onclick="setFormSubmitting()" name="public" type="submit" value="Share"/>
+              <input class="uk-button uk-button-primary" onclick="setFormSubmitting()" name="internal" type="submit" value="Note"/>
+              <input class="uk-button uk-button-danger" onclick="setFormSubmitting()" name="public_close" type="submit" value="Share and close" />
             </p>
 
           </form>

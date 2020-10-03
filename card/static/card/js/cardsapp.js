@@ -4,7 +4,13 @@
   // do your thing here
 
   // if we navigate away with changes, let the user know
+  var formSubmitting = false;
+  var setFormSubmitting = function() { formSubmitting = true; };
   window.addEventListener('beforeunload', function (e) {
+    if (formSubmitting) {
+      console.log('form submitting is true')
+      return undefined;
+    }
     // Cancel the event
     e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
     // Chrome requires returnValue to be set

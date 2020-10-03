@@ -16,6 +16,7 @@
   // AJAX for posting
   function doit_submit_form(formdata) {
       {#console.log("doit_submit_form post being processed!") // sanity check#}
+      setFormSubmitting();
       {#console.log($(formdata).serialize())#}
       var url =  window.location.href;
       postFormData = $(formdata).serialize()
