@@ -121,7 +121,7 @@
               checked = '';
           }
           div.append(
-              "<input name='task' value=" + data[i].id + " " + checked + " type='checkbox' class='task-item task-checkbox' data-date=" + data[i].created_time + ">&nbsp;<span><img class='user-picture' " +
+              "<input name='task' value=" + data[i].id + " " + checked + " type='checkbox' class='task-item task-checkbox' data-date=" + data[i].created_time + ">&nbsp;<span><img class='user-picture' width='32' height='32' " +
               "src=/media/"+data[i].owner+"> " + data[i].task + " </span>"
           );
           $("#collapseTasks").append(div);

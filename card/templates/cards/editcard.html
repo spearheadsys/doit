@@ -7,7 +7,7 @@
 {% load cards_extras %}
 {% load humanize %}
 {% load static %}
-  <script src="{% static "card/js/cardsapp.js" %}"></script>
+  <script src='{% static "card/js/cardsapp.js" %}'></script>
   {{editcard_form.media}}
   {{comment_form.media}}
 
@@ -31,20 +31,19 @@
   }
   </style>
 
-<div class="uk-padding-small">
-  <div class="uk-grid-small" uk-grid>
-    <div class="uk-width-1-4" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
+{# sidebar, card details #}
+<div id="offcanvas-overlay" uk-offcanvas="overlay: true">
+  <div class="uk-offcanvas-bar" style="width: 450px;" >
+    <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+<!--    ddd -->
+    <div class="uk-width" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
       <div class="uk-width-auto uk-padding-small uk-padding-remove-top">
         <!-- TODO: get worklogs per card (except non-billable  -->
-        {% if card.closed %}<span class="uk-label uk-label-success">Closed</span>
-        {% else %}
-          {% if card.priority.title == "Major" %}<span class="uk-label uk-label-danger">Major</span>{% endif %}
-          {% if card.is_overdue %}<span class="uk-label uk-label-warning">Overdue</span>{% endif %}
-          {% if card.type == "IN" %}<span class="uk-label uk-label-danger">INCIDENT</span>{% endif %}
-        {% endif %}
+
       </div>
       <ul uk-accordion="multiple: false">
-        <li class="uk-open">
+        <li class="">
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Card details</span></a>
           <div class="uk-accordion-content" id="carddetails">
             <form action="" class="uk-form-stacked" id="editcard_form" method="POST" role="form" onsubmit="setFormSubmitting()" onclick="setFormSubmitting()">
@@ -322,9 +321,7 @@
               });
           </script>
           </div>
-
         </li>
-
         <!-- <li>
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Knowledge Base</span></a>
           <div class="uk-accordion-content" id="kb">
@@ -337,13 +334,26 @@
             </ul>
           </div>
         </li> -->
-
       </ul>
     </div>
-    <!-- middle column -->
+  </div>
+</div>
 
-    <div class="uk-width-expand">
-      <div id="middle-column" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto><div>
+<div class="uk-padding-small">
+  <div class="uk-grid-small" uk-grid>
+
+    <!-- card comments -->
+    <div class="uk-width-expand uk-container uk-margin-left">
+      <div id="middle-column" uk-overflow-auto><div>
+<!--        ddd-->
+        <button class="uk-button uk-button-default" type="button" uk-toggle="target: #offcanvas-overlay">Card details</button>
+        {% if card.closed %}<span class="uk-label uk-label-success">Closed</span>
+        {% else %}
+          {% if card.priority.title == "Major" %}<span class="uk-label uk-label-danger">Major</span>{% endif %}
+          {% if card.is_overdue %}<span class="uk-label uk-label-warning">Overdue</span>{% endif %}
+          {% if card.type == "IN" %}<span class="uk-label uk-label-danger">INCIDENT</span>{% endif %}
+        {% endif %}
+<!--        ddd-->
         <span>
           <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post" onsubmit="setFormSubmitting()">
             {% csrf_token %}
@@ -406,85 +416,94 @@
               <span>Minutes worked: </span>
               {{ comment_form.minutes }}
 
-              <input class="uk-button uk-button-default" onclick="setFormSubmitting()" name="public" type="submit" value="Share" aria-label="gigi"/>
-              <input class="uk-button uk-button-primary" onclick="setFormSubmitting()" name="internal" type="submit" value="Note"/>
-              <input class="uk-button uk-button-danger" onclick="setFormSubmitting()" name="public_close" type="submit" value="Share and close" />
+              <input class="uk-button uk-button-default" onclick="setFormSubmitting()" name="public" type="submit" value="Share" />
+              <input class="uk-button uk-button-secondary" onclick="setFormSubmitting()" name="internal" type="submit" value="Note"/>
+              <input class="uk-button uk-label-warning" onclick="setFormSubmitting()" name="public_close" type="submit" value="Share and close" />
             </p>
 
           </form>
         </span>
       </div>
 
-      <div>
-        <ul uk-accordion="multiple:true">
-          {% for comment in comments %}
-          <li class="uk-card-default">
-              <a class="uk-accordion-title uk-text-meta uk-padding-small uk-background-muted" href="#" >
-                {% if comment.public is False %}
-                  <span style="color: red;" class="uk-margin-small-right" uk-icon="icon: lock; ratio: 1;"></span>
-                {% else %}
-                  <span style="color: green;" class="uk-margin-small-right" uk-icon="icon: unlock; ratio: 1;"></span>
-                {% endif %}
-                From: {{ comment.owner }} on {{comment.created_time}}</a>
-              <div class="uk-accordion-content uk-padding-small">
-                <article class="uk-comment">
-                  <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
-                      <div class="uk-width-expand">
-                        <h4 class="uk-comment-title uk-margin-remove">
+        <div>
+          <ul uk-accordion="multiple:true">
+            {% for comment in comments %}
+            <li class="uk-card-default">
+                <a class="uk-accordion-title uk-text-meta uk-padding-small
+                  {% if comment.public is False %}
+                    uk-background-secondary
+                  {% else %}
+                    uk-button-default
+                  {% endif %}"
+                href="#" >
+                  {% if comment.public is False %}
+                    <span style="color: red;" class="uk-margin-small-right" uk-icon="icon: lock; ratio: 1;"></span>
+                  {% else %}
+                    <span style="color: green;" class="uk-margin-small-right" uk-icon="icon: unlock; ratio: 1;"></span>
+                  {% endif %}
+                  From: {{ comment.owner }} on {{comment.created_time}}</a>
+                <div class="uk-accordion-content uk-padding-small">
+                  <article class="uk-comment">
+                    <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                        <div class="uk-width-expand">
+                          <h4 class="uk-comment-title uk-margin-remove">
 
-                          <span>
-                            {% if comment.owner.profile_user.picture %}
-                              <img class="uk-border-circle uk-margin-left" width="32" height="32" src="/media/{{ comment.owner.profile_user.picture }}"  alt="{{comment.owner}}">
-                            {% else %}
-                              <img class="uk-border-circle uk-margin-right" width="32" height="32" src="{{ comment.owner.email|gravatar_url }}" alt="{{comment.owner}}">
+                            <span class="uk-display-inline">
+                              {% if comment.owner.profile_user.picture %}
+                                <img class="uk-border-circle uk-margin-left" width="32" height="32" src="/media/{{ comment.owner.profile_user.picture }}"  alt="{{comment.owner}}">
+                              {% else %}
+                                <img class="uk-border-circle uk-margin-right" width="32" height="32" src="{{ comment.owner.email|gravatar_url }}" alt="{{comment.owner}}">
+                              {% endif %}
+                              {{comment.owner.first_name}} {{comment.owner.last_name}}
+                            </span>
+
+                          </h4>
+                          <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                            <li>{{comment.created_time}} {{ comment.card.user.user_profile.picture }}</li>
+  <!--                          <li><a href="#">Action</a></li>-->
+                            <li>
+                              <a href="/comments/delete/{{ comment.id }}" style="color: red;" uk-icon="icon: trash; ratio: 0.7;" uk-tooltip="Delete this comment"></a>
+                            </li>
+                            {% if comment.minutes > 0 %}
+                              <li>
+                                <a href="#" uk-icon="icon: clock; ratio: 0.7;" uk-tooltip="title: {{comment.minutes}} min {%if comment.billable %}  billable {% else %} non billable {% endif %}; pos: top"></a>
+                              </li>
                             {% endif %}
-                            {{comment.owner.first_name}} {{comment.owner.last_name}}
-                          </span>
+                          </ul>
+                        </div>
+                    </header>
+                    <div class="uk-comment-body">
+                      <p>{{comment|safe|escape|linebreaks}}</p>
+                    </div>
+                  </article>
+                </div>
+            </li>
+            {%  endfor %}
+          </ul>
+        </div>
 
-                        </h4>
-                        <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
-                          <li>{{comment.created_time}} {{ comment.card.user.user_profile.picture }}</li>
-                          <li><a href="#">Action</a></li>
-                          <li><a href="/comments/delete/{{ comment.id }}" uk-icon="icon: trash; ratio: 0.7;" uk-tooltip="Delete this comment"></a></li>
-                          {% if comment.minutes > 0 %}
-                            <li><a href="#" uk-icon="icon: clock; ratio: 0.7;" uk-tooltip="title: {{comment.minutes}} min {%if comment.billable %}  billable {% else %} non billable {% endif %}; pos: top"></a></li>
-                          {% endif %}
-                        </ul>
-                      </div>
-                  </header>
-                  <div class="uk-comment-body">
-                    <p>{{comment|safe|escape|linebreaks}}</p>
-                  </div>
-                </article>
-              </div>
-          </li>
-          {%  endfor %}
-        </ul>
-      </div>
+        <div class="uk-card-header uk-padding-small">
+          <div class="uk-grid-small uk-flex-middle" uk-grid>
 
-      <div class="uk-card-header uk-padding-small">
-        <div class="uk-grid-small uk-flex-middle" uk-grid>
-
-          <div class="uk-width-expand">
-              <h3 class="uk-card-title uk-margin-remove-bottom">{{card.created_by.first_name}} {{card.created_by.last_name}}</h3>
-              <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">{{card.created_time}} said:</time></p>
+            <div class="uk-width-expand">
+                <h3 class="uk-card-title uk-margin-remove-bottom">{{card.created_by.first_name}} {{card.created_by.last_name}}</h3>
+                <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">{{card.created_time}} said:</time></p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="uk-card-body">
-        <div>
-          {{ card.description|safe|linebreaks }}
+        <div class="uk-card-body">
+          <div>
+            {{ card.description|safe|linebreaks }}
+          </div>
         </div>
-      </div>
 
+      </div>
     </div>
 
+  <!-- end card comments -->
   </div>
-
-  <!-- end middle column -->
 </div>
-
 <!-- This is the movecard-modal -->
 <div id="movecard-modal" uk-modal>
   <div class="uk-modal-dialog uk-modal-body">
@@ -543,7 +562,6 @@
 
   </div>
 </div>
-
 
 {% endblock main-content %}
 {% block footer %}
