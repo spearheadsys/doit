@@ -38,12 +38,17 @@ def add_comment(request):
         internal = request.POST.get('internal', False)
         public = request.POST.get('public', False)
         public_close = request.POST.get('public_close', False)
-        print("this is a public_close???? > ", public_close)
+
+        print("PUBLIC -------- > ", public)
+        print("PUBLIC_CLOSE -------- > ", public_close)
+        print("NOTE -------- > ", internal)
+        exit()
+
 
         if public is not False:
             public = True
         if public_close is not False:
-            public_close = True
+            public = True
         if billable is not False:
             billable = True
         if overtime is not False:
