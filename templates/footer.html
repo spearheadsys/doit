@@ -6,7 +6,8 @@
   {# editcarcdfomr dal onchange #}
   $('#editcard_form').on('change', function(event){
     {#console.log("editcardform changed!!")#}
-      event.preventDefault();
+      setFormSubmitting();
+      // event.preventDefault();
       var formdata = $('#editcard_form');
       {#console.log("form submitted!")  // sanity check#}
       doit_submit_form(formdata);

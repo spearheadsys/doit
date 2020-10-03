@@ -149,13 +149,13 @@
               {{ addreminder_form.as_p }}
               <input name="card" type="hidden" value="{{card.id}}">
               <div class="">
-                <a class="uk-button-small uk-button-default" href="#" onclick="send_reminder()"
+                <a class="uk-button-small uk-button-default" href="#" onclick="send_reminder();setFormSubmitting();"
               type="submit">Add Reminder</a>
 
                 <a aria-controls="collapseReminder" aria-expanded="true"
                 class="uk-button-small uk-button-secondary"
                  data-toggle="collapse" href="#collapseReminders"
-                  onclick="get_reminders({{ card.id }})">View Reminders
+                  onclick="get_reminders({{ card.id }}); setFormSubmitting();">View Reminders
                 </a>
               </div>
               <!-- TODO: post a comment (added a reminder?)?-->
@@ -191,7 +191,7 @@
 <!--                </li>-->
 <!--              </ul>-->
 
-            <form action="/cards/addtask/" id="add_task_form" method="post">
+            <form action="/cards/addtask/" id="add_task_form" method="post" onsubmit="setFormSubmitting()">
               <!-- csrf token here -->
               {% csrf_token %}
               <input name="card" type="hidden" value="{{card.id}}">
@@ -213,7 +213,7 @@
         <li>
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Attachments</span></a>
           <div class="uk-accordion-content" id="attachments">
-            <form action="/attachments/addattachments/" class="uk-form-stacked" enctype="multipart/form-data" id="attachment_form" method="POST" >
+            <form action="/attachments/addattachments/" class="uk-form-stacked" enctype="multipart/form-data" id="attachment_form" method="POST" onsubmit="setFormSubmitting()">
               {% csrf_token %}
               <div>
                 <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
@@ -346,7 +346,7 @@
     <div class="uk-width-expand">
       <div id="middle-column" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto><div>
         <span>
-          <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post">
+          <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post" onsubmit="setFormSubmitting()">
             {% csrf_token %}
             <input id="x" type="hidden" name="comment">
             <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
@@ -491,7 +491,7 @@
   <div class="uk-modal-dialog uk-modal-body">
     <h2 class="uk-modal-title">Move card</h2>
 
-    <form action="/cards/movecardtoboard/" method="POST" id="movecardtoboardform">
+    <form action="/cards/movecardtoboard/" method="POST" id="movecardtoboardform" onsubmit="setFormSubmitting()">
       {% csrf_token %}
       <input name="card" type="hidden" value="{{card.id}}">
       <div class="uk-margin">
@@ -518,6 +518,7 @@
     <script>
     $('#movetoboard').on('change', function(event){
       var boardId = $(this).val();
+      setFormSubmitting();
       $.ajax({
           type: "POST",
           async: false,
@@ -556,6 +557,7 @@
         var formdata = $('#editcard_form');
         console.log("datepicker form submitted!")  // sanity check
         // console.log()  // sanity check
+        setFormSubmitting();
         doit_submit_form(formdata);
 
     });
