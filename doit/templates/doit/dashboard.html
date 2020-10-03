@@ -8,9 +8,9 @@
 {% block main-content %}
 {% load static %}
 {% load humanize %}
-  <script type="text/javascript" src="{% static "doit/js/datatables.min.js" %}"></script>
-  <link rel="stylesheet" type="text/css" href="{% static "doit/css/datatables.min.css" %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static "doit/css/uikitdatatables.css" %}" rel="stylesheet">
+  <script type="text/javascript" src='{% static "doit/js/datatables.min.js" %}'></script>
+  <link rel="stylesheet" type="text/css" href='{% static "doit/css/datatables.min.css" %}'/>
+  <link rel="stylesheet" type="text/css" href='{% static "doit/css/uikitdatatables.css" %}' rel="stylesheet">
 
 <!-- new uikit -->
 {% if user.profile_user.is_customer is not True %}
@@ -258,7 +258,7 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
 
-        <div class="uk-list-striped">
+        <div>
           <table id="cards_without_owner" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -309,7 +309,7 @@
         <h2 class="uk-modal-title">My Overdue Cards</h2>
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
-        <div class="uk-list-striped">
+        <div>
           <table id="my_overdue_cards_list" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -356,7 +356,7 @@
         <h2 class="uk-modal-title">All Overdue Boards</h2>
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
-        <ul class="uk-list-striped">
+        <ul class="uk-list uk-list-striped">
           {% for board in alloverdueboards %}
           <li>
             <a href="/cards/?board={{board.id}}">{{board.id}}</a> {{board}} <span class="uk-text-warning">{{board.due_date}}</span></li>
@@ -379,7 +379,7 @@
         <h2 class="uk-modal-title">My Overdue Boards</h2>
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
-        <div class="uk-list-striped">
+        <div>
           <table id="my_overdue_boards_list" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -426,7 +426,7 @@
           <h2 class="uk-modal-title">Cards Without a Due date</h2>
       </div>
         <div class="uk-modal-body" uk-overflow-auto>
-          <div class="uk-list-striped">
+          <div>
             <table id="cards-without-due-date" class="uk-table uk-table-striped">
               <thead>
                 <tr>
@@ -475,7 +475,7 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
 
-        <div class="uk-list-striped">
+        <div>
           <table id="cards_watcher" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -529,7 +529,7 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
 
-        <div class="uk-list-striped">
+        <div>
           <table id="my-incidents" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -583,7 +583,7 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
 
-        <div class="uk-list-striped">
+        <div>
           <table id="my-majorcards" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -636,7 +636,7 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
 
-        <div class="uk-list-striped">
+        <div>
           <table id="my-normalcards" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -689,7 +689,7 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
 
-        <div class="uk-list-striped">
+        <div>
           <table id="my-minorcards" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -742,7 +742,7 @@
         <h2 class="uk-modal-title">Cards I participate in</h2>
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
-        <ul class="uk-list-striped">
+        <ul class="uk-list uk-list-striped">
           {% for card in customerowncards %}
           <li>
             <a href="/cards/editcard/{{card.id}}">{{card.id}}</a> {{card}}
@@ -770,7 +770,7 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
 
-        <div class="uk-list-striped">
+        <div>
           <table id="all-backlog" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -826,7 +826,7 @@
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
 
-        <div class="uk-list-striped">
+        <div>
           <table id="my-backlog" class="uk-table uk-table-striped">
             <thead>
               <tr>
@@ -880,7 +880,7 @@
         <h2 class="uk-modal-title">My Open Cards</h2>
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
-        <div class="uk-list-striped">
+        <div>
           <table id="all_my_open_cards" class="uk-table uk-table-striped">
             <thead>
               <tr>
