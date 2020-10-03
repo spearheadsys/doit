@@ -23,8 +23,3 @@ def gravatar_url(email, size=32):
 def gravatar(email, size=32):
     url = gravatar_url(email, size)
     return mark_safe('<img src="%s" height="%d" width="%d">' % (url, size, size))
-
-
-@register.filter
-def to_class_name(value):
-    return value.__class__.__name__
