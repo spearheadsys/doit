@@ -7,17 +7,12 @@
 {% load cards_extras %}
 {% load humanize %}
 {% load static %}
-  <link rel="stylesheet" href="{% static "card/css/cardapp.css" %}"/>
+  <script src="{% static "card/js/cardsapp.js" %}"></script>
   {{editcard_form.media}}
   {{comment_form.media}}
 
-<!-- Todo:
-trix-attachment-remove fires when an attachment is removed from the document. You can access the Trix attachment object through the attachment property on the event. You may wish to use this event to clean up remotely stored files
-↳ https://github.com/basecamp/trix#observing-editor-changes
-Is there something more specific you'd like to know?
--->
+
   <style>
-  /* trix-toolbar stuff */
   trix-toolbar {
     position: -webkit-sticky;
     position: sticky;
@@ -141,11 +136,11 @@ Is there something more specific you'd like to know?
 
         <li>
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Reminders
-{#            {% if card.has_open_reminders > 0 %}#}
+            {% if card.has_open_reminders > 0 %}
               <span class="uk-badge">
                 <span id="vue_reminders" v-cloak >[[open_reminders]]</span>
               </span>
-{#            {% endif %}#}
+            {% endif %}
             </span>
           </a>
           <div class="uk-accordion-content" id="reminders">
@@ -167,8 +162,8 @@ Is there something more specific you'd like to know?
             </form>
             <!-- REMINDER MESSAGES -->
             <!-- TODO: get via ajax the result (class) and the message itself -->
-            <div class="hidden alert alert-success" id="reminder-mess-success" role="alert">The reminder was posted succesfully.</div>
-            <div class="hidden alert alert-danger" id="reminder-mess-failed" role="alert">The reminder was not posted. Please try again.</div>
+            <div class="hidden alert alert-success" id="reminder-mess-success" role="alert"></div>
+            <div class="hidden alert alert-danger" id="reminder-mess-failed" role="alert"></div>
             <div class="uk-card" id="collapseReminders"></div>
             <!--=== END Collapsable REMINDERS  ===-->
           </div>
@@ -176,11 +171,11 @@ Is there something more specific you'd like to know?
 
         <li>
           <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Tasks
-{#            {% if card.has_open_tasks > 0 %}#}
+            {% if card.has_open_tasks > 0 %}
               <span class="uk-badge">
                 <span id="opentasks" v-cloak >[[open_tasks]]</span>
               </span>
-{#            {% endif %}#}
+            {% endif %}
 
             </span>
           </a>
@@ -209,8 +204,8 @@ Is there something more specific you'd like to know?
               data-toggle="collapse" href="#collapseTasks"
               onclick="get_tasks({{ card.id }})">View Tasks</a>
             </form>
-            <div class="hidden alert alert-success" id="task-mess-success" role="alert">The task was posted succesfully.</div>
-            <div class="hidden alert alert-danger" id="task-mess-failed" role="alert">The task was not posted. Please try again.</div>
+            <div class="hidden alert alert-success" id="task-mess-success" role="alert"></div>
+            <div class="hidden alert alert-danger" id="task-mess-failed" role="alert"></div>
             <div class="uk-card" id="collapseTasks"></div>
           </div>
         </li>
