@@ -6,10 +6,9 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 SITE_NAME = basename(DJANGO_ROOT)
 SETTINGS_DIR = os.path.join(DJANGO_ROOT, 'settings')
-STATIC_PATH = os.path.join(os.getcwd(), "doit/static/")
 STATIC_ROOT = os.path.join(os.getcwd(), "static/")
 STATICFILES_DIRS = (
-     STATIC_PATH,
+     STATIC_ROOT,
 )
 
 STATICFILES_FINDERS = (
