@@ -169,7 +169,7 @@
   </div>
 
   {% if page_name == "Boards" %}
-  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom">
+  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom uk-padding-remove-top uk-margin-left">
     <li><a href="/boards/">Boards</a></li>
     <li><a href="/boards/archived/">Archived Boards</a></li>
     <li><a href="/boards/addboard/">Add a board</a></li>
@@ -177,15 +177,14 @@
   {% endif %}
 
   {% if page_name == "Organizations" %}
-  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom">
+  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom uk-padding-remove-top uk-margin-left">
     <li><a href="/organizations/" >Companies</a></li>
     <li><a href="/organizations/addboard/" data-toggle="modal" data-target="#addOrganizationModal">Add Company</a></li>
   </ul>
   {% endif %}
-
   
   {% if page_name == "Cards" %}
-  <ul class="uk-breadcrumb uk-padding-remove-bottom">
+  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom uk-padding-remove-top uk-margin-left">
     <li><a href="/">Dashboard</a></li>
     <li><a href="/boards/">Boards</a></li>
     <li><a href="/boards/editboard/{{boardname.id}}">Edit {{ boardname.name }}</a></li>
@@ -193,7 +192,7 @@
   {% endif %}
 
  {% if page_name == "Edit Card" %}
-  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom">
+  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom uk-padding-remove-top uk-margin-left">
     <li><a href="/boards/">Boards</a></li>
     <li><a href="/cards/?board={{card.board.id}}" >{{card.board.name}}</a></li>
     <li>#{{card.id}} / {{card}}</li>
@@ -201,7 +200,7 @@
   {% endif %}
 
   {% if page_name == "Profile" %}
-  <ul class="uk-breadcrumb ">
+  <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom uk-padding-remove-top uk-margin-left">
     <li><a href="/" >Dashboard</a></li>
     <li><a href="/profile" class="uk-active">{{page_name}}</a></li>
   </ul>
