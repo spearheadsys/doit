@@ -347,6 +347,12 @@
       <div id="middle-column" uk-overflow-auto><div>
 <!--        ddd-->
         <button class="uk-button uk-button-default" type="button" uk-toggle="target: #offcanvas-overlay">Card details</button>
+        {% if card.time_worked.minutes__sum > card.estimate %}
+          <span class="uk-label-warning" uk-icon="icon:clock;" uk-tooltip="Estimated {{card.estimate}}">{{card.time_worked.minutes__sum}}</span>
+        {% else %}
+          <span class="uk-label-success" uk-icon="icon:clock;" uk-tooltip="Estimated {{card.estimate}}"> {{card.time_worked.minutes__sum}} </span>
+        {% endif %}
+
         {% if card.closed %}<span class="uk-label uk-label-success">Closed</span>
         {% else %}
           {% if card.priority.title == "Major" %}<span class="uk-label uk-label-danger">Major</span>{% endif %}

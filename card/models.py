@@ -119,6 +119,14 @@ class Card(models.Model):
         # TODO: how/where do I get time(period) when card was in column that should not add time? (such as waiting)
         return int(age.total_seconds() / 60)
 
+    def time_worked(self):
+        ctype = ContentType.objects.get_for_model(Card)
+        comments = Comment.objects.filter(
+            content_type__pk=ctype.id,
+            object_id=self.id
+        )
+        return comments.aggregate(Sum('minutes'))
+
     # used in templates to test if card.is_overdue in which case
     # we display a little red triangle
     # todo this comparison needs to be fined tuned (I htink we miss out certain cards 00:000:00 for ex)
