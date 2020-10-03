@@ -5,6 +5,8 @@
 {% endblock menu %}
 {% block main-content %}
 {% load humanize %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href='{% static "card/css/cardapp.css" %}'/>
 
 <div class="uk-padding-small" uk-filter="target: .cardflt">
 
@@ -19,17 +21,17 @@
 
   <div class="uk-flex-nowrap" uk-grid>
     {% for column in columns %}
-      <div class="sph-sel-content uk-panel uk-width-medium uk-background-muted ">
+      <div class="sph-sel-content uk-panel uk-width-medium uk-background-muted" style="width: 100%;">
         <h4 class="uk-text uk-padding-small">{{column}}
           <a class="uk-link" href="addcard/?board={{boardname.id}}&company={{boardname.company.id}}&column={{column.id}}"><i uk-icon="plus" uk-tooltip="title: Add a card to this column"></i></a>
         </h4>
 
-        <ul id="{{column}}" data-column-id="{{column.id}}" data-column-usage="{{column.usage}}" uk-sortable="cls-custom: .uk-box-shadow-large .uk-background; handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: card-placeholder" class="uk-list uk-padding-small uk-panel-scrollable" style="border: none; min-height: 70vh; resize: none;">
+        <ul id="{{column}}" data-column-id="{{column.id}}" data-column-usage="{{column.usage}}" uk-sortable="cls-custom: .uk-box-shadow-large .uk-background; handle: .uk-sortable-handle; group: sortable-group; cls-placeholder: card-placeholder" class="uk-list uk-padding-small uk-panel-scrollable" style="border: none; min-height: 70vh; width:255px; resize: none;">
 
           <!-- DONE COLUMN AND CARDS -->
           {% if column.usage.name == "Done" %}
             {% for card in numbers %}
-              <li id="{{card.id}}" class="uk-margin uk-card-small uk-card-default cardflt" data-owner="{{card.owner}}">
+              <li id="{{card.id}}" class="uk-margin uk-card-small uk-card-default cardflt sph-card-styling" data-owner="{{card.owner}}">
                 <div class="uk-card uk-card-default uk-card-body uk-card-small"><span class="uk-text-small">[{{card.id}}]</span> {{card.title}}</div>
                 <div class="uk-card-footer" style="padding: 4px;">
                   <span class="uk-sortable-handle uk-margin-small-right" uk-icon="icon: table"></span>
@@ -46,7 +48,7 @@
 
          {% for card in cards %}
           {% if card.column.id == column.id %}
-            <li id="{{ card.id }}" data-order="{{ card.order }}" class="uk-margin uk-card uk-card-small uk-card-default cardflt" data-owner="{{card.owner}}" data-watchers="{% for watcher in card.watchers.all %}{{watcher}}, {% endfor %}"  data-watcher="{% if request.user in card.watchers.all %}True{% endif %}">
+            <li id="{{ card.id }}" data-order="{{ card.order }}" class="uk-margin uk-card uk-card-small uk-card-default cardflt sph-card-styling" data-owner="{{card.owner}}" data-watchers="{% for watcher in card.watchers.all %}{{watcher}}, {% endfor %}"  data-watcher="{% if request.user in card.watchers.all %}True{% endif %}">
             <div class="uk-card-header"
               {% if card.type == "IN" %}
                 style="border-left: 4px solid red;"
@@ -68,14 +70,14 @@
                 <div class="uk-width-expand">
                   <h6 class=" uk-text-break uk-margin-remove-bottom uk-text-break"><span class="uk-text-small">[{{card.id}}]</span> {{card.title}}</h6>
                   {% if card.due_date %}
-                    <p class="uk-text-meta uk-margin-remove-top"><time>{{card.due_date}}</time></p>
+                    <p class="uk-text-meta uk-margin-remove-top" style="font-size:0.7em;"><time>{{card.due_date}}</time></p>
                   {% endif %}
                 </div>
               </div>
             </div>
 
             <div class="uk-card-body uk-text-break">
-                <div class="">
+                <div class="uk-padding-remove">
                   {{card.description|truncatewords_html:10|striptags|safe}}
                 </div>
             </div>
