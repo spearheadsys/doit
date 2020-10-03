@@ -24,7 +24,7 @@ doit_myemail = settings.DOIT_MYEMAIL
 @csrf_exempt
 def add_comment(request):
     if request.is_ajax() or request.method == 'POST':
-        comment_form = request.POST['comment']
+        comment_form = request.POST.get('comment', False)
         # TODO: if the comment form is submitted but the comment
         #         # text is empty it still ends up here only to die when
         #         # addnig ctype tracker (comment_object). either solve it here
@@ -38,12 +38,6 @@ def add_comment(request):
         internal = request.POST.get('internal', False)
         public = request.POST.get('public', False)
         public_close = request.POST.get('public_close', False)
-
-        print("PUBLIC -------- > ", public)
-        print("PUBLIC_CLOSE -------- > ", public_close)
-        print("NOTE -------- > ", internal)
-        exit()
-
 
         if public is not False:
             public = True
@@ -62,7 +56,9 @@ def add_comment(request):
         related_card = Card.objects.get(id=card)
         whatami = ContentType.objects.get(model="Card")
         u = User.objects.get(username=request.user)
-        if comment_form:
+
+        if comment_form and not public_close:
+            print("1. note or public")
             comment_object = Comment.objects.create(
                 owner=u,
                 comment=comment_form,
@@ -75,6 +71,7 @@ def add_comment(request):
             )
 
         if public_close and not comment_form:
+            print("2. public close and not comment_form")
             # TODO: update tracker accordingly: as of now, no tracking update for closing from here
             column_done =Columntype.objects.get(name="Done")
             board_done_column = Column.objects.get(board=related_card.board.id, usage=column_done.id)
@@ -93,24 +90,26 @@ def add_comment(request):
             related_card.column = board_done_column
             related_card.save()
 
-        if public_close:
+        if public_close and comment_form:
+            print("3. public close and comment_form")
             # TODO: update tracker accordingly: as of now, no tracking update for closing from here
-            column_done =Columntype.objects.get(name="Done")
+            column_done = Columntype.objects.get(name="Done")
             board_done_column = Column.objects.get(board=related_card.board.id, usage=column_done.id)
             # if not comment_form:
             comment_object = Comment.objects.create(
-            owner=u,
-            comment=comment_form,
-            public=True,
-            minutes=minutes,
-            overtime=overtime,
-            billable=billable,
-            content_type=whatami,
-            object_id=int(related_card.id)
+                owner=u,
+                comment=comment_form,
+                public=True,
+                minutes=minutes,
+                overtime=overtime,
+                billable=billable,
+                content_type=whatami,
+                object_id=int(related_card.id)
             )
             related_card.closed = True
             related_card.column = board_done_column
             related_card.save()
+
 
         # ADD COMMENT TRACKER
         ctype = ContentType.objects.get_for_model(comment_object)
