@@ -12,6 +12,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 doit_myemail = settings.DOIT_MYEMAIL
+doit_email_subject_keyword = settings.DOIT_EMAIL_SUBJECT_KEYWORD
 
 
 def convert_to_localtime(uid, utctime):
@@ -63,7 +64,7 @@ def sendmail_card_created(cardid, card_creator):
             'description': soup_description.get_text(),
         }
         try:
-            subject = "DoIT #doit{} {}".format(card.id, card.title)
+            subject = "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title)
             send_mail(
                 str(subject),
                 plaintext.render(content),
@@ -78,7 +79,7 @@ def sendmail_card_created(cardid, card_creator):
             if card_creator.profile_user.is_customer:
                 text_content = plaintext.render(content)
                 send_mail(
-                    "DoIT #doit{} {}".format(card.id, card.title),
+                    "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title),
                     plaintext.render(content),
                     doit_myemail,
                     ["doit@spearhead.systems"],
@@ -103,7 +104,7 @@ def sendmail_card_updated(cardid, comment, card_creator):
         for watcher in watchers:
             send_mail(
                 # 'DoIT #doit' + str(card.id) + " " + card.title,
-                f"DoIT #doit{card.id} {card.title}",
+                f"DoIT {doit_email_subject_keyword}{card.id} {card.title}",
                 plaintext.render(content),
                 doit_myemail,
                 [watcher.email],
@@ -112,7 +113,7 @@ def sendmail_card_updated(cardid, comment, card_creator):
             # now send to the owner
             send_mail(
                 # u'DoIT #doit' + str(card.id) + " " + card.title,
-                f"DoIT #doit{card.id} {card.title}",
+                f"DoIT {doit_email_subject_keyword}{card.id} {card.title}",
                 plaintext.render(content),
                 doit_myemail,
                 [card.owner.email],
@@ -124,7 +125,7 @@ def sendmail_card_updated(cardid, comment, card_creator):
         if card_creator.profile_user.is_customer:
             send_mail(
                 # u'DoIT #doit' + card.id + " " + card.title,
-                f"DoIT #doit{card.id} {card.title}.",
+                f"DoIT {doit_email_subject_keyword}{card.id} {card.title}.",
                 plaintext.render(content),
                 doit_myemail,
                 ["doit@spearhead.systems"],
