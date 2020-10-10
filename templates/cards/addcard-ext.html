@@ -57,11 +57,10 @@ document.addEventListener("trix-file-accept", function(event) {
                                 {{ addcardform.due_date.label }}
                                 {{ addcardform.due_date }}
                         <input type="hidden" name="board" value="{{board.id}}" />
-                        <input type="hidden" name="start_time" value="" />
+                        <input type="hidden" name="start_time" />
                         <input type="hidden" name="column" value="{{column}}" />
                         <input type="hidden" name="owner" value="{{owner}}" />
-                        {{ addcardform.estimate.label }}
-                        <input type="hidden" name="estimate" value="240" id="id_estimate">
+
                         <!--<input id="id_estimate" min="0" step="15" name="estimate" type="number" value="0" />-->
                         <input type="hidden" name="company" value="{{ company }}" />
                         <br><br>
