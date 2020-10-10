@@ -132,8 +132,11 @@ DOIT_VERSION = '0.0.4'
 # of said organization (if it exists)
 DOIT_DEFAULT_BOARD = '1'
 # want a fullscreen picture from unsplash?
-# todo: we can use source.unspasl to do more
+# todo: we can use source.unsplash to do more
 # https://source.unsplash.com
 DOIT_UNSPLASH = True
+# DOIT email subject keyword
+# we scan for this in the subject of emails: doit#12345 > 12345 would be the card.id identifier
+DOIT_EMAIL_SUBJECT_KEYWORD = '#doit'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 1000000000
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1000000000
