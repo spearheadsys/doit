@@ -71,6 +71,7 @@
                   <th>Card Owner</th>
                   <th>Worklog</th>
                   <th>Priority</th>
+                  <th>Status</th>
                   <th>Worklog Owner</th>
                   <th>Worklog Created Time</th>
                   <th>Card Created Time</th>
@@ -87,6 +88,7 @@
                   <td>{{ i.content_object.owner }}</td>
                   <td>{{ i|striptags}}</td>
                   <td>{{ i.content_object.priority}}</td>
+                  <td>{{ i.content_object.column}}</td>
                   <td>{{ i.owner }}</td>
                   <td>{{ i.created_time }}</td>
                   <td>{{ i.content_object.created_time }}</td>
