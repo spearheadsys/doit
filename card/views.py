@@ -53,6 +53,7 @@ doitVersion = settings.DOIT_VERSION
 doit_myemail = settings.DOIT_MYEMAIL
 SITE_URL = settings.SITE_URL
 doit_default_board = settings.DOIT_DEFAULT_BOARD
+doit_email_subject_keyword = settings.DOIT_EMAIL_SUBJECT_KEYWORD
 
 @login_required
 @staff_member_required
@@ -278,56 +279,66 @@ class OwnerAutocomplete(autocomplete.Select2QuerySetView):
 def addcard(request):
     u = User.objects.get(username=request.user)
     # If the form has been submitted...
+
     if request.is_ajax() or request.method == 'POST':
         card_title = request.POST['title']
         card_column = request.POST['column']
         card_description = request.POST['description']
         card_priority = request.POST['priority']
-        card_due_date = (request.POST['due_date'])
-        card_start_time = (request.POST['start_time'])
-        card_tags = (request.POST.getlist('tags'))
-
-        try:
-            card_company = request.POST['company']
-        except KeyError:
-            card_company = None
-        card_board = request.POST['board']
-        try:
-            card_owner = request.POST['owner']
-            # print card_owner
-        except:
-            card_owner = None
-
+        card_due_date = request.POST.get('due_date', None)
+        if not card_due_date:
+            card_due_date = None
+        card_start_time = request.POST.get('start_time', None)
+        if not card_start_time:
+            card_start_time = None
+        card_tags = request.POST.getlist('tags')
+        card_company = request.POST.get('company')
+        card_board = request.POST.get('board')
+        card_owner = request.POST.get('owner', None)
         card_watchers = request.POST.getlist('watchers')
         if not card_watchers:
             # are we a customer?
             if u.profile_user.is_customer:
                 card_watchers.append(u.id)
-        card_type = request.POST['type']
-        card_estimate = request.POST['estimate']
-        # TODO:  confirm this is ok as is
+        card_type = request.POST.get('type')
+        card_estimate = request.POST.get('estimate', 0)
 
-        if card_due_date == '':
-            card_due_date = None
 
-        if card_start_time == '':
-            card_start_time = None
+        # if not card_owner and request.user.profile_user.is_customer:
+        #     card_owner = None
+        # else:
+        #     card_owner = u.id
 
-        # # if card_company is not set, we're ok with this
-        if not card_company:
-            card_company = None
+        if not request.user.profile_user.is_customer:
+            card_created = Card.objects.create(
+                owner_id=card_owner,
+                created_by_id=u.id,
+                board_id=card_board,
+                priority_id=card_priority,
+                company_id=card_company,
+                column_id=card_column,
+                title=card_title,
+                description=card_description,
+                due_date=card_due_date,
+                start_time=card_start_time,
+                type=card_type,
+                estimate=card_estimate,
+                csat=0)
+        else:
+            card_created = Card.objects.create(
+                created_by_id=u.id,
+                board_id=card_board,
+                priority_id=card_priority,
+                company_id=card_company,
+                column_id=card_column,
+                title=card_title,
+                description=card_description,
+                due_date=card_due_date,
+                start_time=card_start_time,
+                type=card_type,
+                estimate=card_estimate,
+                csat=0)
 
-        if not card_owner:
-            card_owner = u.id
-
-        card_created = Card.objects.create(
-            owner_id=card_owner, created_by_id=u.id,
-            board_id=card_board, priority_id=card_priority,
-            company_id=card_company, column_id=card_column,
-            title=card_title, description=card_description,
-            due_date=card_due_date, start_time=card_start_time,
-            type=card_type, csat='0',
-            estimate=card_estimate)
 
         # we should add the card to the end of the list not the top
         # Column.objects.all().filter(
@@ -381,9 +392,8 @@ def addcard(request):
             column_type_usage = Columntype.objects.get(name="Queue")
             board_columns = Column.objects.filter(board=default_org_board.id)
             column = board_columns.get(usage=column_type_usage)
-            g = Board.objects.get(id=board.id)
-            org_owner = g.owner
-
+            # g = Board.objects.get(id=board.id)
+            # org_owner = g.owner
 
             # we send to customer addcard form
             # addcardform = CardsForm(board_id=board, initial={'id_company:', company})
@@ -391,7 +401,7 @@ def addcard(request):
                 initial={
                     # 'owner': u.id,
                     'board': board.id,
-                    'owner': org_owner,
+                    'owner': None,
                     'column': column,
                     'company': company.id,
                     'priority': '1',
@@ -404,7 +414,7 @@ def addcard(request):
                 'site_title': "Cards | Spearhead Systems",
                 'page_name': "Add Card",
                 'column': column.id,
-                'owner': org_owner.id,
+                'owner': None,
                 'company': company.id,
                 'addcardform': addcardform,
                 'board': Board.objects.get(id=board.id),
@@ -1438,7 +1448,7 @@ def mailpost(request):
         subject = request.POST.get('subject', '')
         body_plain = request.POST.get('body-plain', '')
         body_html = request.POST.get('body-html', '')
-        # body_plain_stripped = request.POST.get('stripped-text', '')
+        body_plain_stripped = request.POST.get('stripped-text', '')
         # we use stripped html in replies
         body_html_stripped = request.POST.get('stripped-html', '')
 
@@ -1460,7 +1470,7 @@ def mailpost(request):
         parsed_sender_email = parsed_sender[1]
         domain = parsed_sender[1].split('@')[1]
         watchers = []
-        card = re.findall('#doit(\\d+)', subject)
+        card = re.findall(doit_email_subject_keyword + '(\\d+)', subject)
 
         if card:
             existing_card = Card.objects.get(id=card[0])
@@ -1528,7 +1538,7 @@ def mailpost(request):
                         formatted_message = message % (
                             user.email,
                             randpass,
-                            "https://doit.spearhead.systems/")
+                            SITE_URL)
                         send_mail(
                             'Your new DoIT account is ready',
                             formatted_message,
@@ -1588,12 +1598,7 @@ def mailpost(request):
                     # board_columns = Column.objects.filter(board=user.profile_user.company.default_board)
                     board = user.profile_user.company.default_board
                     queue_column = board_columns.get(usage=column_type_queue)
-                except AttributeError:
-                    column_type_queue = Columntype.objects.get(name="Queue")
-                    board_columns = Column.objects.filter(board=doit_default_board)
-                    queue_column = board_columns.get(usage=column_type_queue)
-                    board = Board.objects.get(id=doit_default_board)
-                except ObjectDoesNotExist:
+                except (AttributeError, ObjectDoesNotExist) as e:
                     column_type_queue = Columntype.objects.get(name="Queue")
                     board_columns = Column.objects.filter(board=doit_default_board)
                     queue_column = board_columns.get(usage=column_type_queue)
@@ -1651,7 +1656,7 @@ def mailpost(request):
                         formatted_message = message % (
                             user.email,
                             randpass,
-                            "https://doit.spearhead.systems/")
+                            SITE_URL)
                         send_mail(
                             'Your new DoIT account is ready',
                             formatted_message,
