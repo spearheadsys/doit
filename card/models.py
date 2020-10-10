@@ -58,7 +58,7 @@ class Card(models.Model):
     estimate = models.IntegerField(null=True, blank=True)
     order = models.IntegerField(null=True, blank=True)
     tags = TaggableManager(blank=True)
-    csat = models.BooleanField()
+    csat = models.BooleanField(blank=True, null=True)
 
     def __str__(self):
         return self.title
