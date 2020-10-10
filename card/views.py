@@ -66,9 +66,9 @@ def cards(request):
     else:
         #  no board ID means BoB as of 15.04.2016
         columnDone = Columntype.objects.all().filter(name="Done")
-        cards = Card.objects.all().prefetch_related().filter(
+        cards = Card.objects.all().filter(
             ~Q(column__usage=columnDone),
-        )
+        ).order_by('order')
 
         context = RequestContext(request)
         context_dict = {
@@ -81,8 +81,9 @@ def cards(request):
 
     boards = Board.objects.filter(archived=False)
 
+    # closed cards - in done column (attempted pagination fail)
     if request.user.profile_user.is_operator:
-        numbers_list = Card.objects.all().filter(board=board_id).filter(closed=True)[:10]
+        numbers_list = Card.objects.all().filter(board=board_id).filter(closed=True).order_by('order')[:10]
         page = request.GET.get('page', 1)
         paginator = Paginator(numbers_list, 10)
         try:
@@ -102,10 +103,7 @@ def cards(request):
         done_column = Column.objects.filter(board=board_id, order=done_order)
         # get assigned and overdue card per board for the status bar
         today_date = date.today()
-        # all_cards_but_deleted = Card.objects.all().filter(
-        #     ~Q(closed=False), Q(board=board_id)
-        # )
-        all_cards_but_deleted = Card.objects.all().filter(closed=False).filter(board=board_id)
+        all_cards_but_deleted = Card.objects.all().filter(closed=False).filter(board=board_id).order_by('order')
 
         first_column = \
             Column.objects.all().filter(board=board_id).select_related().aggregate(
@@ -123,7 +121,8 @@ def cards(request):
         addCardForm.fields['watchers'].queryset = User.objects.filter(is_active=True)
         editColumnForm = EditColumnForm()
         cardslist = list(all_cards_but_deleted)
-        cards = sorted(cardslist,key=lambda x: str(x))
+        cards = cardslist
+        # cards = sorted(cardslist,key=lambda x: str(x))
     else:
         u = User.objects.get(username=request.user)
         up = UserProfile.objects.get(user=u)
@@ -134,7 +133,7 @@ def cards(request):
 
         # end check user perms
 
-        numbers_list = Card.objects.filter(board=board_id).filter(closed=True).filter(owner=request.user)[:10]
+        numbers_list = Card.objects.filter(board=board_id).filter(closed=True).filter(owner=request.user).order_by('order')[:10]
         page = request.GET.get('page', 1)
         paginator = Paginator(numbers_list, 10)
         try:
@@ -157,8 +156,8 @@ def cards(request):
         #     ~Q(column_id=done_column),
         #     Q(board=board_id),
         # ).filter(owner=u)
-        all_cards_but_deleted = Card.objects.select_related().filter(closed=False).filter(board=board_id).filter(owner=u)
-        gg = Card.objects.filter(closed=False).filter(watchers__id__exact=request.user.id)
+        all_cards_but_deleted = Card.objects.select_related().filter(closed=False).filter(board=board_id).filter(owner=u).order_by('order')
+        gg = Card.objects.filter(closed=False).filter(watchers__id__exact=request.user.id).order_by('order')
         new_cards_list = list(all_cards_but_deleted) + list(gg)
         first_column = \
             Column.objects.all().filter(board=board_id).select_related().aggregate(
@@ -192,6 +191,7 @@ def cards(request):
         'numbers': numbers,
         'boards': boards,
     }
+
     return render(request, 'cards/cards.html', context_dict)
 
 
@@ -773,6 +773,7 @@ def update_card_order(request):
         card_order = request.POST.getlist('arr', False)
         order = json.loads(card_order[0])
         position = 0
+        print("The ORDER is >>> ", order)
         for card in order['elementsOrder']:
             card_obj = Card.objects.get(id=card)
             card_obj.order = position
