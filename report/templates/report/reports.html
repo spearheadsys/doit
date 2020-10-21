@@ -75,6 +75,7 @@
                   <th>Worklog Owner</th>
                   <th>Worklog Created Time</th>
                   <th>Card Created Time</th>
+                  <th>Card Last Modified Time</th>
                   <th>Minutes</th>
                   <th>Overtime</th>
                   <th>Billable</th>
@@ -92,6 +93,7 @@
                   <td>{{ i.owner }}</td>
                   <td>{{ i.created_time }}</td>
                   <td>{{ i.content_object.created_time }}</td>
+                  <td>{{ i.content_object.modified_time }}</td>
                   <td>{{ i.minutes }}</td>
                   <td>{{ i.overtime }}</td>
                   <td>{{ i.billable }}</td>
