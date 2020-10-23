@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  console.log("DoIT :: loading reportapp.js")
+  console.log("DoIT :: loading analyticsapp.js")
 
   var report = $('#reports').DataTable({
     dom: 'Bfrtip',
@@ -28,5 +28,5 @@ $(document).ready(function(){
     }
     );
   });
-  console.log("DoIT :: loaded reportapp.js")
+  console.log("DoIT :: loaded analyticsapp.js")
 });

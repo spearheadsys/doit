@@ -824,7 +824,7 @@ def closed_cards_ajax(request):
 
 
 # # TODO: parameterize this to get template based on what we're trying to view:
-# # weekly report, reminders, etc
+# # weekly analytics, reminders, etc
 # @login_required
 # @staff_member_required
 # def emailviewer(request):

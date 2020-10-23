@@ -7107,7 +7107,7 @@ function Animation( elem, properties, options ) {
 				deferred.notifyWith( elem, [ animation, 1, 0 ] );
 			}
 
-			// Resolve the animation and report its conclusion
+			// Resolve the animation and analytics its conclusion
 			deferred.resolveWith( elem, [ animation ] );
 			return false;
 		},

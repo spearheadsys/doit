@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'contact',
     'organization',
     'board',
-    'report',
+    'analytics',
     'attachment',
     'comment',
     'doit',

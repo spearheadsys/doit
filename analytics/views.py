@@ -44,7 +44,7 @@ def reports(request):
         stopperiod = (datetime.strptime(stop, '%Y-%m-%d  %H:%M') + timedelta(days=1))
 
 
-        # TODO: report.html it does not make sense to select both user and company
+        # TODO: analytics.html it does not make sense to select both user and company
         # or does it? whichvever the case may be this is not possible yet.
         # just daterange
         if not organization and not reportuser:
@@ -79,7 +79,7 @@ def reports(request):
         nonbillable = reportresult.filter(billable=False).aggregate(Sum('minutes'))
         totalworkingminutes = reportresult.filter(overtime=False).aggregate(Sum('minutes'))
         totalovertimeminutes = reportresult.filter(overtime=True).aggregate(Sum('minutes'))
-        # generate one time report
+        # generate one time analytics
         context_dict = {
             'site_title': "Reports | Spearhead Systems",
             'page_name': "Reports",
@@ -97,7 +97,7 @@ def reports(request):
             'nonbillable': nonbillable,
             'boards': boards,
         }
-        return render(request, 'report/reports.html', context_dict)
+        return render(request, 'analytics/reports.html', context_dict)
 
     else:
         context_dict = {
@@ -110,5 +110,5 @@ def reports(request):
             'reportusers': reportusers,
             'boards': boards,
         }
-        return render(request, 'report/reports.html', context_dict)
+        return render(request, 'analytics/reports.html', context_dict)
 

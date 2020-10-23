@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from report.views import reports
+from analytics.views import reports
 
 
 # we are at /cases/ here

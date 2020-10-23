@@ -7,7 +7,7 @@ from organization.models import Organization
 # cards
 class Reports(models.Model):
     """
-    Stores a single report entry.
+    Stores a single analytics entry.
     """
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -16,7 +16,7 @@ class Reports(models.Model):
     #  and allow only admins to view reports
     owner = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     # we only save the period and board form which to
-    # generate the report
+    # generate the analytics
     period_from = models.DateTimeField()
     period_to = models.DateTimeField(null=True, blank=True)
     board = models.ForeignKey(Board, models.CASCADE)

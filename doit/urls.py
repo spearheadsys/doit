@@ -64,8 +64,8 @@ urlpatterns = [
     url(r'^cards/', include('card.urls')),
     # boards / projects
     url(r'^boards/', include('board.urls')),
-    # include reports
-    url(r'^reports/', include('report.urls')),
+    # include analytics
+    url(r'^analytics/', include('analytics.urls')),
     # attachments
     url(r'^attachments/', include('attachment.urls')),
     # comments or notes

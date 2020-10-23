@@ -64,7 +64,7 @@ def generate_card_stats(period, user):
         message = """
 Hi %s,
 
-Here is your DoIT daily Cards report.
+Here is your DoIT daily Cards analytics.
 
 All your Cards: %d
 Overdue Cards: %d
@@ -115,7 +115,7 @@ DoIT
         )
         # changed and prepare appropriate message
         send_mail(
-            'DoIT daily Cards report',
+            'DoIT daily Cards analytics',
             formatted_message,
             doit_myemail,
             [str(user.email)],
