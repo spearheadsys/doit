@@ -23,24 +23,39 @@
 {% if user.profile_user.is_customer is not True %}
   <!-- first row  / PERSONAL -->
   <div class="uk-padding uk-child-width-1-6@m uk-child-width-1-3@s uk-grid-small uk-grid-match uk-flex-left uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
-    <div id="no-owner-or-company" >
+
+    {% if cardswithoutcompany %}
+    <div id="no-owner-or-company">
       <cards-without-owner-or-company-component></cards-without-owner-or-company-component>
     </div>
-    <div id="my-major-cards" >
+    {% endif %}
+
+    {% if mymajorcards %}
+    <div id="my-major-cards">
       <my-major-cards-component></my-major-cards-component>
     </div>
+    {% endif %}
+
     <div id="my-normal-cards" >
       <my-normal-cards-component></my-normal-cards-component>
     </div>
+
     <div id="my-minor-cards" >
       <my-minor-cards-component></my-minor-cards-component>
     </div>
+
+    {% if myincidents %}
     <div id="my-open-incidents" >
       <my-open-incidents-component></my-open-incidents-component>
     </div>
+    {% endif %}
+
+    {% if myoverduecards %}
     <div id="my-overdue-cards" >
       <my-overdue-cards-component></my-overdue-cards-component>
     </div>
+    {% endif %}
+
     <div id="my-open-cards" >
       <my-open-cards-component></my-open-cards-component>
     </div>
