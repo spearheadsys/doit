@@ -192,11 +192,13 @@
   {% endif %}
 
  {% if page_name == "Edit Card" %}
+
   <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom uk-padding-remove-top uk-margin-left">
     <li><a href="/boards/">Boards</a></li>
     <li><a href="/cards/?board={{card.board.id}}" >{{card.board.name}}</a></li>
     <li>#{{card.id}} / {{card}}</li>
   </ul>
+
   {% endif %}
 
   {% if page_name == "Profile" %}
