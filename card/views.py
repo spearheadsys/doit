@@ -14,9 +14,7 @@ from django.core import serializers
 # helps us negate objects
 from django.db.models import Q, Sum, Max, Min, F
 # doit models
-from card.models import Card, Column, Organization, Board, Task, \
-    Columntype, Reminder
-# from card.forms import CardsForm
+from card.models import Card, Column, Organization, Board, Columntype
 from comment.models import Comment
 from contact.models import UserProfile
 from attachment.models import Attachment
@@ -24,9 +22,9 @@ from attachment.forms import AttachmentForm
 from comment.forms import CommentForm
 # forms
 from card.forms import CardsForm, ColumnForm, EditCardForm, \
-    EditColumnForm, BoardFormSet, ReminderForm
+    EditColumnForm, BoardFormSet
 # date stuff
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from django.views.decorators.csrf import csrf_exempt
 # django settings
 from django.conf import settings
@@ -47,6 +45,7 @@ from email.utils import parseaddr, getaddresses
 from django.core.mail import send_mail
 from django.core.exceptions import ObjectDoesNotExist
 import re
+import ast
 
 # GLOBALS
 doitVersion = settings.DOIT_VERSION
@@ -362,10 +361,8 @@ def addcard(request):
             created_time=datetime.now(),
             content_type=ctype,
             object_id=card_created.id,
-            action=" created the card ",
-            updated_fields=(' on board ') + str(
-                card_created.board.name) + str(' and column ') + str(
-                card_created.column.title),
+            action=[card_created.board.id, card_created.column.id],
+            updated_fields="created ['card']",
             owner=u,
         )
         tracker.save()
@@ -453,99 +450,15 @@ def addcard(request):
             }
             return render(request, 'cards/addcard.html', context_dict)
 
-        # not very helpful TODO something
-        # return render(request, 'cards/addcard.html', context_dict)
-
-
-@login_required
-@staff_member_required
-def add_reminder(request, card=None, **kwargs):
-    """
-    Add a reminder to a card.
-    """
-    context = RequestContext(request)
-    if request.is_ajax() or request.method == 'POST':
-        reminderform = ReminderForm(request.POST)
-        if reminderform.is_valid():
-            new_reminder = reminderform.save()
-
-            tidy_up =  Reminder.objects.get(id=new_reminder.id)
-            if not tidy_up.owner:
-                tidy_up.owner = request.user
-                tidy_up.save()
-
-        return JsonResponse({'status': 'OK'})
-    else:
-        return JsonResponse({'status': 'NOK'}, status=500)
-
-
-@login_required
-@staff_member_required
-def get_reminders(request):
-    if request.is_ajax() or request.method == 'GET':
-        q = request.GET.get('card', '')
-        card = Card.objects.get(id=q)
-        u = User.objects.get(username=request.user)
-        reminders = Reminder.objects.filter(
-            card=card.id)
-        results = []
-        # TODO: if noprofile picture all goes to hell and reminders will not load
-        for co in reminders:
-            co_json = {}
-            co_json['id'] = co.id
-            # NOTE: we "force" return a localtime object since we do not go through the django template
-            # therefore our datetime object here displays UTC. We use this everywhere we bypass (json/ajax)
-            # a a django template
-            # co_json['reminder_time'] = co.reminder_time
-            co_json['reminder_time'] = str(timezone.localtime(co.reminder_time))
-            co_json['owner'] = str(
-                UserProfile.objects.get(user_id=co.owner_id).picture)
-            results.append(co_json)
-    return HttpResponse(json.dumps(results, indent=4, sort_keys=True, default=str), content_type='application/json')
-
-@login_required
-@staff_member_required
-def get_reminders_count(request):
-    if request.is_ajax() or request.method == 'GET':
-        q = request.GET.get('card', '')
-        card = Card.objects.get(id=q)
-        u = User.objects.get(username=request.user)
-        reminders = Reminder.objects.filter(
-            card=card.id,
-            notified=False
-        )
-    return HttpResponse(json.dumps(reminders.count()), content_type='application/json')
-
-
-@login_required
-@staff_member_required
-def delete_reminder(request):
-    if request.is_ajax() or request.method == 'GET':
-        q = request.GET.get('reminder', '')
-        # print("reminder is >>>> ", q)
-        reminder = Reminder.objects.get(id=q)
-        if reminder.delete():
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        else:
-            return JsonResponse({'status': 'NOK'}, status=500)
-    else:
-        return JsonResponse({'status': 'NOK'}, status=500)
-
-
 @login_required
 @staff_member_required
 def addColumn(request):
     current_url = resolve(request.path_info).url_name
 
-    if request.method == 'POST':  # If the form has been submitted...
+    if request.method == 'POST':
         form = ColumnForm(request.POST)
         if form.is_valid():
-            # add card to database
-            # obj = model(**form.cleaned_data)
-            # model_instance = form.save(commit=False)
-            # model_instance =
             form.save()
-
             return HttpResponseRedirect('/cards/')
 
     context = RequestContext(request)
@@ -557,7 +470,6 @@ def addColumn(request):
         'active_url': current_url,
         'form': form,
         'formSet': formSet, }
-    # return render_to_response('cards/addcolumn.html', context_dict, context)
     return render(request, 'cards/addcolumn.html', context_dict, context)
 
 
@@ -574,12 +486,6 @@ def deleteCard(request, card=None):
         # delete all comments
         for c in Comment.objects.filter(object_id=card):
             c.delete()
-        # delete all reminders
-        for r in Reminder.objects.filter(card=card):
-            r.delete()
-        # delete all tasks
-        for t in Task.objects.filter(object_id=card):
-            t.delete()
         # delete the card
         Card.objects.get(id=card).delete()
     # Todo: to where you came from
@@ -604,19 +510,23 @@ def movecard(request):
 
         if str(wcol.usage) == "Done":
             workon_card.closed = True
-            action_text = str(" closed the card ")
-            workon_card.save()
+            action_text = " closed the card "
+            updated_fields = "closed ['card']"
+            # workon_card.save()
         elif str(previous_column) == "Done" and str(wcol) == "Done":
             action_text = str(" updated already closed card ")
+            updated_fields = "updated ['card']"
             workon_card.closed = True
-            workon_card.save()
+            # workon_card.save()
         elif str(previous_column) == "Done" and str(wcol) != "Done":
             action_text = str(" reopened closed card and placed it in the ") + str(wcol) + str(" column ")
+            updated_fields = "updated ['card']"
             workon_card.closed = False
-            workon_card.save()
+            # workon_card.save()
         else:
-            action_text=' from ' + str(previous_column) + ' to ' + str(workon_card.column)
-            workon_card.save()
+            action_text = [previous_column.id, workon_card.column.id]
+            updated_fields = "updated ['card']"
+        workon_card.save()
 
         # MOVE CREATED TRACKER
         ctype = ContentType.objects.get_for_model(workon_card)
@@ -624,9 +534,10 @@ def movecard(request):
             created_time=datetime.now(),
             content_type=ctype,
             object_id=workon_card.id,
-            updated_fields=str(action_text),
+
+            updated_fields=str("updated ['column']"),
             owner=request.user,
-            action=str(" moved card "),
+            action=action_text
         )
         tracker.save()
 
@@ -747,7 +658,8 @@ def movecardtoboard(request):
             workon_card.closed = False
             workon_card.save()
         else:
-            action_text=' from ' + str(previous_column) + ' to ' + str(workon_column)
+            action_text = [previous_column.id, workon_column.column.id]
+
             workon_card.column = workon_column
             workon_card.board = workon_board
             workon_card.save()
@@ -758,9 +670,9 @@ def movecardtoboard(request):
             created_time=datetime.now(),
             content_type=ctype,
             object_id=workon_card.id,
-            updated_fields=str(action_text),
+            updated_fields=str("moved card from board %s " % workon_board),
             owner=request.user,
-            action=str(" moved card from board %s " % workon_board),
+            action=action_text
         )
         tracker.save()
 
@@ -783,7 +695,6 @@ def update_card_order(request):
         card_order = request.POST.getlist('arr', False)
         order = json.loads(card_order[0])
         position = 0
-        print("The ORDER is >>> ", order)
         for card in order['elementsOrder']:
             card_obj = Card.objects.get(id=card)
             card_obj.order = position
@@ -884,7 +795,7 @@ def editCard(request, card=None):
     """
     instance = Card.objects.get(id=card)
     board = instance.board_id
-    previous_column = Card.objects.get(id=card).column.usage
+    previous_column = Card.objects.get(id=card).column
     boards = Board.objects.filter(archived=False)
 
     # if request.method == 'POST':
@@ -904,18 +815,20 @@ def editCard(request, card=None):
                 instance.closed = True
                 action_text = str(" closed the card ")
                 instance.save()
-            elif str(previous_column) != "Done" and str(instance.column) == "Done":
+            elif str(previous_column.usage) != "Done" and str(instance.column) == "Done":
                 action_text = str(" closed the card ")
                 instance.closed = True
                 instance.save()
-            elif str(previous_column) == "Done" and str(instance.column) == "Done":
+            elif str(previous_column.usage) == "Done" and str(instance.column) == "Done":
                 action_text = str(" updated already closed card ")
                 instance.closed = True
                 instance.save()
-            elif str(previous_column) == "Done" and str(instance.column) != "Done":
+            elif str(previous_column.usage) == "Done" and str(instance.column) != "Done":
                 action_text = str(" reopened closed card and placed it in the ") + str(instance.column) + str(" column ")
                 instance.closed = False
                 instance.save()
+            elif str(instance.column) != str(previous_column):
+                action_text=[previous_column.id, instance.column.id]
             else:
                 action_text=str(" edited the card ")
             ctype = ContentType.objects.get_for_model(instance)
@@ -923,7 +836,7 @@ def editCard(request, card=None):
                 created_time=datetime.now(),
                 content_type=ctype,
                 object_id=instance.id,
-                updated_fields=str(" updated ") + str(form.changed_data),
+                updated_fields=str("updated ") + str(form.changed_data),
                 owner=request.user,
                 action=action_text
             )
@@ -948,10 +861,8 @@ def editCard(request, card=None):
     if request.user.profile_user.is_operator:
         card = Card.objects.select_related().get(id=card)
         ctype = ContentType.objects.get_for_model(card)
-        addreminder_form = ReminderForm()
         attachments = Attachment.objects.filter(
             card=card.id)
-        # print("attachments >>>> ", attachments)
         comments = Comment.objects.filter(content_type__pk=ctype.id, object_id=card.id).order_by('-created_time')
         editcard_form = EditCardForm(instance=instance)
         editcard_form.fields['watchers'].queryset = User.objects.filter(is_active=True)
@@ -966,7 +877,8 @@ def editCard(request, card=None):
         # attachemnts
         attachment_form = AttachmentForm()
         # tracker stuff
-        tracker = Tracker.objects.prefetch_related().filter(object_id=card.id)
+        tracker = Tracker.objects.all().filter(object_id=card.id)
+
         boards = Board.objects.all().filter(archived=False)
         context_dict = {
             'site_title': "Cards | Spearhead Systems",
@@ -979,7 +891,6 @@ def editCard(request, card=None):
             'watchers': card_watchers,
             'tracker': tracker,
             'comments': comments,
-            'addreminder_form': addreminder_form,
             'boards': boards,
             'SITE_URL': SITE_URL,
 
@@ -993,7 +904,6 @@ def editCard(request, card=None):
         card = instance
         if card.company == request.user.profile_user.company:
             ctype = ContentType.objects.get_for_model(card)
-            addreminder_form = ReminderForm()
             attachments = Attachment.objects.filter(
                 card=card.id)
             comments = Comment.objects.filter(
@@ -1007,16 +917,13 @@ def editCard(request, card=None):
             # comments
             comment_form = CommentForm()
             card_watchers = User.objects.all().filter(Watchers=card.id)
-
             # get board id
             card_board = card.board_id
             editcard_form.fields["column"].queryset = Column.objects.filter(
                 board_id=card_board)
-
             # tracker stuff
             tracker = Tracker.objects.filter(object_id=card.id)
             # end tracker stuff
-
             # attachments
             attachment_form = AttachmentForm()
 
@@ -1031,7 +938,6 @@ def editCard(request, card=None):
                 'watchers': card_watchers,
                 'tracker': tracker,
                 'comments': comments,
-                'addreminder_form': addreminder_form,
                 'attachment_form': attachment_form,
                 'SITE_URL': SITE_URL,
             }
@@ -1039,9 +945,7 @@ def editCard(request, card=None):
             # if superuser or operator
         elif request.user in instance.watchers.all():
             card = instance
-
             ctype = ContentType.objects.get_for_model(card)
-            addreminder_form = ReminderForm()
             attachments = Attachment.objects.filter(
                 card=card.id)
             comments = Comment.objects.filter(
@@ -1074,7 +978,6 @@ def editCard(request, card=None):
                 'watchers': card_watchers,
                 'tracker': tracker,
                 'comments': comments,
-                'addreminder_form': addreminder_form,
                 'attachment_form': attachment_form,
                 'boards': boards,
                 'SITE_URL': SITE_URL,
@@ -1082,9 +985,7 @@ def editCard(request, card=None):
             return render(request, 'cards/editcard-ext.html', context_dict)
     elif request.user.profile_user.company == instance.company:
         card = instance
-
         ctype = ContentType.objects.get_for_model(card)
-        addreminder_form = ReminderForm()
         attachments = Attachment.objects.filter(
             card=card.id)
         comments = Comment.objects.filter(
@@ -1117,7 +1018,6 @@ def editCard(request, card=None):
             'watchers': card_watchers,
             'tracker': tracker,
             'comments': comments,
-            'addreminder_form': addreminder_form,
             'attachment_form': attachment_form,
             'SITE_URL': SITE_URL,
         }
@@ -1296,136 +1196,13 @@ def get_watchers(request):
     return HttpResponse(data, content_type='application/json')
 
 
-@login_required
-@staff_member_required
-# @csrf_exempt
-def addtask(request, card=None, **kwargs):
-    """
-    Add a task
-    :param request:
-    :param card:
-    :param kwargs:
-    :return:
-    """
-    # current_url = resolve(request.path_info).url_name
-    if request.is_ajax() or request.method == 'POST':
-        # get the user if not then use request.user
-        userid = request.user
-        card = request.POST['card']
-        card_object = Card.objects.get(id=card)
-        task = request.POST['task']
-        ctype = ContentType.objects.get_for_model(card_object)
-        taskg_obj = Task.objects.create(
-            task=task,
-            content_type=ctype,
-            object_id=card_object.id,
-            owner=userid
-        )
-        # ADD TASK TRACKER
-        ctype = ContentType.objects.get_for_model(taskg_obj)
-        # updates = {
-        #   'task': taskg_obj.task,
-        #   'done': taskg_obj.done,
-        #   'owner': int(taskg_obj.owner.id),
-        # }
-
-        tracker = Tracker.objects.create(
-            created_time=datetime.now(),
-            content_type=ctype,
-            object_id=card_object.id,
-            action=str(" created a task "),
-            updated_fields=str(taskg_obj),
-            owner=userid,
-        )
-        tracker.save()
-        # END ADD TASK TRACKER
-
-        # TODO: return something meaningul
-        # return render_to_response('cards/task.html')
-        return JsonResponse({'status': 'OK'})
-    else:
-        return JsonResponse({'status': 'NOK'}, status=500)
 
 
-@login_required
-@staff_member_required
-# @csrf_exempt
-def update_task(request):
-    """
-    Update a task
-    """
-    # current_url = resolve(request.path_info).url_name
-    if request.is_ajax() or request.method == 'POST':
-        # xhr = request.POST.has_key('xhr')
-        # userid = request.user
-        task = request.POST['task']
-        status = request.POST['status']
-        task_obj = Task.objects.get(id=task)
-
-        if status == "True":
-            task_obj.done = bool(1)
-            tracker_text = str(" finished task ") + str(task_obj)
-            task_obj.save()
-        else:
-            task_obj.done = bool(0)
-            tracker_text = str(" reopened task ") + str(task_obj)
-            task_obj.save()
-
-        # UPDATE TASK TRACKER
-        # TODO: how do i get card id/name?
-        ctype = ContentType.objects.get_for_model(task_obj)
-        tracker = Tracker.objects.create(
-            created_time=datetime.now(),
-            content_type=ctype,
-            object_id=task_obj.object_id,
-            action=tracker_text,
-            updated_fields=str(''),
-            owner=request.user,
-        )
-        tracker.save()
-        # END UPDATE TASK TRACKER
-
-        # TODO: return something meaningul
-        # return render_to_response('cards/task.html')
-        return JsonResponse({'status': 'OK'})
 
 
-@login_required
-def get_tasks(request):
-    # context = RequestContext(request)
-    if request.is_ajax() or request.method == 'GET':
-        q = request.GET.get('card', '')
-        card = Card.objects.get(id=q)
-        # what is this?
-        ctype = ContentType.objects.get_for_model(card)
-        tasks = Task.objects.filter(
-            content_type__pk=ctype.id,
-            object_id=card.id)
-        results = []
-        for co in tasks:
-            co_json = {}
-            co_json['id'] = co.id
-            co_json['task'] = co.task
-            co_json['done'] = co.done
-            co_json['created_time'] = str(co.created_time)
-            picture = UserProfile.objects.get(user_id=co.owner.id)
-            co_json['owner'] = str(picture.picture)
-            results.append(co_json)
-        data = json.dumps(results)
-    return HttpResponse(data, content_type='application/json')
 
-@login_required
-def get_task_count(request):
-    if request.is_ajax() or request.method == 'GET':
-        q = request.GET.get('card', '')
-        card = Card.objects.get(id=q)
-        ctype = ContentType.objects.get_for_model(card)
-        tasks = Task.objects.filter(
-            content_type__pk=ctype.id,
-            object_id=card.id,
-            done=False)
-        data = json.dumps(tasks.count())
-    return HttpResponse(data, content_type='application/json')
+
+
 
 
 # mailgun
