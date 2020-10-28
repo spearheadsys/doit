@@ -9,8 +9,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
-from card.models import Card, Column, Worklog, Priority, Board, Task, \
-    Columntype, Comment
+from card.models import Card, Column, Worklog, Priority, Board, Columntype, Comment
 from contact.models import UserProfile
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -90,7 +89,6 @@ def home(request):
     # launch wizard here
     if request.user.is_authenticated:
         u = User.objects.get(username=request.user)
-        noowner = Card.objects.all().filter(closed=False, owner=None).order_by('-due_date')
         cards = Card.objects.all().filter(closed=False, owner=u)
         boards = Board.objects.all().filter(archived=False)
         allcards = Card.objects.all().filter(closed=False).distinct()
@@ -132,12 +130,8 @@ def home(request):
                     allcustomercards += 1
 
         myoverduecards = []
-        for i in cards:
-            if i.is_overdue and str(i.column.usage) != "Backlog":
-                myoverduecards.append(i)
-        myoverduecards.sort(key=lambda c: c.due_date
-            if (c and c.due_date)
-            else timezone.now())
+        myoverduecards = cards.filter(~Q(column__usage__name="Backlog")).filter(due_date__lt = today_date).count()
+
         mycardsoverduetoday = []
         for i in cards:
             if i.due_date:
@@ -166,8 +160,11 @@ def home(request):
                 mybacklogcards.append(i)
         cardswithoutcompany = []
         for i in allcards:
-            if not i.company and str(i.column.usage) != "Backlog":
+            if not i.company or not i.owner and str(i.column.usage) != "Backlog":
                 cardswithoutcompany.append(i)
+
+        majorprio = Priority.objects.get(title='Major')
+        mymajorcards = cards.filter(priority=majorprio).count()
         cardswithoutduedate = []
         for i in allcards:
             if not i.due_date and str(i.column.usage) != "Backlog":
@@ -243,7 +240,6 @@ def home(request):
 
         # ---
         top_tags = Card.tags.most_common()[:5]
-        # print type(top_tags)
         # ---
 
         boards = Board.objects.filter(archived=False)
@@ -251,8 +247,6 @@ def home(request):
         context_dict = {
             'site_title': "DoIT | Spearhead Systems",
             'page_name': "DoIT",
-            'noowner': noowner,
-            # 'mycards': mycards,
             'customerowncards': customerowncards,
             'allcustomercards': allcustomercards,
             'myoverduecards': myoverduecards,
@@ -266,7 +260,8 @@ def home(request):
             'allcards': allcards,
             'cardswatcher': cardswatcher,
             'backlogcards': backlogcards,
-            'cardswithoutcompany': cardswithoutcompany,
+            'cardswithoutcompany': len(cardswithoutcompany),
+            'mymajorcards': mymajorcards,
             'mybacklogcards': mybacklogcards,
             'total_minutes_per_op': total_minutes_per_op,
             'group_by_owner_card_list': group_by_owner_card_list,
@@ -878,18 +873,6 @@ def getWlogsCreatedToday(request):
             results = 0
         data = json.dumps(results)
     return HttpResponse(data, content_type='application/json')
-
-@login_required
-@staff_member_required
-def getTodaysTasks(request):
-    if request.is_ajax() or request.method == 'GET':
-        try:
-            results = Task.objects.filter(created_time__gte=today_date).all().filter(owner=request.user).count()
-        except ObjectDoesNotExist:
-            results = 0
-        data = json.dumps(results)
-    return HttpResponse(data, content_type='application/json')
-
 
 @login_required
 def profile(request):
