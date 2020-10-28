@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from django.db.models import Max, Sum
 from comment.models import Comment
+from doit.models import Tracker
 from taggit.managers import TaggableManager
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
@@ -14,6 +15,7 @@ from attachment.models import Attachment
 import os
 from django.conf import settings
 from shutil import rmtree
+import time
 
 
 # cards
@@ -89,6 +91,13 @@ class Card(models.Model):
         if self.company.sla_response_time:
             return self.company.sla_response_time
 
+    def card_open_time(self):
+        # TODO: calculate how long card has been open:
+        # open means that is was in queue or documentation columns
+        if self.column.usage != "Backlog" or "Waiting":
+            return("do calculation for time spent on previous column")
+
+
     # def sla_percent(self):
     #     # idthratio card.age card.sla_response_time 100
     #     if not self.sla_response_time():
@@ -96,28 +105,11 @@ class Card(models.Model):
     #     perc = (float(self.age()) / float(self.sla_response_time())) * 100
     #     return float("%0.2f" % perc)
 
-    def has_open_tasks(self):
-        card = self
-        ctype = ContentType.objects.get_for_model(Card)
-        tasks = Task.objects.filter(
-            content_type__pk=ctype.id,
-            object_id=card.id,
-            done=False)
-        return tasks.count()
-
-    def has_open_reminders(self):
-        card = self
-        reminders = Reminder.objects.filter(
-            card=card.id,
-            notified=False)
-        return reminders.count()
-
     def age(self):
         from datetime import timedelta
         today = timezone.now()
         age = today - self.created_time
-        # TODO: how/where do I get time(period) when card was in column that should not add time? (such as waiting)
-        return int(age.total_seconds() / 60)
+        return age
 
     def time_worked(self):
         ctype = ContentType.objects.get_for_model(Card)
@@ -137,6 +129,11 @@ class Card(models.Model):
             return True
         return False
 
+    # @property
+    # def _overdue(self):
+    #     today_date = timezone.now()
+    #     Card.objects.all().filter(closed=False).filter(due_date__lt = today_date)
+
     @property
     def is_done(self):
         # get the column order and identify done column
@@ -149,10 +146,6 @@ class Card(models.Model):
         if self.column_id == board_done_column.id:
             return True
         return False
-
-    # def delete(self, *args, **kwargs):
-    #     self.card.delete()
-    #     super(Attachment, self).delete(*args, **kwargs)
 
     class Meta:
         ordering = ['created_time']
@@ -171,19 +164,6 @@ def submission_delete(sender, instance, **kwargs):
     cardpath = 'uploads/{}/{}'.format(instance.board.id, instance.id)
     if os.path.exists(os.path.join(settings.MEDIA_ROOT, cardpath)):
         rmtree(os.path.join(settings.MEDIA_ROOT, cardpath))
-    
-
-class Reminder(models.Model):
-    created_time = models.DateTimeField(auto_now_add=True)
-    modified_time = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    reminder_time = models.DateTimeField()
-    card = models.ForeignKey(Card, related_name="card_reminder", on_delete=models.CASCADE)
-    notified = models.BooleanField(default=False)
-
-    def __str__(self):
-        return str(self.created_time)
-
 
 class Columntype(models.Model):
     name = models.CharField(max_length=255)
@@ -204,23 +184,6 @@ class Column(models.Model):
     board = models.ForeignKey(Board, related_name="board_column", on_delete=models.CASCADE)
     wip = models.IntegerField(null=True, blank=True)
     order = models.IntegerField()
-    # type (usage) of the column determines the workflows that are possible
-    # a done column for example wold trigger notifications that a card
-    # is closed
-    # what if we get rid of type/usage alltogether and use workflows
-    # that can be applied to any column? leave it up to the user?
-    # Backlog/Queue (this is where they are queued)
-    # Waiting (ticket is not being worked on pending some external event)
-    # Done (ticket is closed)
-
-    # TODO:
-    # SPH (propunere de dezbatut) - tickeitng; un tichet mai vechi de 3 zile
-    # treuie sa declanseze un eveniment: alerta / notificare;
-    # un tichet in waiting/done trebuie sa anunte clientul ca NOI consideram
-    # situatia fiind remediata/in asteptare si daca el mai asteapta ceva de la
-    # noi (care este perspectiva clientului) sa ne anunte dand reply la tichet
-    # sau sa dechida unul nou
-    # usage = models.CharField(max_length=120, blank=True)
     usage = models.ForeignKey(Columntype, blank=True, null=True, related_name="column_usage", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -270,22 +233,3 @@ class CardTracker(models.Model):
 
     def __str__(self):
         return self.card
-
-
-class Task(models.Model):
-    """
-    Stores a simple task entry. It can be attached to any other object.
-    """
-    task = models.TextField()
-    created_time = models.DateField(auto_now_add=True)
-    modified_time = models.DateTimeField(auto_now=True)
-    done = models.BooleanField(default=False)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    # genericforeignkey kungfu
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-
-    def __str__(self):
-        return self.task
