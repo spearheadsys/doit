@@ -25,6 +25,14 @@ doit_myemail = settings.DOIT_MYEMAIL
 def add_comment(request):
     if request.is_ajax() or request.method == 'POST':
         comment_form = request.POST.get('comment', False)
+        cc_list = []
+        if request.POST.getlist('cc'):
+            cc = request.POST.getlist('cc')
+            for i in cc:
+                if i is not '':
+                    # todo: we do not validate if the email exists!
+                    cc_list.append(i)
+
         # TODO: if the comment form is submitted but the comment
         #         # text is empty it still ends up here only to die when
         #         # addnig ctype tracker (comment_object). either solve it here
@@ -58,7 +66,6 @@ def add_comment(request):
         u = User.objects.get(username=request.user)
 
         if comment_form and not public_close:
-            print("1. note or public")
             comment_object = Comment.objects.create(
                 owner=u,
                 comment=comment_form,
@@ -71,7 +78,6 @@ def add_comment(request):
             )
 
         if public_close and not comment_form:
-            print("2. public close and not comment_form")
             # TODO: update tracker accordingly: as of now, no tracking update for closing from here
             column_done =Columntype.objects.get(name="Done")
             board_done_column = Column.objects.get(board=related_card.board.id, usage=column_done.id)
@@ -91,7 +97,6 @@ def add_comment(request):
             related_card.save()
 
         if public_close and comment_form:
-            print("3. public close and comment_form")
             # TODO: update tracker accordingly: as of now, no tracking update for closing from here
             column_done = Columntype.objects.get(name="Done")
             board_done_column = Column.objects.get(board=related_card.board.id, usage=column_done.id)
@@ -117,9 +122,9 @@ def add_comment(request):
             created_time=datetime.now(),
             content_type=ctype,
             object_id=comment_object.id,
-            updated_fields=str(Card.objects.get(id=card).title),
+            updated_fields="comment ['card']",
             owner=userid,
-            action=str("commented on "),
+            action=str(Card.objects.get(id=card).id),
         )
         tracker.save()
         # END COMMENT TRACKER
@@ -157,20 +162,27 @@ https://doit.spearhead.systems
         if request.user.email in all_email_addresses:
             all_email_addresses.remove(request.user.email)
 
+        # if comment_object.public:
+        if cc_list:
+            all_email_addresses.append(cc_list)
+
         for recipient in all_email_addresses:
             if comment_object.public:
                 formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
                 # TODO: you get email whether you like it or not!
-                # should probably due something about this
+                # should probably do something about this
                 send_mail(
                     'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
                     formatted_message,
                     doit_myemail,
                     [recipient],
                     fail_silently=True)
+
             else:
-                # we send only to operators and superuser
-                account_type = User.objects.get(email=recipient)
+                try:
+                    account_type = User.objects.get(email=recipient)
+                except:
+                    pass
                 try:
                     if account_type.is_superuser:
                         formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
@@ -186,7 +198,7 @@ https://doit.spearhead.systems
                     elif account_type.profile_user.is_operator:
                         formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
                         # TODO: you get email whether you like it or not!
-                        # should probably due something about this
+                        # should probably do something about this
                         send_mail(
                             'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
                             formatted_message,
