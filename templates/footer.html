@@ -3,6 +3,21 @@
 {% if page_name == "Edit Card" %}
   <script type="text/javascript">
 
+
+  $("#cc-link").click(function(event) {
+    //todo prevent enter submit! this does not work
+    event.preventDefault();
+    $("#cc-span").append('<input type="email" name="cc"/>');
+
+  });
+
+  $("#cc-link2").click(function(event) {
+    //todo prevent enter submit! this does not work
+    event.preventDefault();
+    $("#cc-span2").append('<input type="email" name="cc"/>');
+
+  });
+
   $('#editcard_form').on('change', function(event){
     {#console.log("editcardform changed!!")#}
       setFormSubmitting();
