@@ -6,8 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 import json, os
 import board
-from card.models import Column, Board, Card, Columntype, Task, Reminder, \
-    Comment, Attachment
+from card.models import Column, Board, Card, Columntype, Comment, Attachment
 from contact.models import UserProfile
 from board.forms import BoardsForm, EditBoardForm
 from card.forms import ColumnForm, AddColumnForm
@@ -22,7 +21,6 @@ from dal import autocomplete
 from taggit.models import Tag
 # GLOBALS
 doitVersion = settings.DOIT_VERSION
-
 
 # TODO: how do we make sure that a user/customer is not accesing a board which
 # he is not a contact / watcher for?
@@ -89,7 +87,6 @@ def boards(request):
             'alloverdue': all_overdue_cards.count(),
             'board_due_date': board.due_date,
             'board_created_time': board.created_time,
-            # 'tasks': tasks.count(),
         }
         list_of_stats.append(boarddict)
 
@@ -97,7 +94,6 @@ def boards(request):
     # totals
     all_open_cards = 0
     all_overdue_cards = 0
-    all_tasks = 0
     for item in list_of_stats:
         all_open_cards += item['allopen']
         all_overdue_cards += item['alloverdue']
@@ -271,12 +267,6 @@ def deleteBoard(request, board=None):
         # delete associated cards
         board_obj = Board.objects.get(id=board)
         for card in Card.objects.filter(board=board):
-            # delete all tasks
-            for t in Task.objects.filter(object_id=card.id):
-                t.delete()
-            # delete all reminders
-            for r in Reminder.objects.filter(card=card.id):
-                r.delete()
             # delete all comments
             for c in Comment.objects.filter(object_id=card.id):
                 c.delete()
