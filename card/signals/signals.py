@@ -1,13 +1,13 @@
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from card.models import Card, Worklog
-from doit.models import Tracker
-from datetime import datetime
-from django.contrib.contenttypes.models import ContentType
+# from django.db.models.signals import post_save, pre_save, post_init
+# from django.dispatch import receiver
+# from card.models import Card, Worklog
+# from doit.models import Tracker
+# from datetime import datetime
+# from django.contrib.contenttypes.models import ContentType
 
 
-# @receiver(post_save, sender=Worklog)
-# def worklog_post_created_signal(sender, instance, **kwargs):
+# @receiver(post_save, sender=Card)
+# def card_created_signal(sender, instance, **kwargs):
 # 	#print kwargs
 # 	the_worklog = Worklog.objects.get(pk=instance.pk)
 # 	if kwargs.get('created', False):
@@ -42,11 +42,11 @@ from django.contrib.contenttypes.models import ContentType
 #     # print "CARD_POST_CREATED_SIGNAL >>>>>>>>>>>>>> "
 #     the_card = Card.objects.get(pk=instance.pk)
 #     if the_card.closed:
-#         print("The card %s is in state %s ") % (the_card.title, str(the_card.closed))
+#         print("SIGNAL >>>>> The card %s is in state %s ") % (the_card.title, str(the_card.closed))
 #     else:
-#         print("This card is not closed.")
+#         print("SIGNAL >>>>> This card is not closed.")
 #     if kwargs.get('created', False):
-#         print("This card is closed.")
+#         print("SIGNAL >>>>> This card is closed.")
 
 
 
@@ -118,93 +118,33 @@ from django.contrib.contenttypes.models import ContentType
 # 	print sender
 
 
-# @receiver(post_init, sender=Card)
-# def card_post_init_created_signal(instance, create, **kwargs):
-# 	print "POST INIT SIGNAL >>>>>>"
-# 	print kwargs
+# @receiver(post_init, sender=Card, dispatch_uid="card_pre_save_disp_uid")
+# def card_post_init_created_signal(instance, **kwargs):
+#     obj = instance
+#     old_object = Card.objects.get(pk=obj.pk)
+#     previous_column = old_object.column
+#     current_column = obj.column
+#     print(previous_column, current_column)
 
 
-# @receiver(pre_save, sender=Card)
-# def card_pre_created_signal(**kwargs):
-# 	print "PRE SAVE SIGNAL >>>>>>"
-# 	print kwargs
 
 
-# @receiver(post_save, sender=Card)
+# @receiver(pre_save, sender=Card, dispatch_uid="card_pre_save_disp_uid")
+# def card_pre_save_signal(sender, instance, **kwargs):
+#     obj = instance
+#     old_object = Card.objects.get(pk=obj.pk)
+#     previous_column = old_object.column
+#     current_column = obj.column
+#     print(previous_column, current_column)
+
+
+# @receiver(post_save, sender=Card, dispatch_uid="card_post_save_disp_uid")
 # def card_post_created_signal(instance, created, **kwargs):
-# 	print "POST SAVE SIGNAL >>>>>>>"
-# 	print kwargs
+#     print("CARD POST SAVE SIGNAL >>>>>>>")
+#     obj = instance
+#     old_object = Card.objects.get(pk=obj.pk)
+#     previous_column = old_object.column
+#     current_column = obj.column
+#     print(previous_column, current_column)
 
-# 	if created:
-# 		obj = instance
-# 		# get owners email
-# 		# we should do this some other way
-# 		try:
-# 			owner_email = obj.owner.email
-# 		except:
-# 			None
-# 			# sys.exit(0)
-# 			# watchers =
-# 		message = """
-# 			A new card has been Created.
-#
-# 			Details:
-# 				Card title: %s
-# 				Assigned to: %s
-# 				Description: %s
-# 				Priority: %s
-#
-# 			For more details view http://doit.sphs.ro.
-#
-# 			--
-# 			You received this message because you are either the owner or a
-# 			watcher for this card.
-#
-# 			You can modify your email preferences <a href="#">here</a>.
-# 			"""
-# 		formatted_message = message % (obj.title, obj.owner, obj.description, obj.priority)
-# 		# todo: add to eventual tracker
-# 		# todo check via if or something whether something changed, what
-# 		# changed and prepare appropriate message
-# 		send_mail(
-# 			'DoIT card created: ' + obj.title,
-# 			formatted_message, 'doit@sphs.ro',
-# 			[owner_email],
-# 			fail_silently=False)
-# 	else:
-# 		print ">>>>> card_UPDATED_signal >>>>>"
-# 		obj = instance
-# 		old_object = Card.objects.get(pk=obj.pk)
-# 		cardid = old_object.id
-# 		# 	# get owners email
-# 		# I believe this is ugly and we should do this some other way
-# 		try:
-# 			owner_email = obj.owner.email
-# 		except:
-# 			# pass - portal users do not assign an owner
-# 			pass
-# 			# sys.exit(0)
-# 		# 	# todo: get watchers of card to set-up recipients list
-# 		# 	# todo: if owner change do something special
-# 		previous_column = old_object.column
-# 		current_column = obj.column
-# 		message = """
-# The Card with id (%s) has been updated.
-#
-# For more details view click here.
-#
-# --
-# You received this message because you are either the owner or a watcher for this card.
-# You can modify your email preferences here.
-# """
-# 		formatted_message = message % cardid
-# 		# 	#todo: add to eventual tracker
-# 		# 	#todo check via if or something whether something changed,
-# 		# what changed and prepare appropriate message
-# 		send_mail(
-# 			'DoIT card modified: ' + obj.title,
-# 			formatted_message, 'doit@sphs.ro',
-# 			[owner_email],
-# 			fail_silently=False)
-#
 # signals.post_save.connect(card_created_signal, sender=Card)
