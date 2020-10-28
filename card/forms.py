@@ -1,30 +1,9 @@
 from dal import autocomplete
 from django import forms
-from card.models import Card, Column, Task, Organization, Reminder
+from card.models import Card, Column, Organization
 from board.models import Board
 from django.forms.models import inlineformset_factory
 
-
-class ReminderForm(forms.ModelForm):
-    class Meta:
-        model = Reminder
-        fields = (
-            'card',
-            'owner',
-            'reminder_time',)
-        widgets = {
-            'card': forms.HiddenInput(),
-            'owner': autocomplete.Select2(
-                url='owner-autocomplete',
-                attrs={
-                    'class': 'uk-input',
-                    'data-placeholder': 'Who should get the reminder?'
-                }
-            ),
-        }
-        labels = {
-            'owner': ''
-        }
 
 
 class CardsForm(forms.ModelForm):
@@ -65,6 +44,7 @@ class CardsForm(forms.ModelForm):
                 url='watcher-autocomplete',
             ),
             'tags': autocomplete.TagSelect2(
+
                 url='tag-autocomplete'
             ),
             'company': autocomplete.Select2(
@@ -126,7 +106,6 @@ class EditCardForm(forms.ModelForm):
             'start_time': forms.TextInput(
                 attrs={
                     'class': 'uk-input',
-                    'style': 'width: 100%;',
                 }
             ),
             'due_date': forms.TextInput(
@@ -149,39 +128,35 @@ class EditCardForm(forms.ModelForm):
                 attrs={
                     'class': 'uk-input'
                 }),
-            'watchers': autocomplete.Select2Multiple(
+            'watchers': autocomplete.ModelSelect2Multiple(
                 url='watcher-autocomplete',
                 attrs={
-                #     'class': 'uk-input',
-                    'style': 'width: 100%',
-                #     'data-placeholder': 'Select Watchers for this Card',
+                    'data-placeholder': 'Watchers?',
+                    'class': 'uk-input',
                 }
             ),
             'company': autocomplete.ModelSelect2(
                 url='company-autocomplete',
                 attrs={
-                    'class': 'uk-input uk-width-expand',
-                    'style': 'width: 100%'
+                    'class': 'uk-input ',
                 }
             ),
-            'owner': forms.Select(
-                # url='owner-autocomplete',
+            'owner': autocomplete.Select2(
+                url='owner-autocomplete',
                 attrs={
-                    'class': 'uk-input uk-width-expand',
-                    'style': 'width: 100%;',
-                    'data-placeholder': 'Select an Owner for this Card',
+                    'class': 'uk-input uk-form-small',
+                    'data-placeholder': 'Owner?'
                 }
             ),
             'tags': autocomplete.TaggitSelect2(
                 url='tag-autocomplete',
                 attrs={
-                    # 'class': 'uk-input',
-                    'style': 'width: 100%;',
+                    'class': 'uk-input',
                 }),
             'estimate': forms.NumberInput(
                 attrs={
                     'step': '15',
-                    'class': 'uk-input',
+                    'class': 'uk-input uk-form-width-small uk-form-small',
                 }),
         }
 
@@ -200,10 +175,6 @@ class ColumnForm(forms.ModelForm):
         model = Column
         fields = ("__all__")
 
-
-class TaskForm():
-    model = Task
-    fields = 'task'
 
 
 AddColumnForm = inlineformset_factory(
