@@ -29,315 +29,9 @@
      flex-wrap: wrap;
      justify-content: space-between;
   }
+
   </style>
 
-{# sidebar, card details #}
-<div id="offcanvas-overlay" uk-offcanvas="overlay: true">
-  <div class="uk-offcanvas-bar" style="width: 450px;" >
-    <button class="uk-offcanvas-close" type="button" uk-close></button>
-
-<!--    ddd -->
-    <div class="uk-width" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
-      <div class="uk-width-auto uk-padding-small uk-padding-remove-top">
-        <!-- TODO: get worklogs per card (except non-billable  -->
-
-      </div>
-      <ul uk-accordion="multiple: false">
-        <li class="">
-          <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Card details</span></a>
-          <div class="uk-accordion-content" id="carddetails">
-            <form action="" class="uk-form-stacked" id="editcard_form" method="POST" role="form" onsubmit="setFormSubmitting()" onclick="setFormSubmitting()">
-              {% csrf_token %}
-              {{ editcard_form.media }}
-              {{ editcard_form.board }}
-              {{ editcard_form.title }}
-              <div class="uk-margin-small">
-                <div>
-                  <span class="uk-link">
-                    <a class="uk-link" href="#movecard-modal" uk-toggle><span uk-icon="icon: move"></span>Board</a>
-                    <span></span>
-                  </span>
-                </div>
-
-                <div uk-form-custom="target: > * > span:last-child">
-                  {{ editcard_form.column }}
-                  <span class="uk-link">
-                    <span uk-icon="icon: pencil"></span>Column
-                    <span></span>
-                  </span>
-                </div>
-              </div>
-                <div class="uk-margin-small">
-                  <div uk-form-custom="target: > * > span:last-child">
-                    {{ editcard_form.priority }}
-                    <span class="uk-link">
-                      <span uk-icon="icon: pencil"></span>Priority
-                      <span></span>
-                    </span>
-                  </div>
-                </div>
-                <div class="uk-margin-small">
-                  <div uk-form-custom="target: > * > span:last-child">
-                    {{ editcard_form.type }}
-                    <span class="uk-link">
-                      <span uk-icon="icon: pencil"></span>Type
-                      <span></span>
-                    </span>
-                  </div>
-                </div>
-                <div class="uk-margin-small">
-                  <div class="uk-form-controls">
-                    {{ editcard_form.start_time.label }}
-                    {{ editcard_form.start_time }}
-                  </div>
-                </div>
-                <div class="uk-margin-small">
-                  <div class="uk-form-controls">
-                    {{ editcard_form.due_date.label }}
-                    {{ editcard_form.due_date }}
-                  </div>
-                </div>
-
-                <div class="uk-margin-small">
-                  <div class="uk-form-controls">
-                    {{ editcard_form.company.label }}
-                    {{ editcard_form.company }}
-                  </div>
-                </div>
-                <div class="uk-margin-small">
-                  <div class="uk-form-controls">
-                    {{ editcard_form.owner.label }}
-                    {{ editcard_form.owner }}
-                  </div>
-                </div>
-                <div class="uk-margin-small">
-                  <div class="uk-form-controls">
-                    <div>{{ editcard_form.watchers.label }}</div>
-                    {{ editcard_form.watchers}}
-                  </div>
-                </div>
-                <div class="uk-margin-small">
-                  <div class="uk-form-controls">
-                    {{ editcard_form.estimate.label }}
-                    {{ editcard_form.estimate }}
-                  </div>
-                </div>
-                <div class="uk-margin-small">
-                  <div class="uk-form-controls">
-                    <div>{{ editcard_form.tags.label }}</div>
-                    {{ editcard_form.tags }}
-                  </div>
-                </div>
-            </form>
-          </div>
-        </li>
-
-        <li>
-          <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Reminders
-            {% if card.has_open_reminders > 0 %}
-              <span class="uk-badge">
-                <span id="vue_reminders" v-cloak >[[open_reminders]]</span>
-              </span>
-            {% endif %}
-            </span>
-          </a>
-          <div class="uk-accordion-content" id="reminders">
-            <form action="/cards/addreminder/" class="uk-form-stacked" id="addreminder_form" method="post" onsubmit="setFormSubmitting()">
-              {% csrf_token %}
-              {{ addreminder_form.as_p }}
-              <input name="card" type="hidden" value="{{card.id}}">
-              <div class="">
-                <a class="uk-button-small uk-button-default" href="#" onclick="send_reminder();setFormSubmitting();"
-              type="submit">Add Reminder</a>
-
-                <a aria-controls="collapseReminder" aria-expanded="true"
-                class="uk-button-small uk-button-secondary"
-                 data-toggle="collapse" href="#collapseReminders"
-                  onclick="get_reminders({{ card.id }}); setFormSubmitting();">View Reminders
-                </a>
-              </div>
-              <!-- TODO: post a comment (added a reminder?)?-->
-            </form>
-            <!-- REMINDER MESSAGES -->
-            <!-- TODO: get via ajax the result (class) and the message itself -->
-            <div class="hidden alert alert-success" id="reminder-mess-success" role="alert"></div>
-            <div class="hidden alert alert-danger" id="reminder-mess-failed" role="alert"></div>
-            <div class="uk-card" id="collapseReminders"></div>
-            <!--=== END Collapsable REMINDERS  ===-->
-          </div>
-        </li>
-
-        <li>
-          <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Tasks
-            {% if card.has_open_tasks > 0 %}
-              <span class="uk-badge">
-                <span id="opentasks" v-cloak >[[open_tasks]]</span>
-              </span>
-            {% endif %}
-
-            </span>
-          </a>
-
-          <div class="uk-accordion-content" id="tasks">
-
-<!--              <ul id="example-1">-->
-<!--                <li v-for="task in open_tasks" v-if="!task.done">-->
-<!--                  <input name="task" value="[[ task.id ]]" type="checkbox" class="task-item task-checkbox" data-date="[[ task.created_time]]">&nbsp;<span>[[ task.task ]]</span>-->
-<!--                </li>-->
-<!--                <li v-else>-->
-<!--                  <input name="task" value="[[ task.id ]]" checked type="checkbox" class="task-item task-checkbox" data-date="[[ task.created_time]]">&nbsp;<span>[[ task.task ]]</span>-->
-<!--                </li>-->
-<!--              </ul>-->
-
-            <form action="/cards/addtask/" id="add_task_form" method="post" onsubmit="setFormSubmitting()">
-              <!-- csrf token here -->
-              {% csrf_token %}
-              <input name="card" type="hidden" value="{{card.id}}">
-              <input class="uk-input" name="task" placeholder="Add a task" type="text"/>
-               <!-- TODO: assign tasks to owner! -->
-              <a class="uk-button-small uk-button-default" href="#" onclick="send_task(); setFormSubmitting();" type="submit">Add Task </a>
-              <a aria-controls="collapseTasks" aria-expanded="false"
-                class="uk-button-small uk-button-secondary"
-                data-toggle="collapse" href="#collapseTasks"
-                onclick="get_tasks({{ card.id }})">View Tasks
-              </a>
-            </form>
-            <div class="hidden alert alert-success" id="task-mess-success" role="alert"></div>
-            <div class="hidden alert alert-danger" id="task-mess-failed" role="alert"></div>
-            <div class="uk-card" id="collapseTasks"></div>
-          </div>
-        </li>
-
-        <li>
-          <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Attachments</span></a>
-          <div class="uk-accordion-content" id="attachments">
-            <form action="/attachments/addattachments/" class="uk-form-stacked" enctype="multipart/form-data" id="attachment_form" method="POST" onsubmit="setFormSubmitting()">
-              {% csrf_token %}
-              <div>
-                <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
-                <div class="js-upload uk-placeholder uk-text-center">
-                  <span uk-icon="icon: cloud-upload"></span>
-                  <span class="uk-text-middle">Attach files by dropping them here or</span>
-                  <div uk-form-custom>
-                    <input multiple name="content" type="file">
-                    <span class="uk-link">selecting one</span>
-                  </div>
-                </div>
-
-              </div>
-          </form>
-            <div>
-          <div class="uk-panel uk-panel-scrollable">
-            <ul class="uk-list" id="attachmentshere">
-              <div >
-              {% for i in attachments %}
-                {% if 'image' in i.mimetype %}
-                  <li>
-                    <a href="/media/{{i}}" target="_blank">
-                      <span uk-icon="image"></span>
-                      <span>{{i.name}}</span>
-                    </a>
-                  </li>
-                {% elif 'video' in i.mimetype %}
-                  <li>
-                    <a href="/media/{{i}}" target="_blank">
-                      <span uk-icon="video-camera"></span>
-                      <span>{{i.name}}</span>
-                    </a>
-                  </li>
-                {% else %}
-                  <li>
-                    <a href="/media/{{i}}" target="_blank">
-                      <span uk-icon="file"></span>
-                      <span>{{i.name}}</span>
-                    </a>
-                  </li>
-                {% endif %}
-              {% endfor %}
-              </div>
-            </ul>
-          </div>
-        </div>
-
-            <progress class="uk-progress" hidden id="js-progressbar" max="100" value="0"></progress>
-          <script>
-              var bar = document.getElementById('js-progressbar');
-              UIkit.upload('.js-upload', {
-                  url: '/attachments/addattachments/',
-                  params: {
-                      'card' :'{{card.id}}',
-                  },
-                  multiple: true,
-                  type: "json",
-                  beforeSend: function () {
-                      console.log('beforeSend', arguments);
-                  },
-                  beforeAll: function () {
-                      console.log('beforeAll', arguments);
-                  },
-                  load: function () {
-                      console.log('load', arguments);
-                  },
-                  error: function () {
-                      console.log('error', arguments);
-                      //alert("error");
-                  },
-                  complete: function () {
-                    console.log('complete', arguments);
-                    var name = arguments[0].response['name'];
-                    var url = arguments[0].response['url'];
-                    //alert(name);
-                    content = '<li>';
-                    content += '<a href="/media/' + url + '" target="_blank">';
-                    content += '<span uk-icon="image"></span>';
-                    content += '<span>' + name + '</span>';
-                    content += '</a>';
-                    content += '<li>';
-                    $(content).appendTo("#attachmentshere");
-                  },
-                  loadStart: function (e) {
-                      console.log('loadStart', arguments);
-                      bar.removeAttribute('hidden');
-                      bar.max = e.total;
-                      bar.value = e.loaded;
-                  },
-                  progress: function (e) {
-                      console.log('progress', arguments);
-                      bar.max = e.total;
-                      bar.value = e.loaded;
-                  },
-                  loadEnd: function (e) {
-                      console.log('loadEnd', arguments);
-                      bar.max = e.total;
-                      bar.value = e.loaded;
-                  },
-                  completeAll: function (arguments) {
-                      console.log('completeAll', arguments);
-
-                      setTimeout(function () {
-                          bar.setAttribute('hidden', 'hidden');
-                      }, 1000);
-                  }
-              });
-          </script>
-          </div>
-        </li>
-        <!-- <li>
-          <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Knowledge Base</span></a>
-          <div class="uk-accordion-content" id="kb">
-            <ul>
-              <li>item 1</li>
-              <li>item 2</li>
-              <li>item 3</li>
-              <li>item 4</li>
-              <li>item 5</li>
-            </ul>
-          </div>
-        </li> -->
-      </ul>
-    </div>
-  </div>
-</div>
 
 <div class="uk-padding-small">
   <div class="uk-grid-small" uk-grid>
@@ -345,96 +39,257 @@
     <!-- card comments -->
     <div class="uk-width-expand uk-container uk-margin-left">
       <div id="middle-column" uk-overflow-auto><div>
-<!--        ddd-->
-        <button class="uk-button uk-button-default" type="button" uk-toggle="target: #offcanvas-overlay">Card details</button>
-        {% if card.time_worked.minutes__sum > card.estimate %}
-          <span class="uk-label-warning" uk-icon="icon:clock;" uk-tooltip="Estimated {{card.estimate}}">{{card.time_worked.minutes__sum}}</span>
-        {% else %}
-          <span class="uk-label-success" uk-icon="icon:clock;" uk-tooltip="Estimated {{card.estimate}}"> {{card.time_worked.minutes__sum}} </span>
-        {% endif %}
 
-        {% if card.closed %}<span class="uk-label uk-label-success">Closed</span>
-        {% else %}
-          {% if card.priority.title == "Major" %}<span class="uk-label uk-label-danger">Major</span>{% endif %}
-          {% if card.is_overdue %}<span class="uk-label uk-label-warning">Overdue</span>{% endif %}
-          {% if card.type == "IN" %}<span class="uk-label uk-label-danger">INCIDENT</span>{% endif %}
-        {% endif %}
-<!--        ddd-->
-        <span>
-          <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post" onsubmit="setFormSubmitting()">
+        <div class="uk-margin-bottom">
+          <form id="editcard_form" method="POST" role="form" onsubmit="setFormSubmitting()" onclick="setFormSubmitting()">
             {% csrf_token %}
-            <input id="x" type="hidden" name="comment">
-            <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
-            <trix-editor autofocus input="x"></trix-editor>
+            {{ editcard_form.media }}
+            {{ editcard_form.board }}
+            {{ editcard_form.title }}
 
-            <script>
-            // Todo: update content-attachments as well
-              document.addEventListener("trix-file-accept", function(event) {
-                (function() {
-                  var HOST = "{{SITE_URL}}"
+            <div class="uk-section-small uk-padding-remove uk-background-muted uk-margin-small-top">
 
-                  addEventListener("trix-attachment-add", function(event) {
-                    if (event.attachment.file) {
-                      uploadAttachment(event.attachment)
-                    }
-                  })
+              <span class="uk-button-small" uk-tooltip="Reply">
+                <a class="uk-link" href="#reply-modal" uk-toggle><span uk-icon="icon: reply"></span></a>
+              </span>
 
-                  function uploadAttachment(attachment) {
-                    //var csrfToken = $('meta[name="csrf-token"]').attr('content');
-                    var file = attachment.file;
-                    var form = new FormData;
-                    var endpoint = "/attachments/addattachments/";
-                    form.append("Content-Type", file.type);
-                    form.append("image[image]", file);
-                    form.append("card", {{card.id}})
+              <span class="uk-button-small" uk-tooltip="Move to board">
+                <a class="uk-link" href="#movecard-modal" uk-toggle><span uk-icon="icon: move"></span>Board</a>
+              </span>
 
-                    xhr = new XMLHttpRequest;
-                    xhr.open("POST", endpoint, true);
-                    //xhr.setRequestHeader("X-CSRF-Token", csrfToken);
+              <span class="uk-button-small">
+                <div uk-form-custom="target: > * > span:last-child">
+                  {{ editcard_form.column }}
+                  <span class="uk-link" {% if card.column.usage.name == "Done" %} style="color:red; text-decoration: underline;text-decoration-style: double;text-decoration-color: red;" {%endif%}>
+                    <span uk-icon="icon: pencil" ></span>Column:
+                    <span></span>
+                  </span>
+                </div>
+              </span>
 
-                    xhr.upload.onprogress = function(event) {
-                      var progress = event.loaded / event.total * 100;
-                      return attachment.setUploadProgress(progress);
-                    };
+              <span class="uk-button-small">
+                <div uk-form-custom="target: > * > span:last-child">
+                  {{ editcard_form.priority }}
+                  <span class="uk-link">
+                    <span uk-icon="icon: pencil"></span>Priority
+                    <span></span>
+                  </span>
+                </div>
+              </span>
 
-                    xhr.onload = function() {
-                      if (this.status >= 200 && this.status < 300) {
-                        var data = JSON.parse(this.responseText);
-                        return attachment.setAttributes({
-                          url: HOST + 'media/' + data.url,
-                        });
-                      }
-                    };
+              <span class="uk-button-small">
+                <div uk-form-custom="target: > * > span:last-child">
+                  {{ editcard_form.type }}
+                  <span class="uk-link">
+                    <span uk-icon="icon: pencil"></span>Type:
+                    <span></span>
+                  </span>
+                </div>
+              </span>
 
-                    return xhr.send(form);
+              <span class="uk-button-small" uk-icon="icon:happy;" uk-tooltip="Company"></span>
+              <div uk-drop="mode: click; offset: 0;" class="uk-width-large">
+                <div class="uk-card uk-card-body uk-card-default">
+                  <div >
+                    <span class="uk-form-controls uk-inline ">
+                      {{ editcard_form.company}}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-                  };
+              <span class="uk-button-small" uk-icon="icon:user;" uk-tooltip="Owner"></span>
+              <div uk-drop="mode: click; offset: 0;" class="uk-width-large">
+                <div class="uk-card uk-card-body uk-card-default">
+                  <div >
+                    <span class="uk-form-controls uk-inline uk-drop-grid" >
+                      {{ editcard_form.owner}}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-                })();
-              })
-            </script>
-            <input name="card" type="hidden" value="{{card.id}}" />
-            <p uk-margin class="uk-text-center">
-              <span>Billable?</span>
-              {{ comment_form.billable }}
-              <span>Overtime?</span>
-              {{ comment_form.overtime }}
-              <span>Minutes worked: </span>
-              {{ comment_form.minutes }}
+              <span class="uk-button-small" uk-icon="icon:users;" uk-tooltip="Watchers"></span>
+              <div uk-drop="mode: click; offset: 0;" class="uk-width-large">
+                <div class="uk-card uk-card-body uk-card-default">
+                  <div >
+                    <span class="uk-form-controls uk-inline">
+                      {{ editcard_form.watchers}}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-              <input class="uk-button uk-button-default" onclick="setFormSubmitting()" name="public" type="submit" value="Share" />
-              <input class="uk-button uk-button-secondary" onclick="setFormSubmitting()" name="internal" type="submit" value="Note"/>
-              <input class="uk-button uk-label-warning" onclick="setFormSubmitting()" name="public_close" type="submit" value="Share and close" />
-            </p>
+              <span class="uk-button-small" uk-icon="icon:chevron-double-right;" uk-tooltip="Estimate {{card.time_worked.minutes__sum}}"
+                {% if card.time_worked.minutes__sum > card.estimate %} style="color:red" {% endif %}
+              ></span>
+              <div uk-drop="mode: click; offset: 0;">
+                <div class="uk-card uk-card-body uk-card-default">
+                  <div >
+                    <span class="uk-form-controls uk-inline">
+                      {{ editcard_form.estimate}}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
+              <span class="uk-button-small" uk-icon="icon: tag;" uk-tooltip="Tags"></span>
+              <div uk-drop="mode: click; offset: 0;">
+                <div class="uk-card uk-card-body uk-card-default">
+                  <div >
+                    <span class="uk-form-controls uk-inline">
+                      {{ editcard_form.tags}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <span class="uk-button-small" uk-icon="icon:history;" uk-tooltip="Start date"></span>
+              <div uk-drop="mode: click; offset: 0;">
+                <div class="uk-card uk-card-body uk-card-default">
+                  <div >
+                    {{ editcard_form.start_time }}
+                  </div>
+                </div>
+              </div>
+
+              <span class="uk-button-small" {% if card.is_overdue %} style="color: red" {% endif %} uk-icon="icon:future;" uk-tooltip="Due date"></span>
+              <div uk-drop="mode: click;" >
+                <div class="uk-card uk-card-body uk-card-default">
+                  <div>
+                    {{ editcard_form.due_date }}
+                  </div>
+                </div>
+              </div>
+
+              <span class="uk-button-small" uk-icon="icon:download;" uk-tooltip="Attachments"></span>
+                <div uk-drop="mode: click;">
+                  <div class="uk-card uk-card-body uk-card-default uk-padding-small">
+                    <div>
+                      <div class="uk-accordion-content" id="attachments">
+                        <form action="/attachments/addattachments/" class="uk-form-stacked" enctype="multipart/form-data" id="attachment_form" method="POST" onsubmit="setFormSubmitting()">
+                          {% csrf_token %}
+                          <div>
+                            <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
+                            <div class="js-upload uk-placeholder uk-text-center">
+                              <span uk-icon="icon: cloud-upload"></span>
+                              <span class="uk-text-middle">Attach files by dropping them here or</span>
+                              <div uk-form-custom>
+                                <input multiple name="content" type="file">
+                                <span class="uk-link">selecting one</span>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      <div>
+
+                        <div class="uk-panel uk-panel-scrollable">
+                          <ul class="uk-list" id="attachmentshere">
+                            <div >
+                            {% for i in attachments %}
+                              {% if 'image' in i.mimetype %}
+                                <li>
+                                  <a href="/media/{{i}}" target="_blank">
+                                    <span uk-icon="image"></span>
+                                    <span>{{i.name}}</span>
+                                  </a>
+                                </li>
+                              {% elif 'video' in i.mimetype %}
+                                <li>
+                                  <a href="/media/{{i}}" target="_blank">
+                                    <span uk-icon="video-camera"></span>
+                                    <span>{{i.name}}</span>
+                                  </a>
+                                </li>
+                              {% else %}
+                                <li>
+                                  <a href="/media/{{i}}" target="_blank">
+                                    <span uk-icon="file"></span>
+                                    <span>{{i.name}}</span>
+                                  </a>
+                                </li>
+                              {% endif %}
+                            {% endfor %}
+                            </div>
+                          </ul>
+                        </div>
+
+                      </div>
+                      <progress class="uk-progress" hidden id="js-progressbar" max="100" value="0"></progress>
+                      <script>
+                            var bar = document.getElementById('js-progressbar');
+                            UIkit.upload('.js-upload', {
+                                url: '/attachments/addattachments/',
+                                params: {
+                                    'card' :'{{card.id}}',
+                                },
+                                multiple: true,
+                                type: "json",
+                                beforeSend: function () {
+                                    console.log('beforeSend', arguments);
+                                },
+                                beforeAll: function () {
+                                    console.log('beforeAll', arguments);
+                                },
+                                load: function () {
+                                    console.log('load', arguments);
+                                },
+                                error: function () {
+                                    console.log('error', arguments);
+                                    //alert("error");
+                                },
+                                complete: function () {
+                                  console.log('complete', arguments);
+                                  var name = arguments[0].response['name'];
+                                  var url = arguments[0].response['url'];
+                                  //alert(name);
+                                  content = '<li>';
+                                  content += '<a href="/media/' + url + '" target="_blank">';
+                                  content += '<span uk-icon="image"></span>';
+                                  content += '<span>' + name + '</span>';
+                                  content += '</a>';
+                                  content += '<li>';
+                                  $(content).appendTo("#attachmentshere");
+                                },
+                                loadStart: function (e) {
+                                    console.log('loadStart', arguments);
+                                    bar.removeAttribute('hidden');
+                                    bar.max = e.total;
+                                    bar.value = e.loaded;
+                                },
+                                progress: function (e) {
+                                    console.log('progress', arguments);
+                                    bar.max = e.total;
+                                    bar.value = e.loaded;
+                                },
+                                loadEnd: function (e) {
+                                    console.log('loadEnd', arguments);
+                                    bar.max = e.total;
+                                    bar.value = e.loaded;
+                                },
+                                completeAll: function (arguments) {
+                                    console.log('completeAll', arguments);
+
+                                    setTimeout(function () {
+                                        bar.setAttribute('hidden', 'hidden');
+                                    }, 1000);
+                                }
+                            });
+                        </script>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
           </form>
-        </span>
+        </div>
+
       </div>
 
         <div>
           <ul uk-accordion="multiple:true">
             {% for comment in comments %}
-            <li class="uk-card-default">
+            <li class="uk-card-default {% if forloop.first %} uk-open {% endif %}" >
                 <a class="uk-accordion-title uk-text-meta uk-padding-small
                   {% if comment.public is False %}
                     uk-background-secondary
@@ -510,9 +365,11 @@
   <!-- end card comments -->
   </div>
 </div>
+
 <!-- This is the movecard-modal -->
 <div id="movecard-modal" uk-modal>
   <div class="uk-modal-dialog uk-modal-body">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
     <h2 class="uk-modal-title">Move card</h2>
 
     <form action="/cards/movecardtoboard/" method="POST" id="movecardtoboardform" onsubmit="setFormSubmitting()">
@@ -569,6 +426,176 @@
   </div>
 </div>
 
+
+<!-- this is the reply modal -->
+<div id="reply-modal" uk-modal>
+  <div class="uk-modal-dialog uk-width-3-4">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+      <h2 class="uk-modal-title">Reply</h2>
+    </div>
+    <div class="uk-modal-body" uk-overflow-auto>
+      <ul class="uk-tab-bottom" uk-tab>
+        <li class="uk-active"><a href="#" uk-tooltip="Just for operators">Internal note</a></li>
+        <li><a href="#" uk-tooltip="Public reply to all participants">Email</a></li>
+      </ul>
+      <ul class="uk-switcher uk-margin">
+        <li>
+          <span>
+            <form action="/comments/addcomment/" class="uk-form-horizontal" id="addcomment_form" method="post" onsubmit="setFormSubmitting()">
+              {% csrf_token %}
+              <input id="x" type="hidden" name="comment">
+              <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
+              <trix-editor input="x"></trix-editor>
+
+              <script>
+              // Todo: update content-attachments as well
+                document.addEventListener("trix-file-accept", function(event) {
+                  (function() {
+                    var HOST = "{{SITE_URL}}"
+
+                    addEventListener("trix-attachment-add", function(event) {
+                      if (event.attachment.file) {
+                        uploadAttachment(event.attachment)
+                      }
+                    })
+
+                    function uploadAttachment(attachment) {
+                      //var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                      var file = attachment.file;
+                      var form = new FormData;
+                      var endpoint = "/attachments/addattachments/";
+                      form.append("Content-Type", file.type);
+                      form.append("image[image]", file);
+                      form.append("card", {{card.id}})
+
+                      xhr = new XMLHttpRequest;
+                      xhr.open("POST", endpoint, true);
+                      //xhr.setRequestHeader("X-CSRF-Token", csrfToken);
+
+                      xhr.upload.onprogress = function(event) {
+                        var progress = event.loaded / event.total * 100;
+                        return attachment.setUploadProgress(progress);
+                      };
+
+                      xhr.onload = function() {
+                        if (this.status >= 200 && this.status < 300) {
+                          var data = JSON.parse(this.responseText);
+                          return attachment.setAttributes({
+                            url: HOST + 'media/' + data.url,
+                          });
+                        }
+                      };
+
+                      return xhr.send(form);
+
+                    };
+
+                  })();
+                })
+              </script>
+              <input name="card" type="hidden" value="{{card.id}}" />
+              <p uk-margin class="uk-text-left">
+
+                <div class="uk-section-small uk-padding-remove uk-background-muted uk-margin-small-top">
+                  <span class="uk-button-small" uk-tooltip="Reply">
+                    <a href="#" id="cc-link">CC</a><span id="cc-span"></span><br/>
+                  </span>
+                </div>
+
+
+                <input class="uk-button uk-button-secondary" onclick="setFormSubmitting()" name="internal" type="submit" value="Share Note"/>
+              </p>
+
+            </form>
+          </span>
+        </li>
+        <li>
+          <span>
+            <form action="/comments/addcomment/" class="uk-form-horizontal" id="email_form" method="post" onsubmit="setFormSubmitting()">
+              {% csrf_token %}
+              <input id="x1" type="hidden" name="comment">
+              <input class="uk-input" name="card" type="hidden" value="{{card.id}}"/>
+              <trix-editor input="x1"></trix-editor>
+
+              <script>
+              // Todo: update content-attachments as well
+                document.addEventListener("trix-file-accept", function(event) {
+                  (function() {
+                    var HOST = "{{SITE_URL}}"
+
+                    addEventListener("trix-attachment-add", function(event) {
+                      if (event.attachment.file) {
+                        uploadAttachment(event.attachment)
+                      }
+                    })
+
+                    function uploadAttachment(attachment) {
+                      //var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                      var file = attachment.file;
+                      var form = new FormData;
+                      var endpoint = "/attachments/addattachments/";
+                      form.append("Content-Type", file.type);
+                      form.append("image[image]", file);
+                      form.append("card", {{card.id}})
+
+                      xhr = new XMLHttpRequest;
+                      xhr.open("POST", endpoint, true);
+                      //xhr.setRequestHeader("X-CSRF-Token", csrfToken);
+
+                      xhr.upload.onprogress = function(event) {
+                        var progress = event.loaded / event.total * 100;
+                        return attachment.setUploadProgress(progress);
+                      };
+
+                      xhr.onload = function() {
+                        if (this.status >= 200 && this.status < 300) {
+                          var data = JSON.parse(this.responseText);
+                          return attachment.setAttributes({
+                            url: HOST + 'media/' + data.url,
+                          });
+                        }
+                      };
+
+                      return xhr.send(form);
+
+                    };
+
+                  })();
+                })
+              </script>
+              <input name="card" type="hidden" value="{{card.id}}" />
+              <p uk-margin class="uk-text-left">
+                <span>Billable?</span>
+                {{ comment_form.billable }}
+                <span>Overtime?</span>
+                {{ comment_form.overtime }}
+                <span>Minutes worked: </span>
+                {{ comment_form.minutes }}
+
+                <div class="uk-section-small uk-padding-remove uk-background-muted uk-margin-small-top">
+                  <span class="uk-button-small" uk-tooltip="Reply">
+                    <a href="#" id="cc-link2">CC</a><span id="cc-span2"></span><br/>
+                  </span>
+                </div>
+
+
+
+                <input class="uk-button uk-button-default" onclick="setFormSubmitting()" name="public" type="submit" value="Share" />
+                <input class="uk-button uk-label-warning" onclick="setFormSubmitting()" name="public_close" type="submit" value="Share and close" />
+              </p>
+
+            </form>
+          </span>
+        </li>
+
+      </ul>
+
+
+    </div>
+
+  </div>
+</div>
 {% endblock main-content %}
 {% block footer %}
 {% include "footer.html" %}
