@@ -22,4 +22,5 @@ class Tracker(models.Model):
     # look for # TRACKER start/end comments
     action = models.CharField(max_length=150, blank=True, null=True)
     updated_fields = models.TextField()
+    time_spent_in_column = models.IntegerField(blank=True, null=True)
     ordering =  ordering = ['-created_time']
