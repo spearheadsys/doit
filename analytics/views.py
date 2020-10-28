@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from card.models import Worklog, Card, Task
+from card.models import Worklog, Card
 from comment.models import Comment
 from organization.models import Organization
 from django.conf import settings
@@ -31,7 +31,6 @@ def reports(request):
     # except:
     #     up = None
     allCards = Card.objects.all()
-    allTasks = Task.objects.all()
     organizations = Organization.objects.all()
     boards = Board.objects.filter(archived=False)
     reportusers = User.objects.all().filter(is_staff=True)
@@ -85,7 +84,6 @@ def reports(request):
             'page_name': "Reports",
             'doitVersion': doitVersion,
             'allCards': allCards,
-            'allTasks': allTasks.count(),
             'organization': organization,
             'organizations': organizations,
             'reportusers': reportusers,
@@ -105,7 +103,6 @@ def reports(request):
             'page_name': "Reports",
             'doitVersion': doitVersion,
             'allCards': allCards,
-            'allTasks': allTasks.count(),
             'organizations': organizations,
             'reportusers': reportusers,
             'boards': boards,

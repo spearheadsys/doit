@@ -5,7 +5,7 @@ from doit.views import user_login, user_logout, profile
 from contact.views import change_password
 from django.conf.urls import include, url
 from doit.views import home
-from doit.views import getCardsCreatedToday, getWlogsCreatedToday, getTodaysTasks, closed_cards_ajax, \
+from doit.views import getCardsCreatedToday, getWlogsCreatedToday, closed_cards_ajax, \
     overdue_cards_ajax, open_incidents_ajax, open_cards_dt, settings_view, my_vue_cards, \
     profile_change_picture, cards_without_owner, cards_without_company, my_incidents, all_my_open_cards, \
     my_overdue_cards_list, protected_serve
@@ -41,7 +41,6 @@ urlpatterns = [
     #     getCardsCreatedToday,
     #     name='getCardsCreatedToday'),
     # url(r'^api/get_todays_wlogs/', getWlogsCreatedToday, name='getWlogsCreatedToday'),
-    # url(r'^api/get_todays_tasks/', getTodaysTasks, name='getTodaysTasks'),
 
     # login / logout
     url(r'^login/$', user_login, name='login'),

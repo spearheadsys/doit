@@ -1,12 +1,9 @@
 from django.conf.urls import url
 from card.views import cards, addcard, update_card_order, addColumn, \
-    editCard, editColumn, addtask, get_tasks, \
-    get_task_count, update_task, movecard, deleteCard, \
-    get_users, get_watchers, mailpost, calendar, add_reminder, \
-    get_reminders, delete_reminder, closecard, reopencard, \
+    editCard, editColumn, movecard, deleteCard, \
+    get_users, get_watchers, mailpost, calendar, closecard, reopencard, \
     TagAutocomplete, WatcherAutocomplete, CompanyAutocomplete, OwnerAutocomplete, \
-    movecardtoboard, get_reminders_count
-
+    movecardtoboard
 
 # we are at /cards/ here
 urlpatterns = [
@@ -21,16 +18,6 @@ urlpatterns = [
     url(r'^reopencard/(?P<card>\d+)', reopencard, name='reopencard'),
     # editColumnModal
     url(r'editcolumn/(?P<column>\d+)', editColumn, name='editColumn'),
-
-
-    url(r'addreminder/', add_reminder, name='add_reminder'),
-    url(r'getreminders/', get_reminders, name='get_reminders'),
-    url(r'getreminderscount/', get_reminders_count, name='get_reminders_count'),
-    url(r'deletereminder/', delete_reminder, name='delete_reminder'),
-    url(r'addtask/', addtask, name='add task'),
-    url(r'gettasks/', get_tasks, name='get tasks'),
-    url(r'gettaskcount/', get_task_count, name='get task count'),
-    url(r'updatetask/', update_task, name='update tasks'),
     url(r'movecard/', movecard, name='moveCard'),
     url(r'movecardtoboard/', movecardtoboard, name='movecardtoboard'),
     url(r'deletecard/(?P<card>\d+)', deleteCard, name='deleteCard'),
