@@ -508,6 +508,15 @@ def movecard(request):
         except AttributeError:
             wcol = None
 
+        card_trackers = Tracker.objects.filter(object_id=workon_card.id)
+        last_tracker = card_trackers[card_trackers.count()-1]
+        # print("last_tracker >>>> ", last_tracker.created_time)
+        # if previous_column != "Backlog" or "Waiting":
+            # print("calculate all working minutes since created_time to now")
+
+        # print("last_tracker >>>> ", last_tracker.count())
+        # print("last_tracker >>>> ", last_tracker[last_tracker.count()-1].created_time)
+
         if str(wcol.usage) == "Done":
             workon_card.closed = True
             action_text = " closed the card "
@@ -640,6 +649,7 @@ def movecardtoboard(request):
         workon_board = Board.objects.get(id=board)
         new_column = Column.objects.get(id=column)
         previous_column = workon_card.column
+        print(previous_column,new_column)
         if str(workon_column.usage) == "Done":
             workon_card.closed = True
             workon_card.column = new_column
@@ -658,8 +668,7 @@ def movecardtoboard(request):
             workon_card.closed = False
             workon_card.save()
         else:
-            action_text = [previous_column.id, workon_column.column.id]
-
+            action_text = [previous_column.id, workon_column.id]
             workon_card.column = workon_column
             workon_card.board = workon_board
             workon_card.save()
