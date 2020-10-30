@@ -164,7 +164,8 @@ https://doit.spearhead.systems
 
         # if comment_object.public:
         if cc_list:
-            all_email_addresses.append(cc_list)
+            for email in cc_list:
+                all_email_addresses.append(email)
 
         for recipient in all_email_addresses:
             if comment_object.public:
