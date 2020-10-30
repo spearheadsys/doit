@@ -3,7 +3,6 @@ from rest_framework.permissions import IsAdminUser
 from .models import Card, Board
 from .serializers import CardSerializer
 from board.serializers import BoardSerializer
-from organization.serializers import CompanySerializer
 from django.db.models import Q
 from django.utils import timezone
 from card.models import Columntype

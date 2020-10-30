@@ -2,7 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from card.models import Worklog, Card
+from card.models import Card
+from contact.models import UserProfile
 from comment.models import Comment
 from organization.models import Organization
 from django.conf import settings
@@ -10,6 +11,7 @@ from datetime import datetime, time, timedelta
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from board.models import Board
+from django.db.models import Q
 
 
 # GLOBALS
@@ -34,6 +36,19 @@ def reports(request):
     organizations = Organization.objects.all()
     boards = Board.objects.filter(archived=False)
     reportusers = User.objects.all().filter(is_staff=True)
+    all_operators = UserProfile.objects.all().filter(user__is_active=True, is_operator=True)
+    # todo add caching here
+    cards_per_operator = {}
+    closed_cards_per_operator = {}
+    time_worked_per_operator = {}
+    for operator in all_operators:
+        cards_per_operator[operator] = Card.objects.all().filter(closed=False, owner=operator.user.id).filter(~Q(column__title="Backlog")).count()
+    for operator in all_operators:
+        closed_cards_per_operator[operator] = Card.objects.all().filter(closed=True, owner=operator.user.id).count()
+    for operator in all_operators:
+        time_worked_per_operator[operator] = Comment.objects.all().filter(owner=operator.user.id).aggregate(minutes=Sum('minutes'))
+    # end caching here
+
     if request.method == "POST":
         organization = request.POST['organization'] or None
         reportperiod = request.POST['daterange'] or None
@@ -41,7 +56,6 @@ def reports(request):
         start, stop = reportperiod.split(' - ', 1)
         startperiod = (datetime.strptime(start, '%Y-%m-%d %H:%M'))
         stopperiod = (datetime.strptime(stop, '%Y-%m-%d  %H:%M') + timedelta(days=1))
-
 
         # TODO: analytics.html it does not make sense to select both user and company
         # or does it? whichvever the case may be this is not possible yet.
@@ -73,7 +87,6 @@ def reports(request):
                 created_time__range=(startperiod, stopperiod)
             ).filter(minutes__gt=0)
 
-
         totalminutes = reportresult.aggregate(Sum('minutes'))
         nonbillable = reportresult.filter(billable=False).aggregate(Sum('minutes'))
         totalworkingminutes = reportresult.filter(overtime=False).aggregate(Sum('minutes'))
@@ -94,8 +107,11 @@ def reports(request):
             'totalovertimeminutes': totalovertimeminutes,
             'nonbillable': nonbillable,
             'boards': boards,
+            'cards_per_operator': cards_per_operator,
+            'closed_cards_per_operator': closed_cards_per_operator,
+            'time_worked_per_operator': time_worked_per_operator,
         }
-        return render(request, 'analytics/reports.html', context_dict)
+        return render(request, 'analytics/analytics.html', context_dict)
 
     else:
         context_dict = {
@@ -104,8 +120,10 @@ def reports(request):
             'doitVersion': doitVersion,
             'allCards': allCards,
             'organizations': organizations,
-            'reportusers': reportusers,
+            'cards_per_operator': cards_per_operator,
+            'closed_cards_per_operator': closed_cards_per_operator,
+            'time_worked_per_operator': time_worked_per_operator,
             'boards': boards,
         }
-        return render(request, 'analytics/reports.html', context_dict)
+        return render(request, 'analytics/analytics.html', context_dict)
 

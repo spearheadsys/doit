@@ -6,38 +6,37 @@
 {% block main-content %}
 {% load humanize %}
 {% load static %}
-<script src="{% static "analytics/js/analyticsapp.js" %}"></script>
-<script type="text/javascript" src="{% static "doit/js/datatables.min.js" %}"></script>
-<link rel="stylesheet" type="text/css" href="{% static "doit/css/datatables.min.css" %}"/>
-<link rel="stylesheet" type="text/css" href="{% static "doit/css/uikitdatatables.css" %}" rel="stylesheet">
-
+<script src="{% static 'analytics/js/analyticsapp.js' %}"></script>
+<script type="text/javascript" src="{% static 'doit/js/datatables.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'doit/css/datatables.min.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'doit/css/uikitdatatables.css' %}" rel="stylesheet">
+<script src="{% static 'doit/js/Chart.min.js' %}"></script>
 
 <!-- Begin page content -->
 <div class="uk-padding-small">
 
   <div class="uk-child-width-1-4@m uk-grid-small uk-grid-match" uk-grid>
     <div>
-        <div class="uk-card uk-card-default uk-card-body">
+        <div class="uk-card uk-card-default uk-card-bodyuk-padding-small">
             <h3 class="uk-card-title">All cards</h3>
             <p>{{allCards.count}}</p>
         </div>
     </div>
     <div>
-        <div class="uk-card uk-card-default uk-card-body">
-            <h3 class="uk-card-title">Primary</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+        <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+          <canvas id="time-worked-by-operator"></canvas>
         </div>
     </div>
+
     <div>
-        <div class="uk-card uk-card-default uk-card-body">
-            <h3 class="uk-card-title">Teriary</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+        <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+          <canvas id="cards-closed-by-operator" ></canvas>
         </div>
     </div>
+
     <div>
-        <div class="uk-card uk-card-default uk-card-body">
-            <h3 class="uk-card-title">Secondary</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+        <div class="uk-card uk-card-default uk-card-body uk-padding-small" >
+          <canvas id="cards-by-operator" ></canvas>
         </div>
     </div>
 </div>
@@ -139,14 +138,9 @@
   </div>
 </div> <!-- end container -->
 
-
-
-
-
-
-
 {% endblock main-content %}
 
 {% block footer %}
- {% include "footer.html" %}
+  {% include 'analytics/extras/charts.html' %}
+  {% include "footer.html" %}
 {% endblock footer %}
