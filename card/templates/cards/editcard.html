@@ -496,13 +496,15 @@
               </script>
               <input name="card" type="hidden" value="{{card.id}}" />
               <p uk-margin class="uk-text-left">
+                <input style="opacity: 0; display: hidden"type="checkbox" name="billable" id="id_billable">
+                <span>Minutes worked: </span>
+                {{ comment_form.minutes }}
 
                 <div class="uk-section-small uk-padding-remove uk-background-muted uk-margin-small-top">
                   <span class="uk-button-small" uk-tooltip="Reply">
                     <a href="#" id="cc-link">CC</a><span id="cc-span"></span><br/>
                   </span>
                 </div>
-
 
                 <input class="uk-button uk-button-secondary" onclick="setFormSubmitting()" name="internal" type="submit" value="Share Note"/>
               </p>
