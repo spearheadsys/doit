@@ -162,6 +162,55 @@ var my_normalcards = new Vue({
 })
 // end my_normalcards
 
+
+// all-cards-sla-breached-table
+var all_cards_sla_breached = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#all-cards-sla-breached-table',
+	data: {
+		cards: ''
+	},
+	methods: {
+		loadData: function () {
+			$.get('/api2/allslabreached/', function (response) {
+				this.cards = response;
+			}.bind(this));
+		},
+		deleteCard: function(id) {
+			this.loading = true;
+			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+				this.$http.delete(`/api2/allslabreached/${[[id]]}/`)
+					.then((response) => {
+						this.loading = false;
+						this.loadData();
+					})
+					.catch((err) => {
+						this.loading = false;
+						console.log(err);
+					})
+			}
+		},
+		moment: function () {
+    	return moment();
+  	}
+	},
+	created: function () {
+		this.loadData();
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	filters: {
+  	moment: function (date) {
+    	return moment(date).format('MMM Do YYYY, k:m');
+		}
+	}
+})
+// end all-cards-sla-breached-table
+
 // my_normalcards
 var my_minorcards = new Vue({
 	delimiters: ['[[', ']]'],
@@ -615,81 +664,3 @@ var no_duedate = new Vue({
 
 
 
-// test rest
-//var allcards  = new Vue({
-//   el: '#starting',
-//   delimiters: ['[[', ']]'],
-//   data: {
-//		 cards: [],
-//		 loading: false,
-//		 currentCard: {},
-//		 message: null,
-//		 newCard: { 'title': null, 'description': null },
-// },
-// mounted: function() {
-//	this.getCards();
-//},
-// methods: {
-//	getCards: function() {
-//		this.loading = true;
-//		this.$http.get('/api2/cards/')
-//      .then((response) => {
-//        this.cards = response.data;
-//        this.loading = false;
-//      })
-//      .catch((err) => {
-//       this.loading = false;
-//       console.log(err);
-//      })
-// },
-// 	getCard: function(id) {
-//		this.loading = true;
-//		this.$http.get('/api2/cards/[[id]]/')
-//      .then((response) => {
-//        this.currentArticle = response.data;
-//        this.loading = false;
-//      })
-//      .catch((err) => {
-//        this.loading = false;
-//        console.log(err);
-//      })
-// },
-// addArticle: function() {
-//  this.loading = true;
-//  this.$http.post('/api/article/',this.newArticle)
-//      .then((response) => {
-//        this.loading = false;
-//        this.getArticles();
-//      })
-//      .catch((err) => {
-//        this.loading = false;
-//        console.log(err);
-//      })
-// },
-// updateCard: function() {
-//  this.loading = true;
-//  this.$http.put(`/api2/cards/${this.currentCard.id}/`,     this.currentCard)
-//      .then((response) => {
-//        this.loading = false;
-//        this.currentCard = response.data;
-//        this.getCards();
-//      })
-//      .catch((err) => {
-//        this.loading = false;
-//        console.log(err);
-//      })
-// },
-// deleteCard: function(id) {
-//  this.loading = true;
-//  this.$http.delete(`/api2/cards/${[[id]]}/`)
-//      .then((response) => {
-//        this.loading = false;
-//        this.getCards();
-//      })
-//      .catch((err) => {
-//        this.loading = false;
-//        console.log(err);
-//      })
-//	}
-//	}
-//})
