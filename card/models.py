@@ -83,27 +83,62 @@ class Card(models.Model):
         except TypeError:
             return None
 
-    def sla_response_time(self):
-        # TODO: how/where do I get time(period) when card was in column that should not add time? (such as waiting)
-        # 1. get organization SLA
-        # 2. calculate time card has been in backlog, queue, documentation
-        # 3. diff 2 -1 and calculate whether we are ok or not
-        if self.company.sla_response_time:
-            return self.company.sla_response_time
-
     def card_open_time(self):
-        # TODO: calculate how long card has been open:
-        # open means that is was in queue or documentation columns
-        if self.column.usage != "Backlog" or "Waiting":
-            return("do calculation for time spent on previous column")
+        list_of_non_counting_columns = ["Waiting", "Backlog", "Done"]
+        if self.column.usage.name in list_of_non_counting_columns:
+            return int(0)
 
+        try:
+            last_comment = Comment.objects.all().filter(
+                content_type=ContentType.objects.get(model="Card"),
+                object_id=self.id).last()
+            last_public_comment = Comment.objects.all().filter(
+                content_type=ContentType.objects.get(
+                    model="Card"),
+                object_id=self.id).filter(public=True).last()
+        except AttributeError:
+            last_comment = None
 
-    # def sla_percent(self):
-    #     # idthratio card.age card.sla_response_time 100
-    #     if not self.sla_response_time():
-    #         return None
-    #     perc = (float(self.age()) / float(self.sla_response_time())) * 100
-    #     return float("%0.2f" % perc)
+        # try:
+        #     if last_comment.id != last_public_comment.id:
+        #         print("not the same")
+        # except AttributeError:
+        #     pass
+
+        try:
+            if last_comment.public:
+                if self.is_done is not True and last_comment.owner.profile_user.is_customer or last_comment.owner.profile_user.is_operator:
+                    time_counter = (timezone.now() - last_comment.created_time)
+                    return int(time_counter.total_seconds())
+            elif last_public_comment:
+                if self.is_done is not True and last_public_comment.owner.profile_user.is_customer or last_public_comment.owner.profile_user.is_operator:
+                    time_counter = (timezone.now() - last_comment.created_time)
+                    return int(time_counter.total_seconds())
+            elif not last_public_comment and self.company.sla_response_time * 60 > 0:
+                if self.is_done is not True:
+                    # We've got nothing to go on byt the company sla_time
+                    time_counter = (timezone.now() - last_comment.created_time)
+                    return int(time_counter.total_seconds())
+        except AttributeError:
+            return int(0)
+        return int(0)
+
+    def sla_breached(self):
+        # print(self.card_open_time(), self.company.sla_response_time * 60)
+        try:
+            if self.company.sla_response_time:
+                company_sla_time = self.company.sla_response_time * 60
+                try:
+                    if self.card_open_time() > 0:
+                        if self.card_open_time() > company_sla_time:
+                            return True
+                        else:
+                            return False
+                except AttributeError:
+                    return False
+        except AttributeError:
+            return False
+        return False
 
     def age(self):
         from datetime import timedelta
