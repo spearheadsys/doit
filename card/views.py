@@ -807,7 +807,6 @@ def editCard(request, card=None):
     previous_column = Card.objects.get(id=card).column
     boards = Board.objects.filter(archived=False)
 
-    # if request.method == 'POST':
     if request.is_ajax() or request.method == 'POST':
         # TODO: post allowed only if in watcher, owner or superuser
         # if request.user.profile_user.is_customer and request.user in instance.watchers.all():
@@ -869,6 +868,11 @@ def editCard(request, card=None):
 
     if request.user.profile_user.is_operator:
         card = Card.objects.select_related().get(id=card)
+        # try:
+        #     if card.company.sla_response_time is not None:
+        #         print("BEFORE view sla_breached >>>", card.sla_breached())
+        # except AttributeError:
+        #     print("BEFORE no companu or sla", card.sla_breached())
         ctype = ContentType.objects.get_for_model(card)
         attachments = Attachment.objects.filter(
             card=card.id)
@@ -1036,6 +1040,21 @@ def editCard(request, card=None):
 
 
 @login_required
+def getCardSlaStatus(request, card=None):
+    if request.user.profile_user.is_operator:
+        if card:
+            try:
+                card = Card.objects.get(id=card).sla_breached()
+                results = card
+            except ObjectDoesNotExist:
+                results = 0
+            data = json.dumps(results)
+        return HttpResponse(data, content_type='application/json')
+    else:
+        return HttpResponse("You do not have permissions to view this page.")
+
+
+@login_required
 @staff_member_required
 def editColumn(request, column=None):
     """
@@ -1067,80 +1086,7 @@ def editColumn(request, column=None):
             'active_url': current_url,
             'editColumnForm': editColumnForm,
             'col': col, }
-        # return render_to_response(
-        #     'cards/editcolumn.html', context_dict, context)
         return render(request, 'cards/editcolumn.html',context_dict)
-
-
-# # not currently used - but maybe could be tied into a
-# # self-service portal -- approval sent to company admin?
-# def register(request):
-#     # Like before, get the request's context.
-#     context = RequestContext(request)
-#
-#     # A boolean value for telling the template whether the registration
-#     #  was successful. Set to False initially. Code changes value to
-#     # True when registration succeeds.
-#     registered = False
-#
-#     # If it's a HTTP POST, we're interested in processing form data.
-#     if request.method == 'POST':
-#         # Attempt to grab information from the raw form information.
-#         # Note that we make use of both UserForm and UserProfileForm.
-#         user_form = UserForm(data=request.POST)
-#         profile_form = UserProfileForm(data=request.POST)
-#
-#         # If the two forms are valid...
-#         if user_form.is_valid() and profile_form.is_valid():
-#             # Save the user's form data to the database.
-#             user = user_form.save()
-#
-#             # Now we hash the password with the set_password method.
-#             # Once hashed, we can update the user object.
-#             user.set_password(user.password)
-#             user.save()
-#
-#             # Now sort out the UserProfile instance.
-#             # Since we need to set the user attribute ourselves, we set
-#             #  commit=False.
-#             # This delays saving the model until we're ready to avoid
-#             #  integrity problems.
-#             profile = profile_form.save(commit=False)
-#             profile.user = user
-#
-#             # Did the user provide a profile picture?
-#             # If so, we need to get it from the input form and put it
-#             # in the UserProfile model.
-#             if 'picture' in request.FILES:
-#                 profile.picture = request.FILES['picture']
-#
-#             # Now we save the UserProfile model instance.
-#             profile.save()
-#
-#             # Update our variable to tell the template registration
-#             # was successful.
-#             registered = True
-#
-#         # Invalid form or forms - mistakes or something else?
-#         # Print problems to the terminal.
-#         # They'll also be shown to the user.
-#         else:
-#             print user_form.errors  # , #profile_form.errors
-#
-#     # Not a HTTP POST, so we render our form using two ModelForm
-#     # instances. These forms will be blank, ready for user input.
-#     else:
-#         user_form = UserForm()
-#         profile_form = UserProfileForm()
-#
-#     # Render the template depending on the context.
-#     return render_to_response('cards/register.html', {
-#         'user_form': user_form,
-#         'profile_form': profile_form,
-#         'registered': registered
-#     },
-#           # {'user_form': user_form, 'registered': registered},
-#                               context)
 
 @login_required
 @staff_member_required
@@ -1183,7 +1129,7 @@ def get_users(request):
     # mimetype = 'application/json'
     return HttpResponse(data, content_type='application/json')
 
-
+# todo this can be removed
 @login_required
 @staff_member_required
 def get_watchers(request):
@@ -1203,16 +1149,6 @@ def get_watchers(request):
         data = 'fail'
     # mimetype = 'application/json'
     return HttpResponse(data, content_type='application/json')
-
-
-
-
-
-
-
-
-
-
 
 # mailgun
 # Handler for HTTP POST to http://myhost.com/messages for the
