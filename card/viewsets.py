@@ -96,7 +96,7 @@ class AllSlaBreached(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_queryset(self):
-        cards = Card.objects.all().filter(closed=False, owner=self.request.user)
+        cards = Card.objects.all().filter(closed=False)
 
         if cache.get('default'):
             return cache.get('default')
