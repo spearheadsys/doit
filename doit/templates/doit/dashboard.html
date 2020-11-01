@@ -82,6 +82,10 @@
       <my-backlog-component></my-backlog-component>
     </div>
 
+    <div id="all-cards-sla-breached" >
+      <all-cards-sla-breached-component></all-cards-sla-breached-component>
+    </div>
+
     <div>
       <div class="uk-card-small uk-inline uk-card-default uk-card-body uk-animation-scale-up">
         <p class="uk-text-center">All Overdue Boards</p>
@@ -440,6 +444,7 @@
 </div>
   <!-- end myoverdueboard-modal  -->
 
+
   <!-- cardswithoutduedate-modal-->
   <div id="cardswithoutduedate-modal" class="uk-modal-container" uk-modal>
     <div class="uk-modal-dialog">
@@ -754,6 +759,59 @@
 </div>
 {# end myminorcards-modal #}
 
+{# all-cards-sla-breached-modal #}
+<div id="all-cards-sla-breached-modal" class="uk-modal-container" uk-modal>
+  <div class="uk-modal-dialog">
+    <button class="uk-modal-close-default" type="button" uk-close></button>
+    <div class="uk-modal-header">
+        <h2 class="uk-modal-title">Cards outside of SLA</h2>
+    </div>
+      <div class="uk-modal-body" uk-overflow-auto>
+
+        <div>
+          <table id="all-cards-sla-breached-table" class="uk-table uk-table-striped">
+            <thead>
+              <tr>
+                <th>Board</th>
+                <th>Customer</th>
+                <th>Owner</th>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Created</th>
+                <th>Due</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+              </tr>
+              <tr v-for="card in cards">
+                <td>[[card.board.name]]</td>
+                <td v-if="card.company" >[[card.company.name]]</td>
+                <td v-else="card.company" class="uk-text-danger">no company</td>
+                <td v-if="card.owner">[[card.owner.username]]</td>
+                <td v-else="card.owner" class="uk-text-danger">no owner</td>
+                <td><a v-bind:href="'/cards/editcard/' + card.id">[[card.id]]</a></td>
+                <td>[[card.title]]</td>
+                <td>[[card.created_time | moment]]</td>
+                <td v-cloak v-if="card.due_date">[[card.due_date | moment ]]</td>
+                <td v-cloak v-else="card.due_date" class="uk-text-danger">no due date</td>
+                <td>
+                  <a v-on:click="deleteCard(card.id)">
+                    <span uk-icon="trash" style="color:red"></span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <div class="uk-modal-footer uk-text-right">
+      <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
+    </div>
+  </div>
+</div>
+{# end all-cards-sla-breached-modal #}
 
 {% if customerowncards %}
 <!-- customerowncars-modal-->
