@@ -532,7 +532,6 @@ Vue.component('cards-no-due-date-component',{
 				})
 				.catch((err) => {
 				 this.loading = false;
-				 //console.log(err);
 				})
 		},
 	},
@@ -552,3 +551,93 @@ Vue.component('cards-no-due-date-component',{
 var cardsnoduedate = new Vue({
 	el: '#cards-no-due-date',
 });
+
+
+// ////////
+// cards sla breached component
+Vue.component('card-sla-breached-component',{
+	delimiters: ['[[', ']]'],
+	props: '',
+	data: function () {
+		return {
+			isBreached: []
+		}
+	},
+	mounted: function() {
+		this.isBreached();
+	},
+	methods: {
+		isBreached: function() {
+			this.loading = true;
+			this.$http.get('/cards/cardsla/${[[id]]}/')
+				.then((response) => {
+					this.cardsla = response.data;
+					this.loading = false;
+				})
+				.catch((err) => {
+				 this.loading = false;
+				 //console.log(err);
+				})
+		},
+	},
+	created: function () {
+		this.isBreached();
+
+		setInterval(function () {
+			this.isBreached();
+		}.bind(this), 60000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body" style="background-color: lightsalmon;"> <p class="uk-text-center">My Major Cards</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: Major priority cards, these have business impact."></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <span v-if="loading" uk-spinner></span><a v-else class="uk-text-danger" href="#mymajorcards-modal" uk-toggle>[[cards]]</a> </h1> </div>'
+});
+
+var cardSlaBreached = new Vue({
+	el: '#card-sla-breached',
+});
+// cards sla breached component
+
+// cards ALL sla breached component
+Vue.component('all-cards-sla-breached-component',{
+	delimiters: ['[[', ']]'],
+	props: '',
+	data: function () {
+		return {
+			cards: []
+		}
+	},
+	mounted: function() {
+		this.isBreached();
+	},
+	methods: {
+		isBreached: function() {
+			this.loading = true;
+			this.$http.get('/api2/allslabreached/')
+				.then((response) => {
+					this.cards = response.data.length;
+					this.loading = false;
+				})
+				.catch((err) => {
+				 this.loading = false;
+				 console.log(err);
+				})
+		},
+	},
+	created: function () {
+		this.isBreached();
+
+		setInterval(function () {
+			this.isBreached();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	template: '<div class="uk-card-small uk-card-default uk-inline uk-card-body" style="background-color: lightsalmon;"> <p class="uk-text-center">Outside of SLA</p> <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: Cards outside of SLA."></span> <h1 v-if="cards" class="uk-text-danger uk-text-center"> <span v-if="loading" uk-spinner></span><a v-else class="uk-text-danger" href="#all-cards-sla-breached-modal" uk-toggle>[[cards]]</a> </h1> </div>'
+});
+
+var cardSlaBreached = new Vue({
+	el: '#all-cards-sla-breached',
+});
+// cards ALL sla breached component
