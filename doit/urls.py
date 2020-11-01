@@ -41,6 +41,7 @@ urlpatterns = [
     #     getCardsCreatedToday,
     #     name='getCardsCreatedToday'),
     # url(r'^api/get_todays_wlogs/', getWlogsCreatedToday, name='getWlogsCreatedToday'),
+    # url(r'^api/get_todays_tasks/', getTodaysTasks, name='getTodaysTasks'),
 
     # login / logout
     url(r'^login/$', user_login, name='login'),
