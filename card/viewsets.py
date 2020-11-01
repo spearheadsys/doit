@@ -102,7 +102,7 @@ class AllSlaBreached(viewsets.ModelViewSet):
             return cache.get('default')
         else:
             queryset = [x for x in cards if x.sla_breached()]
-            cache.set('default', queryset, 60 * 15)
+            cache.set('default', queryset, 900)
             return queryset
 
 
