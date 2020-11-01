@@ -6,9 +6,11 @@ from board.serializers import BoardSerializer
 from django.db.models import Q
 from django.utils import timezone
 from card.models import Columntype
+from django.core.cache import cache
 
+
+# todo: enable more caching as per slabreached
 today_date = timezone.now()
-
 
 class CardViewSet(viewsets.ModelViewSet):
     # Todo: restrict to user object (i.e. admin sees all, operator sees all, customers see only their own)
@@ -89,6 +91,21 @@ class MyOverdueBoardsViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class AllSlaBreached(viewsets.ModelViewSet):
+    serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
+
+    def get_queryset(self):
+        cards = Card.objects.all().filter(closed=False, owner=self.request.user)
+
+        if cache.get('default'):
+            return cache.get('default')
+        else:
+            queryset = [x for x in cards if x.sla_breached()]
+            cache.set('default', queryset, 90)
+            return queryset
+
+
 class NoOwnerOrCompanyViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer
     permission_classes = [IsAdminUser]
@@ -146,3 +163,4 @@ class OverdueTodayViewSet(viewsets.ModelViewSet):
         if self.request.user.profile_user.is_operator or self.request.user.profile_user.is_superuser:
             queryset = Card.objects.filter(closed=False).filter(~Q(column__title="Backlog")).filter(due_date__year=today_date.year, due_date__month=today_date.month, due_date__day=today_date.day)
             return queryset
+

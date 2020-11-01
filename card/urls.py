@@ -3,7 +3,7 @@ from card.views import cards, addcard, update_card_order, addColumn, \
     editCard, editColumn, movecard, deleteCard, \
     get_users, get_watchers, mailpost, calendar, closecard, reopencard, \
     TagAutocomplete, WatcherAutocomplete, CompanyAutocomplete, OwnerAutocomplete, \
-    movecardtoboard
+    movecardtoboard, getCardSlaStatus
 
 # we are at /cards/ here
 urlpatterns = [
@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'movecard/', movecard, name='moveCard'),
     url(r'movecardtoboard/', movecardtoboard, name='movecardtoboard'),
     url(r'deletecard/(?P<card>\d+)', deleteCard, name='deleteCard'),
+
+    url(r'^cardsla/(?P<card>\d+)', getCardSlaStatus, name='getCardSlaStatus'),
 
     # get_company ajax search
     url(r'^api/get_users/', get_users, name='get_users'),
