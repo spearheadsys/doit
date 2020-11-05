@@ -132,7 +132,8 @@ class EditCardForm(forms.ModelForm):
                 url='watcher-autocomplete',
                 attrs={
                     'data-placeholder': 'Watchers?',
-                    'class': 'uk-input',
+                    'class': 'uk-input uk-text-small',
+                    'style': 'width: 45px;'
                 }
             ),
             'company': autocomplete.ModelSelect2(

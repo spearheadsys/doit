@@ -109,16 +109,37 @@
                 </div>
               </div>
 
+              <script type="application/javascript">
+                // $(document).ready(function() {
+                  $("#id_watchers").select2({
+                    dropdownParent: $(".watchersplaceholder"),
+                  });
+                // });
+                $('.watchers').click(function(event){
+                   event.stopPropagation();
+                });
+              </script>
+              <style>
+                .select2-container .select2-selection--multiple {
+                    display: inline-table;
+                }
+                .uk-input:not(input), .uk-select:not(select) { line-height: 12px; }
+                .select2-results__option[aria-selected] { line-height: 12px;}
+                .select2-container .select2-selection--multiple { width: 45px;}
+              </style>
+
               <span class="uk-button-small" uk-icon="icon:users;" uk-tooltip="Watchers"></span>
-              <div uk-drop="mode: click; offset: 0;" class="uk-width-large">
-                <div class="uk-card uk-card-body uk-card-default">
-                  <div >
-                    <span class="uk-form-controls uk-inline">
-                      {{ editcard_form.watchers}}
-                    </span>
-                  </div>
+
+                <div uk-drop="mode: click; offset: 0;" class="watchersplaceholder">
+<!--                  <div class="uk-input">-->
+<!--                    <div class="uk-inline">-->
+                      <span class="uk-form-controls uk-inline uk-drop-grid">
+                        {{ editcard_form.watchers}}
+                      </span>
+<!--                    </div>-->
+<!--                  </div>-->
                 </div>
-              </div>
+
 
               <span class="uk-button-small" uk-icon="icon:chevron-double-right;" uk-tooltip="Estimate {{card.time_worked.minutes__sum}}"
                 {% if card.time_worked.minutes__sum > card.estimate %} style="color:red" {% endif %}
