@@ -29,40 +29,10 @@ def sendmail_card_created(cardid, card_creator):
     text_template = get_template('cards/emails/card_created.txt')
     if cardid:
         card = Card.objects.get(id=cardid)
-        watchers = card.watchers.all()
-        # soup_description = BeautifulSoup(card.description, "lxml")
-        #
-        # We are not sending to watchers anymore, too many bounces and loops
-        #
-        # for watcher in watchers:
-        #     watchers_message = """
-        #         ## Please do not write below this line ##
-        #
-        #         A new Card has been created in which you participate.
-        #
-        #         Card title: %s
-        #         Description : %s
-        #
-        #         For more details view https://doit.spearhead.systems/cards/editcard/%d
-        #
-        #         # This is a message from Spearhead DoIT.
-        #
-        #         https://doit.spearhead.systems
-        #         """
-        #     watchers_formatted_message = watchers_message % (
-        #         card.title,
-        #         soup_description.get_text(),
-        #         card.id)
-        #     send_mail(
-        #         'DoIT #doit' + str(card.id) + " " + card.title,
-        #         watchers_formatted_message,
-        #         doit_myemail,
-        #         [watcher.email],
-        #         fail_silently=True)
-
         content = {
             'card': card,
         }
+        # todo: try to clean this up (not sure about the catch/except)
         try:
             subject = "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title)
             from_email, to = doit_myemail, [card.owner.email]
@@ -75,33 +45,8 @@ def sendmail_card_created(cardid, card_creator):
             pass
 
 
-        # try:
-        #     subject = "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title)
-        #     send_mail(
-        #         str(subject),
-        #         text_template.render(content),
-        #         doit_myemail,
-        #         [card.owner.email],
-        #         html_message=html_template.render(content),
-        #         fail_silently=True)
-        # except AttributeError:
-        #     pass
-
-        # TODO: temporary notify support of cards created via customer portal
-        try:
-            if card_creator.profile_user.is_customer:
-                send_mail(
-                    "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title),
-                    html_template.render(content),
-                    doit_myemail,
-                    ["doit@spearhead.systems"],
-                    fail_silently=True)
-        except ObjectDoesNotExist:
-            pass
-
-
-def sendmail_card_updated(cardid, comment, card_creator):
-    plaintext = get_template('cards/emails/card_updated.txt')
+def sendmail_card_updated(cardid, comment):
+    text_template = get_template('cards/emails/card_updated.txt')
     html_template = get_template('cards/emails/card_updated.html')
 
     if cardid and comment:
@@ -115,34 +60,37 @@ def sendmail_card_updated(cardid, comment, card_creator):
             'comment': soup_comment.get_text(),
         }
         for watcher in watchers:
-            send_mail(
-                # 'DoIT #doit' + str(card.id) + " " + card.title,
-                f"DoIT {doit_email_subject_keyword}{card.id} {card.title}",
-                plaintext.render(content),
-                doit_myemail,
-                [watcher.email],
-                fail_silently=True)
+            # send_mail(
+            #     f"DoIT {doit_email_subject_keyword}{card.id} {card.title}",
+            #     text_template.render(content),
+            #     doit_myemail,
+            #     [watcher.email],
+            #     fail_silently=True)
+            subject = "DoIT " + doit_email_subject_keyword + "{} {}".format(card.id, card.title)
+            from_email, to = doit_myemail, watcher.email
+            text_content = text_template.render(content)
+            html_content = html_template.render(content)
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
         try:
             # now send to the owner
-            send_mail(
-                # u'DoIT #doit' + str(card.id) + " " + card.title,
-                f"DoIT {doit_email_subject_keyword}{card.id} {card.title}",
-                plaintext.render(content),
-                doit_myemail,
-                [card.owner.email],
-                fail_silently=True)
+            # send_mail(
+            #     # u'DoIT #doit' + str(card.id) + " " + card.title,
+            #     f"DoIT {doit_email_subject_keyword}{card.id} {card.title}",
+            #     text_template.render(content),
+            #     doit_myemail,
+            #     [card.owner.email],
+            #     fail_silently=True)
+            subject = "DoIT " + doit_email_subject_keyword + "{} {}".format(card.id, card.title)
+            from_email, to = doit_myemail, card.owner.email
+            text_content = text_template.render(content)
+            html_content = html_template.render(content)
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
         except AttributeError:
             pass
-
-        # TODO: temporary notify support of cards created via customer portal
-        if card_creator.profile_user.is_customer:
-            send_mail(
-                # u'DoIT #doit' + card.id + " " + card.title,
-                f"DoIT {doit_email_subject_keyword}{card.id} {card.title}.",
-                plaintext.render(content),
-                doit_myemail,
-                ["doit@spearhead.systems"],
-                fail_silently=True)
 
 
 def doit_tracker(objid):
