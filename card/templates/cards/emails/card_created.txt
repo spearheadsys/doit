@@ -3,12 +3,13 @@
 A new Card has been created and you have been assigned ownership.
 
 Card title: {{card.title}}
-Description: {{ description }}
 Company: {{card.company}}
-Due date: {{card.due_date}}
+Description: {{ card.description }}
 Priority: {{card.priority}}
+Due date: {{card.due_date}}
 
-For more details view https://doit.spearhead.systems/cards/editcard/{{card.id}}
+To add additional comments reply to this email or click the link below:
+https://doit.spearhead.systems/cards/editcard/{{card.id}}
 
 # This is a message from Spearhead DoIT.
 
