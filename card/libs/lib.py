@@ -24,9 +24,7 @@ def convert_to_localtime(uid, utctime):
 
 
 def sendmail_card_created(cardid, card_creator):
-    plaintext = get_template('cards/emails/card_created.txt')
-    # html = get_template('cards/emails/card_created.html')
-
+    html_template = get_template('cards/emails/card_created.html')
     if cardid:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
@@ -61,13 +59,14 @@ def sendmail_card_created(cardid, card_creator):
         #         fail_silently=True)
         content = {
             'card': card,
+            'company': card.company,
             'description': soup_description.get_text(),
         }
         try:
             subject = "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title)
             send_mail(
                 str(subject),
-                plaintext.render(content),
+                html_template.render(content),
                 doit_myemail,
                 [card.owner.email],
                 fail_silently=True)
@@ -77,10 +76,9 @@ def sendmail_card_created(cardid, card_creator):
         # TODO: temporary notify support of cards created via customer portal
         try:
             if card_creator.profile_user.is_customer:
-                text_content = plaintext.render(content)
                 send_mail(
                     "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title),
-                    plaintext.render(content),
+                    html_template.render(content),
                     doit_myemail,
                     ["doit@spearhead.systems"],
                     fail_silently=True)
@@ -90,6 +88,7 @@ def sendmail_card_created(cardid, card_creator):
 
 def sendmail_card_updated(cardid, comment, card_creator):
     plaintext = get_template('cards/emails/card_updated.txt')
+    html_template = get_template('cards/emails/card_updated.html')
 
     if cardid and comment:
         card = Card.objects.get(id=cardid)
