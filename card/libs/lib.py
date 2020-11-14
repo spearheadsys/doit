@@ -5,6 +5,7 @@ from contact.models import UserProfile
 from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
+from django.core.mail import EmailMultiAlternatives
 import pytz
 from django.template.loader import get_template
 from bs4 import BeautifulSoup
@@ -29,7 +30,7 @@ def sendmail_card_created(cardid, card_creator):
     if cardid:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
-        soup_description = BeautifulSoup(card.description, "lxml")
+        # soup_description = BeautifulSoup(card.description, "lxml")
         #
         # We are not sending to watchers anymore, too many bounces and loops
         #
@@ -58,22 +59,33 @@ def sendmail_card_created(cardid, card_creator):
         #         doit_myemail,
         #         [watcher.email],
         #         fail_silently=True)
+
         content = {
             'card': card,
-            'company': card.company,
-            'description': soup_description.get_text(),
         }
         try:
             subject = "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title)
-            send_mail(
-                str(subject),
-                text_template.render(content),
-                doit_myemail,
-                [card.owner.email],
-                html_message=html_template.render(content),
-                fail_silently=True)
+            from_email, to = doit_myemail, [card.owner.email]
+            text_content = text_template.render(content)
+            html_content = html_template.render(content)
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
         except AttributeError:
             pass
+
+
+        # try:
+        #     subject = "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title)
+        #     send_mail(
+        #         str(subject),
+        #         text_template.render(content),
+        #         doit_myemail,
+        #         [card.owner.email],
+        #         html_message=html_template.render(content),
+        #         fail_silently=True)
+        # except AttributeError:
+        #     pass
 
         # TODO: temporary notify support of cards created via customer portal
         try:
