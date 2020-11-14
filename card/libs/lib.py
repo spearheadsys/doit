@@ -25,6 +25,7 @@ def convert_to_localtime(uid, utctime):
 
 def sendmail_card_created(cardid, card_creator):
     html_template = get_template('cards/emails/card_created.html')
+    text_template = get_template('cards/emails/card_created.txt')
     if cardid:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
@@ -66,9 +67,10 @@ def sendmail_card_created(cardid, card_creator):
             subject = "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title)
             send_mail(
                 str(subject),
-                html_template.render(content),
+                text_template.render(content),
                 doit_myemail,
                 [card.owner.email],
+                html_message=html_template.render(content),
                 fail_silently=True)
         except AttributeError:
             pass
