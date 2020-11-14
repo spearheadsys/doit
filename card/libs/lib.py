@@ -35,7 +35,7 @@ def sendmail_card_created(cardid, card_creator):
         # todo: try to clean this up (not sure about the catch/except)
         try:
             subject = "DoIT "+doit_email_subject_keyword+"{} {}".format(card.id, card.title)
-            from_email, to = doit_myemail, [card.owner.email]
+            from_email, to = doit_myemail, card.owner.email
             text_content = text_template.render(content)
             html_content = html_template.render(content)
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
