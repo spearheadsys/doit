@@ -30,7 +30,7 @@ def sendmail_card_created(cardid, card_creator):
     if cardid:
         card = Card.objects.get(id=cardid)
         content = {
-            'card': card,
+            'card': card
         }
         # todo: try to clean this up (not sure about the catch/except)
         try:
@@ -52,12 +52,12 @@ def sendmail_card_updated(cardid, comment):
     if cardid and comment:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
-        soup_description = BeautifulSoup(card.description, "lxml",)
-        soup_comment = BeautifulSoup(comment.comment, "lxml")
+        # soup_description = BeautifulSoup(card.description, "lxml",)
+        # soup_comment = BeautifulSoup(comment.comment, "lxml")
         content = {
             'card': card,
-            'description': soup_description.get_text(),
-            'comment': soup_comment.get_text(),
+            'description': card.description,
+            'comment': comment.comment
         }
         for watcher in watchers:
             # send_mail(
