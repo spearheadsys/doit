@@ -136,7 +136,7 @@ def add_comment(request):
         # be moved to a function in libs once we have a working model.
         # It may be worthwhile to check which user made the mod and exclude
         # him/her from notification - this should be logged in user.
-        sendmail_card_updated(card.id, comment_object)
+        sendmail_card_updated(card, comment_object)
 
 #         comment_message = """
 # ## Please do not write below this line ##
