@@ -11,11 +11,13 @@ from datetime import date, datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 import json
+from card.libs.lib import sendmail_card_updated
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+
 
 doit_myemail = settings.DOIT_MYEMAIL
 
@@ -134,80 +136,82 @@ def add_comment(request):
         # be moved to a function in libs once we have a working model.
         # It may be worthwhile to check which user made the mod and exclude
         # him/her from notification - this should be logged in user.
+        sendmail_card_updated(card.id, comment_object)
 
-        comment_message = """
-## Please do not write below this line ##
-
-A new comment has been added to a Card you participate in:
-
-%s
-
-For more details view https://doit.spearhead.systems/cards/editcard/%d
-
-https://doit.spearhead.systems
-"""
+#         comment_message = """
+# ## Please do not write below this line ##
+#
+# A new comment has been added to a Card you participate in:
+#
+# %s
+#
+# For more details view https://doit.spearhead.systems/cards/editcard/%d
+#
+# https://doit.spearhead.systems
+# """
         # prepare to text
-        soup_comment = BeautifulSoup(comment_object.comment, "html.parser")
-        # who to send to
-        watchers_email = related_card.watchers.values_list('email', flat=True)
-        all_email_addresses = list(watchers_email)
-        # TODO: if  there is no owner (such as when created via portal) ..
-        # wrap in a try?
-        try:
-            all_email_addresses.append(related_card.owner.email)
-        except AttributeError:
-            pass
-
-        # we remove ourselves from this notification
-        if request.user.email in all_email_addresses:
-            all_email_addresses.remove(request.user.email)
-
-        # if comment_object.public:
-        if cc_list:
-            for email in cc_list:
-                all_email_addresses.append(email)
-
-        for recipient in all_email_addresses:
-            if comment_object.public:
-                formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
-                # TODO: you get email whether you like it or not!
-                # should probably do something about this
-                send_mail(
-                    'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
-                    formatted_message,
-                    doit_myemail,
-                    [recipient],
-                    fail_silently=True)
-
-            else:
-                try:
-                    account_type = User.objects.get(email=recipient)
-                except:
-                    pass
-                try:
-                    if account_type.is_superuser:
-                        formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
-                        # TODO: you get email whether you like it or not!
-                        # should probably due something about this
-                        send_mail(
-                            'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
-                            formatted_message,
-                            doit_myemail,
-                            [recipient],
-                            fail_silently=True)
-                        # todo: this is sad
-                    elif account_type.profile_user.is_operator:
-                        formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
-                        # TODO: you get email whether you like it or not!
-                        # should probably do something about this
-                        send_mail(
-                            'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
-                            formatted_message,
-                            doit_myemail,
-                            [recipient],
-                            fail_silently=True)
-                except ObjectDoesNotExist:
-                    pass
+        # soup_comment = BeautifulSoup(comment_object.comment, "html.parser")
+        # # who to send to
+        # watchers_email = related_card.watchers.values_list('email', flat=True)
+        # all_email_addresses = list(watchers_email)
+        # # TODO: if  there is no owner (such as when created via portal) ..
+        # # wrap in a try?
+        # try:
+        #     all_email_addresses.append(related_card.owner.email)
+        # except AttributeError:
+        #     pass
+        #
+        # # we remove ourselves from this notification
+        # if request.user.email in all_email_addresses:
+        #     all_email_addresses.remove(request.user.email)
+        #
+        # # if comment_object.public:
+        # if cc_list:
+        #     for email in cc_list:
+        #         all_email_addresses.append(email)
+        #
+        # for recipient in all_email_addresses:
+        #     if comment_object.public:
+        #         formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
+        #         # TODO: you get email whether you like it or not!
+        #         # should probably do something about this
+        #         sendmail_card_updated()
+        #         send_mail(
+        #             'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
+        #             formatted_message,
+        #             doit_myemail,
+        #             [recipient],
+        #             fail_silently=True)
+        #
+        #     else:
+        #         try:
+        #             account_type = User.objects.get(email=recipient)
+        #         except:
+        #             pass
+        #         try:
+        #             if account_type.is_superuser:
+        #                 formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
+        #                 # TODO: you get email whether you like it or not!
+        #                 # should probably due something about this
+        #                 send_mail(
+        #                     'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
+        #                     formatted_message,
+        #                     doit_myemail,
+        #                     [recipient],
+        #                     fail_silently=True)
+        #                 # todo: this is sad
+        #             elif account_type.profile_user.is_operator:
+        #                 formatted_message = comment_message % (soup_comment.get_text(), int(related_card.id))
+        #                 # TODO: you get email whether you like it or not!
+        #                 # should probably do something about this
+        #                 send_mail(
+        #                     'Re: DoIT #doit' + str(related_card.id) + " " + related_card.title,
+        #                     formatted_message,
+        #                     doit_myemail,
+        #                     [recipient],
+        #                     fail_silently=True)
+        #         except ObjectDoesNotExist:
+        #             pass
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     else:
