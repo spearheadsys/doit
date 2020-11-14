@@ -4,9 +4,9 @@ A new Card has been created and you have been assigned ownership.
 
 Card title: {{card.title}}
 Company: {{card.company}}
-Description: {{ card.description }}
 Priority: {{card.priority}}
 Due date: {{card.due_date}}
+Description: {{ card.description }}
 
 To add additional comments reply to this email or click the link below:
 https://doit.spearhead.systems/cards/editcard/{{card.id}}
