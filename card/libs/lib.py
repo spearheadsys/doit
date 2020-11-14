@@ -46,17 +46,14 @@ def sendmail_card_created(cardid, card_creator):
 
 
 def sendmail_card_updated(cardid, comment):
-    text_template = get_template('cards/emails/card_updated.txt')
     html_template = get_template('cards/emails/card_updated.html')
+    text_template = get_template('cards/emails/card_updated.txt')
 
     if cardid and comment:
         card = Card.objects.get(id=cardid)
         watchers = card.watchers.all()
-        # soup_description = BeautifulSoup(card.description, "lxml",)
-        # soup_comment = BeautifulSoup(comment.comment, "lxml")
         content = {
             'card': card,
-            'description': card.description,
             'comment': comment.comment
         }
         for watcher in watchers:
