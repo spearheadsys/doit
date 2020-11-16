@@ -1284,7 +1284,7 @@ def mailpost(request):
                         mimetype=mime,
                     )
 
-                lib.sendmail_card_updated(existing_card.id, comment_object, user)
+                lib.sendmail_card_updated(existing_card.id, comment_object)
             else:
                 # this means that the card exists but our user is not.active
                 message = """
