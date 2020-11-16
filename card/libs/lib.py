@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from card.models import Card, Board
 from contact.models import UserProfile
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
@@ -40,51 +41,54 @@ def sendmail_card_created(cardid, card_creator):
             html_content = html_template.render(content)
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
+            msg.mixed_subtype = 'related'
             msg.send()
         except AttributeError:
             pass
 
 
 def sendmail_card_updated(cardid, comment):
-    html_template = get_template('cards/emails/card_updated.html')
-    text_template = get_template('cards/emails/card_updated.txt')
-
     if cardid and comment:
+        html_template = get_template('cards/emails/card_updated.html')
+        text_template = get_template('cards/emails/card_updated.txt')
         card = Card.objects.get(id=cardid)
+        subject = "DoIT " + doit_email_subject_keyword + "{} {}".format(card.id, card.title)
         watchers = card.watchers.all()
+        # parsed_comment = comment.comment
+        # print("parsed_comment >>>>> ", parsed_comment)
         content = {
             'card': card,
             'comment': comment.comment
         }
+        text_content = text_template.render(content)
+        html_content = html_template.render(content)
+        # send to all watchers if public otherwise just operators and superusers
         for watcher in watchers:
-            # send_mail(
-            #     f"DoIT {doit_email_subject_keyword}{card.id} {card.title}",
-            #     text_template.render(content),
-            #     doit_myemail,
-            #     [watcher.email],
-            #     fail_silently=True)
-            subject = "DoIT " + doit_email_subject_keyword + "{} {}".format(card.id, card.title)
             from_email, to = doit_myemail, watcher.email
-            text_content = text_template.render(content)
-            html_content = html_template.render(content)
-            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            if comment.public:
+                msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+                msg.attach_alternative(html_content, "text/html")
+                msg.mixed_subtype = 'related'
+                msg.send()
+            else:
+                try:
+                    account_type = User.objects.get(email=watcher)
+                    if account_type.is_superuser or account_type.is_operator:
+                        text_content = text_template.render(content)
+                        html_content = html_template.render(content)
+                        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+                        msg.attach_alternative(html_content, "text/html")
+                        msg.mixed_subtype = 'related'
+                        msg.send()
+                except:
+                    pass
+
+        # send to owner
         try:
-            # now send to the owner
-            # send_mail(
-            #     # u'DoIT #doit' + str(card.id) + " " + card.title,
-            #     f"DoIT {doit_email_subject_keyword}{card.id} {card.title}",
-            #     text_template.render(content),
-            #     doit_myemail,
-            #     [card.owner.email],
-            #     fail_silently=True)
-            subject = "DoIT " + doit_email_subject_keyword + "{} {}".format(card.id, card.title)
             from_email, to = doit_myemail, card.owner.email
-            text_content = text_template.render(content)
-            html_content = html_template.render(content)
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
+            msg.mixed_subtype = 'related'
             msg.send()
         except AttributeError:
             pass
