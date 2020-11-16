@@ -74,7 +74,6 @@ def addattachments(request):
             ## TODO: check if file already exista otherwise we truncate and this
             # is probably NOT what we want
             # todo: move these outside if
-            print("in the PUT PF TJE OF - >>>>>>>>>>>>>")
             dirspath = 'uploads/{}/{}'.format(related_card.board.id, related_card.id)
             path = 'uploads/{}/{}/{}'.format(related_card.board.id, related_card.id, uploaded_file)
             if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):
