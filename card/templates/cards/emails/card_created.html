@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+{% load cards_extras %}
   <head>
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -127,7 +128,7 @@
                                     </tr>
                                     <tr>
                                       <td>Description</td>
-                                      <td>{{ card.description|safe }}</td>
+                                      <td>{{ card.description|safe|find_all_images_in_template }}</td>
                                     </tr>
                                   </tbody>
                                 </table>
