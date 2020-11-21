@@ -48,17 +48,31 @@ def sendmail_card_created(cardid, card_creator):
 
 
 def sendmail_card_updated(cardid, comment):
-    if cardid and comment:
+    if cardid and comment.comment:
         html_template = get_template('cards/emails/card_updated.html')
         text_template = get_template('cards/emails/card_updated.txt')
         card = Card.objects.get(id=cardid)
         subject = "DoIT " + doit_email_subject_keyword + "{} {}".format(card.id, card.title)
         watchers = card.watchers.all()
+        # strip out attachment
+        # in the future we can inline them or add them as attachments
+        bs = BeautifulSoup(comment.comment)
+        soup = bs.find_all('figure')
+        for figure in soup:
+            if figure.img:
+                figure.img.replace_with(
+                    '<p style="text-decoration: underline">[ Attachment stripped. Login to DoIT to view. ]</p>')
+            # else:
+            # todo: do we need to do anything here?
+            # attachment was not of type image
+            # figure["data-trix-attachment"]
+            # print(ast.literal_eval(figure.attrs["data-trix-attachment"])['url'])
         # parsed_comment = comment.comment
         # print("parsed_comment >>>>> ", parsed_comment)
+
         content = {
             'card': card,
-            'comment': comment.comment
+            'comment': soup
         }
         text_content = text_template.render(content)
         html_content = html_template.render(content)
@@ -74,8 +88,8 @@ def sendmail_card_updated(cardid, comment):
                 try:
                     account_type = User.objects.get(email=watcher)
                     if account_type.is_superuser or account_type.is_operator:
-                        text_content = text_template.render(content)
-                        html_content = html_template.render(content)
+                        # text_content = text_template.render(content)
+                        # html_content = html_template.render(content)
                         msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
                         msg.attach_alternative(html_content, "text/html")
                         msg.mixed_subtype = 'related'
