@@ -70,7 +70,7 @@ def sendmail_card_updated(cardid, comment):
         text_template = get_template('cards/emails/card_updated.txt')
         content = {
             'card': card,
-            'comment': bs
+            'comment': str(bs.contents[0])
         }
         text_content = text_template.render(content)
         html_content = html_template.render(content)
