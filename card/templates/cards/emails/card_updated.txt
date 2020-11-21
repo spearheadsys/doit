@@ -1,9 +1,6 @@
 ## Please do not write below this line ##
 
-A Card has been been updated.
-
-Card title: {{card.title}}
-Comment: {{comment}}
+A new comment has been posted to a tichet you participate in.
 
 For more details view https://doit.spearhead.systems/cards/editcard/{{card.id}}
 
