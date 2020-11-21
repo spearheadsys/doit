@@ -59,7 +59,7 @@ def sendmail_card_updated(cardid, comment):
         for figure in soup:
             if figure.img:
                 figure.img.replace_with(
-                    '<p style="text-decoration: underline">[ Attachment stripped. Login to DoIT to view. ]</p>')
+                    '[ Attachment stripped. Login to DoIT to view. ]')
             # else:
             # todo: do we need to do anything here?
             # attachment was not of type image
