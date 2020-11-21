@@ -49,14 +49,12 @@ def sendmail_card_created(cardid, card_creator):
 
 def sendmail_card_updated(cardid, comment):
     if cardid and comment.comment:
-        html_template = get_template('cards/emails/card_updated.html')
-        text_template = get_template('cards/emails/card_updated.txt')
         card = Card.objects.get(id=cardid)
         subject = "DoIT " + doit_email_subject_keyword + "{} {}".format(card.id, card.title)
         watchers = card.watchers.all()
         # strip out attachment
         # in the future we can inline them or add them as attachments
-        bs = BeautifulSoup(comment.comment)
+        bs = BeautifulSoup(comment.comment, "html.parser")
         soup = bs.find_all('figure')
         for figure in soup:
             if figure.img:
@@ -67,12 +65,12 @@ def sendmail_card_updated(cardid, comment):
             # attachment was not of type image
             # figure["data-trix-attachment"]
             # print(ast.literal_eval(figure.attrs["data-trix-attachment"])['url'])
-        # parsed_comment = comment.comment
-        # print("parsed_comment >>>>> ", parsed_comment)
 
+        html_template = get_template('cards/emails/card_updated.html')
+        text_template = get_template('cards/emails/card_updated.txt')
         content = {
             'card': card,
-            'comment': bs.prettify()
+            'comment': bs
         }
         text_content = text_template.render(content)
         html_content = html_template.render(content)
