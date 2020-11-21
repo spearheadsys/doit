@@ -72,7 +72,7 @@ def sendmail_card_updated(cardid, comment):
 
         content = {
             'card': card,
-            'comment': soup
+            'comment': bs.prettify()
         }
         text_content = text_template.render(content)
         html_content = html_template.render(content)
