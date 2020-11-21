@@ -54,12 +54,12 @@ def sendmail_card_updated(cardid, comment):
         watchers = card.watchers.all()
         # strip out attachment
         # in the future we can inline them or add them as attachments
-        bs = BeautifulSoup(comment.comment, "html.parser")
-        soup = bs.find_all('figure')
-        for figure in soup:
-            if figure.img:
-                figure.img.replace_with(
-                    '[ Attachment stripped. Login to DoIT to view. ]')
+        # bs = BeautifulSoup(comment.comment, "html.parser")
+        # soup = bs.find_all('figure')
+        # for figure in soup:
+        #     if figure.img:
+        #         figure.img.replace_with(
+        #             '<p style="text-decoration: underline">[ Attachment stripped. Login to DoIT to view. ]</p>')
             # else:
             # todo: do we need to do anything here?
             # attachment was not of type image
@@ -70,7 +70,8 @@ def sendmail_card_updated(cardid, comment):
         text_template = get_template('cards/emails/card_updated.txt')
         content = {
             'card': card,
-            'comment': str(bs.contents[0])
+            # 'comment': bs.contents[0].strip
+            'comment': comment.comment
         }
         text_content = text_template.render(content)
         html_content = html_template.render(content)
