@@ -37,8 +37,8 @@
   <div class="uk-grid-small" uk-grid>
 
     <!-- card comments -->
-    <div class="uk-width-expand uk-container uk-margin-left">
-      <div id="middle-column" uk-overflow-auto><div>
+    <span class="uk-width-expand uk-container uk-margin-left">
+      <span id="middle-column" uk-overflow-auto><div>
 
         <div class="uk-margin-bottom">
           <form id="editcard_form" method="POST" role="form" onsubmit="setFormSubmitting()" onclick="setFormSubmitting()">
@@ -87,38 +87,21 @@
                 </div>
               </span>
 
-              <span class="uk-button-small" uk-icon="icon:happy;" uk-tooltip="Company"></span>
-              <div uk-drop="mode: click; offset: 0;" class="uk-width-large">
-                <div class="uk-card uk-card-body uk-card-default">
-                  <div >
-                    <span class="uk-form-controls uk-inline ">
-                      {{ editcard_form.company}}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <button class="uk-button-small" uk-icon="icon:happy;" uk-tooltip="Company" type="button" uk-toggle="target: #toggle-company"></button>
+              <span id="toggle-company" hidden>
+                <span class="uk-form-controls uk-inline">
+                  {{ editcard_form.company}}
+                </span>
+              </span>
 
-              <span class="uk-button-small" uk-icon="icon:user;" uk-tooltip="Owner"></span>
-              <div uk-drop="mode: click; offset: 0;" class="uk-width-large">
-                <div class="uk-card uk-card-body uk-card-default">
-                  <div >
-                    <span class="uk-form-controls uk-inline uk-drop-grid" >
-                      {{ editcard_form.owner}}
-                    </span>
-                  </div>
-                </div>
-              </div>
 
-              <script type="application/javascript">
-                // $(document).ready(function() {
-                  $("#id_watchers").select2({
-                    dropdownParent: $(".watchersplaceholder"),
-                  });
-                // });
-                $('.watchers').click(function(event){
-                   event.stopPropagation();
-                });
-              </script>
+              <button class="uk-button-small" uk-icon="icon:user;" uk-tooltip="Owner" type="button" uk-toggle="target: #toggle-owner"></button>
+              <span id="toggle-owner" hidden>
+                <span class="uk-form-controls uk-inline uk-drop-grid" >
+                  {{ editcard_form.owner}}
+                </span>
+              </span>
+
               <style>
                 .select2-container .select2-selection--multiple {
                     display: inline-table;
@@ -128,18 +111,12 @@
                 .select2-container .select2-selection--multiple { width: 45px;}
               </style>
 
-              <span class="uk-button-small" uk-icon="icon:users;" uk-tooltip="Watchers"></span>
-
-                <div uk-drop="mode: click; offset: 0;" class="watchersplaceholder">
-<!--                  <div class="uk-input">-->
-<!--                    <div class="uk-inline">-->
-                      <span class="uk-form-controls uk-inline uk-drop-grid">
-                        {{ editcard_form.watchers}}
-                      </span>
-<!--                    </div>-->
-<!--                  </div>-->
+              <span class="uk-button-small" uk-icon="icon:users;" type="button"  uk-tooltip="Watchers" uk-toggle="target: #toggle-watchers"></span>
+              <span id="toggle-watchers" hidden>
+                <div class="uk-form-controls uk-text-center">
+                  {{ editcard_form.watchers}}
                 </div>
-
+              </span>
 
               <span class="uk-button-small" uk-icon="icon:chevron-double-right;" uk-tooltip="Estimate {{card.time_worked.minutes__sum}}"
                 {% if card.time_worked.minutes__sum > card.estimate %} style="color:red" {% endif %}
@@ -154,16 +131,12 @@
                 </div>
               </div>
 
-              <span class="uk-button-small" uk-icon="icon: tag;" uk-tooltip="Tags"></span>
-              <div uk-drop="mode: click; offset: 0;">
-                <div class="uk-card uk-card-body uk-card-default">
-                  <div >
-                    <span class="uk-form-controls uk-inline">
-                      {{ editcard_form.tags}}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <button class="uk-button-small" uk-icon="icon: tag;" type="button" uk-tooltip="Tags" uk-toggle="target: #toggle-tags"></button>
+              <span id="toggle-tags" hidden>
+                <span class="uk-form-controls uk-inline">
+                  {{ editcard_form.tags}}
+                </span>
+              </span>
 
               <span class="uk-button-small" uk-icon="icon:history;" uk-tooltip="Start date"></span>
               <div uk-drop="mode: click; offset: 0;">
