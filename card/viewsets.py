@@ -152,10 +152,10 @@ class AllBacklogCardsViewSet(viewsets.ModelViewSet):
 
         if not cache.get('all-backlog-cards'):
             queryset = Card.objects.filter(closed=False).filter(Q(column__usage__exact=backlog[0].id))
-            cache.set('all-backlog-cards')
+            cache.set('all-backlog-cards', queryset, 900)
             return queryset
         else:
-            return cache.get('all-backlog-cards', queryset, 900)
+            return cache.get('all-backlog-cards')
 
 
 class CardsWithoutDueDateViewSet(viewsets.ModelViewSet):
