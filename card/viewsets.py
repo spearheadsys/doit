@@ -155,7 +155,7 @@ class AllBacklogCardsViewSet(viewsets.ModelViewSet):
             cache.set('all-backlog-cards')
             return queryset
         else:
-            return cache.get('all-backlog-cards', queryset, 900)
+            return cache.get('all-backlog-cards')
 
 
 class CardsWithoutDueDateViewSet(viewsets.ModelViewSet):
