@@ -96,7 +96,11 @@ class AllSlaBreached(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_queryset(self):
-        cards = Card.objects.all().filter(closed=False)
+        # TODO: looool
+        if cache.get('all-open-cards'):
+            cards = cache.get('all-open-cards')
+        else:
+            cards = Card.objects.all().filter(closed=False)
 
         if cache.get('default'):
             return cache.get('default')
@@ -143,8 +147,15 @@ class AllBacklogCardsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         backlog = Columntype.objects.all().filter(name="Backlog")
-        queryset = Card.objects.filter(closed=False).filter(Q(column__usage__exact=backlog[0].id))
-        return queryset
+        # queryset = Card.objects.filter(closed=False).filter(Q(column__usage__exact=backlog[0].id))
+        # return queryset
+
+        if not cache.get('all-backlog-cards'):
+            queryset = Card.objects.filter(closed=False).filter(Q(column__usage__exact=backlog[0].id))
+            cache.set('all-backlog-cards')
+            return queryset
+        else:
+            return cache.get('all-backlog-cards', queryset, 900)
 
 
 class CardsWithoutDueDateViewSet(viewsets.ModelViewSet):
