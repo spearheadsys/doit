@@ -25,28 +25,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 doitVersion = settings.DOIT_VERSION
 
 
-
-
-class EmailDomainAutocomplete(autocomplete.Select2QuerySetView):
-    # TODO: secure/restrict things accordingly
-    def get_queryset(self):
-        # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated:
-            return EmailDomain.objects.none()
-
-        qs = EmailDomain.objects.all()
-
-        if self.q:
-            qs = qs.filter(domain__icontains=self.q)
-
-        return qs
-
-
 @login_required
 # @user_passes_test(lambda u: u.is_superuser)
 # Create your views here.
 def organizations(request):
-
 
     if request.user.profile_user.is_customer:
         return HttpResponse("You do not have permissions to view this page.")
