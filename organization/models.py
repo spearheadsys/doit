@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 
 
 class Organization(models.Model):
@@ -40,11 +41,52 @@ class Organization(models.Model):
     # used hours is in-app calculation
     sla_name = models.CharField(max_length=255, blank=True, null=True)
     sla_response_time = models.IntegerField(blank=True, null=True)
+    # TODO: add # sla_resolution_time = models.IntegerField(blank=True, null=True)
     boards = models.ManyToManyField(to='board.Board', related_name='organization_boards')
     # TODOD: when deleting/de-activating  a company we must manually remove associated domains or make them inactive!
     email_domains = models.ManyToManyField(to='EmailDomain', related_name='email_domain', blank=True)
     allow_external_contacts = models.BooleanField(default=False)
     allow_auto_contact_creation = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+
+class KnowledgeBase(models.Model):
+    name = models.CharField(max_length=255)
+    public = models.BooleanField(blank=False, null=False, default=False)
+    company = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return self.name
+
+
+class KnowledgeBaseCategory(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class KnowledgeBaseArticle(models.Model):
+    name = models.CharField(max_length=255)
+    category = models.ForeignKey(KnowledgeBaseCategory, null=False, blank=False, on_delete=models.CASCADE)
+    knowledgebase = models.ForeignKey(KnowledgeBase, null=True, blank=False, on_delete=models.SET_NULL)
+    related_cards = models.ManyToManyField(to='card.Card', related_name='kb_article', blank=True)
+    likes = models.IntegerField(default=0)
+    favorite = models.BooleanField(blank=True, null=True, default=False)
+    showcase = models.BooleanField(blank=True, null=True, default=False)
+    published_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    last_update_date = models.DateTimeField(blank=True, null=True, auto_now=True)
+    content = models.TextField(null=True, blank=True)
+
+    class KBArticleState(models.TextChoices):
+        DRAFT = 'DR', _('Draft')
+        PUBLISHED = 'PB', _('Published')
+        PRIVATE = 'PR', _('Private')
+        ARCHIVED = 'AR', _('Archived')
+
+    state = models.CharField(max_length=2, choices=KBArticleState.choices, default=KBArticleState.DRAFT)
 
     def __str__(self):
         return self.name
