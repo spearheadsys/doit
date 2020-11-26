@@ -1,4 +1,5 @@
 from dal import autocomplete
+from dal import forms as s2forms
 from django import forms
 from card.models import Card, Column, Organization
 from board.models import Board
