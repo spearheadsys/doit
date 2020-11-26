@@ -11,3 +11,4 @@ doit/settings/sph-production/
 tags
 doit/static/js/node_modules/
 doit/static/node_modules/
+package-lock.json
