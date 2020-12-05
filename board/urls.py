@@ -1,13 +1,11 @@
 from django.conf.urls import url
 from board.views import boards, addBoard, editBoard, archived, \
     BoardAutocomplete, getcolumns, deleteBoard
-
 from board import views
 
-# we are at /cases/ here
 urlpatterns = [
     url(r'^$', boards, name='boards'),
-	url(r'addboard/', addBoard, name='addBoard'),
+    url(r'addboard/', addBoard, name='addBoard'),
     url(r'editboard/(?P<board>\d+)', editBoard, name='editBoard'),
     url(r'deleteboard/(?P<board>\d+)', deleteBoard, name='deleteBoard'),
     url(r'archived/', archived, name='archived'),
