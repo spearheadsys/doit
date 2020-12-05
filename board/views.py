@@ -109,9 +109,7 @@ def boards(request):
         'addColumnForm': addColumnForm,
         'doitVersion': doitVersion,
     }
-    # return render_to_response('boards/boards.html', context_dict, context)
-    return render(request, 'boards/boards.html', context_dict)
-    # return render(request, 'attachments/null.html', context_dict)
+    return render(request, 'board/boards.html', context_dict)
 
 
 @login_required
