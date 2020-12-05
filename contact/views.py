@@ -198,6 +198,7 @@ def change_password(request):
             messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(request.user)
+        form.fields['old_password'].widget.attrs.pop("autofocus", None)
     return render(request, 'profile/change_password.html', {
         'form': form
     })
