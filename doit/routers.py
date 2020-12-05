@@ -1,8 +1,11 @@
 from rest_framework import routers
-from card.viewsets import CardViewSet, MyCardViewSet, AllOpenIncidentsViewSet, MyOpenIncidentsViewSet, \
-    MyOverdueCardsViewSet, MyOverdueBoardsViewSet, NoOwnerOrCompanyViewSet, CardsWatcherViewSet, \
-    MyBacklogCardsViewSet, AllBacklogCardsViewSet, CardsWithoutDueDateViewSet, OverdueTodayViewSet, \
-    MyMajorCardsViewSet, MyNormalCardsViewSet, MyMinorCardsViewSet, AllSlaBreached
+from card.viewsets import CardViewSet, MyCardViewSet, AllOpenIncidentsViewSet,\
+    MyOpenIncidentsViewSet, MyOverdueCardsViewSet, MyOverdueBoardsViewSet, \
+    NoOwnerOrCompanyViewSet, CardsWatcherViewSet, MyBacklogCardsViewSet, \
+    AllBacklogCardsViewSet, CardsWithoutDueDateViewSet,OverdueTodayViewSet,\
+    MyMajorCardsViewSet, MyNormalCardsViewSet, MyMinorCardsViewSet, \
+    AllSlaBreached, AllOverdueCardsViewSet, AllOverdueBoardsViewSet, \
+    MyWaitingCardsViewSet
 
 router = routers.SimpleRouter()
 router.register(r'cards', CardViewSet)
@@ -13,7 +16,9 @@ router.register(r'mymajorcards', MyMajorCardsViewSet, basename="mymajorcards")
 router.register(r'mynormalcards', MyNormalCardsViewSet, basename="mynormalcards")
 router.register(r'myminorcards', MyMinorCardsViewSet, basename="myminorcards")
 router.register(r'myoverduecards', MyOverdueCardsViewSet, basename="myoverduecards")
+router.register(r'alloverduecards', AllOverdueCardsViewSet, basename="alloverduecards")
 router.register(r'myoverdueboards', MyOverdueBoardsViewSet, basename="myoverdueboards")
+router.register(r'alloverdueboards', AllOverdueBoardsViewSet, basename="alloverdueboards")
 router.register(r'noownerorcompany', NoOwnerOrCompanyViewSet, basename="noownerorcompany")
 router.register(r'cardswatcher', CardsWatcherViewSet, basename="cardswatcher")
 router.register(r'mybacklog', MyBacklogCardsViewSet, basename="mybacklog")
@@ -21,3 +26,4 @@ router.register(r'allbacklog', AllBacklogCardsViewSet, basename="allbacklog")
 router.register(r'cardswoduedate', CardsWithoutDueDateViewSet, basename="cardswoduedate")
 router.register(r'overduetoday', OverdueTodayViewSet, basename="overduetoday")
 router.register(r'allslabreached', AllSlaBreached, basename="allslabreached")
+router.register(r'mywaitingcards', MyWaitingCardsViewSet, basename="mywaitingcards")

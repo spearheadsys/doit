@@ -81,12 +81,29 @@ class MyOverdueCardsViewSet(viewsets.ModelViewSet):
         queryset = Card.objects.filter(closed=False, owner=self.request.user).filter(~Q(column__title="Backlog")).order_by('due_date').filter(due_date__lt=today_date)
         return queryset
 
+class AllOverdueCardsViewSet(viewsets.ModelViewSet):
+    serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
+
+    def get_queryset(self):
+        queryset = Card.objects.filter(closed=False).filter(~Q(column__title="Backlog")).order_by('due_date').filter(due_date__lt=today_date)
+        return queryset
+
 
 class MyOverdueBoardsViewSet(viewsets.ModelViewSet):
     serializer_class = BoardSerializer
 
     def get_queryset(self):
         queryset = Board.objects.filter(archived=False, owner=self.request.user).filter(due_date__lt=today_date)
+
+        return queryset
+
+
+class AllOverdueBoardsViewSet(viewsets.ModelViewSet):
+    serializer_class = BoardSerializer
+
+    def get_queryset(self):
+        queryset = Board.objects.filter(archived=False).filter(due_date__lt=today_date)
 
         return queryset
 
@@ -175,3 +192,14 @@ class OverdueTodayViewSet(viewsets.ModelViewSet):
             queryset = Card.objects.filter(closed=False).filter(~Q(column__title="Backlog")).filter(due_date__year=today_date.year, due_date__month=today_date.month, due_date__day=today_date.day)
             return queryset
 
+
+
+# TODO:create components for waiting/working/documentation/etc.
+#  (some card asisignemtn stats), show on dashboard
+class MyWaitingCardsViewSet(viewsets.ModelViewSet):
+    serializer_class = CardSerializer
+    permission_classes = [IsAdminUser]
+
+    def get_queryset(self):
+        queryset = Card.objects.all().filter(closed=False).filter(column__usage__name="Waiting").filter(owner=self.request.user)
+        return queryset

@@ -176,20 +176,22 @@ var all_cards_sla_breached = new Vue({
 				this.cards = response;
 			}.bind(this));
 		},
-		deleteCard: function(id) {
-			this.loading = true;
-			if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
-				this.$http.delete(`/api2/allslabreached/${[[id]]}/`)
-					.then((response) => {
-						this.loading = false;
-						this.loadData();
-					})
-					.catch((err) => {
-						this.loading = false;
-						console.log(err);
-					})
-			}
-		},
+		// todo: i belive that because of caching this does not work
+		// we can just call deletecard/cardid
+		// deleteCard: function(id) {
+		// 	this.loading = true;
+		// 	if(confirm("This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?")) {
+		// 		this.$http.delete(`/api2/allslabreached/${[[id]]}/`)
+		// 			.then((response) => {
+		// 				this.loading = false;
+		// 				this.loadData();
+		// 			})
+		// 			.catch((err) => {
+		// 				this.loading = false;
+		// 				console.log(err);
+		// 			})
+		// 	}
+		// },
 		moment: function () {
     	return moment();
   	}
@@ -487,31 +489,43 @@ var my_overdue_boards_list = new Vue({
 		}
 })
 
-//// my_overdue_cards
-//var my_overdue = new Vue({
-//	delimiters: ['[[', ']]'],
-//	el: '#my_vue_overdue',
-//	data: {
-//		my_overdue_cards: ''
-//	},
-//	methods: {
-//		loadData: function () {
-//			$.get('/my_vue_overdue', function (response) {
-//				this.my_overdue_cards = response.overdue_cards;
-//			}.bind(this));
-//		}
-//	},
-//	created: function () {
-//		this.loadData();
-//
-//		setInterval(function () {
-//			this.loadData();
-//		}.bind(this), 20000);
-//	},
-//	beforeDestroy: function(){
-//		clearInterval(this.interval);
-//	}
-//})
+// all_overdue_board_list
+var all_overdue_boards_list = new Vue({
+	delimiters: ['[[', ']]'],
+	el: '#all_overdue_boards_list',
+	data: {
+		all_overdue_boards_list: '',
+		loading: false,
+		currentCard: {},
+	},
+	methods: {
+		loadData: function () {
+			$.get('/api2/alloverdueboards/', function (response) {
+				this.all_overdue_boards_list = response;
+			}.bind(this));
+		},
+		moment: function () {
+    	return moment();
+  	}
+	},
+	created: function () {
+		this.loadData();
+
+		setInterval(function () {
+			this.loadData();
+		}.bind(this), 90000);
+	},
+	beforeDestroy: function(){
+		clearInterval(this.interval);
+	},
+	filters: {
+  	moment: function (date) {
+    	return moment(date).format('MMM Do YYYY, k:m');
+  		}
+		}
+})
+
+
 
 // cards without owner
 var cards_without_owner_or_company = new Vue({

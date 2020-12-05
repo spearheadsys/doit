@@ -24,95 +24,57 @@
   <!-- first row  / PERSONAL -->
   <div class="uk-padding uk-child-width-1-6@m uk-child-width-1-3@s uk-grid-small uk-grid-match uk-flex-left uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
 
-    {% if cardswithoutcompany %}
-    <div id="no-owner-or-company">
-      <cards-without-owner-or-company-component></cards-without-owner-or-company-component>
-    </div>
-    {% endif %}
 
-    {% if mymajorcards %}
-    <div id="my-major-cards">
-      <my-major-cards-component></my-major-cards-component>
-    </div>
-    {% endif %}
+    <cards-without-owner-or-company-component id="no-owner-or-company"></cards-without-owner-or-company-component>
 
-    <div id="my-normal-cards" >
-      <my-normal-cards-component></my-normal-cards-component>
-    </div>
+    <my-major-cards-component id="my-major-cards"></my-major-cards-component>
 
-    <div id="my-minor-cards" >
-      <my-minor-cards-component></my-minor-cards-component>
-    </div>
+    <my-normal-cards-component id="my-normal-cards"></my-normal-cards-component>
 
-    {% if myincidents %}
-    <div id="my-open-incidents" >
-      <my-open-incidents-component></my-open-incidents-component>
-    </div>
-    {% endif %}
+    <my-minor-cards-component id="my-minor-cards"></my-minor-cards-component>
 
-    {% if myoverduecards %}
-    <div id="my-overdue-cards" >
-      <my-overdue-cards-component></my-overdue-cards-component>
-    </div>
-    {% endif %}
+    <my-open-incidents-component id="my-open-incidents"></my-open-incidents-component>
 
-    <div id="my-open-cards" >
-      <my-open-cards-component></my-open-cards-component>
-    </div>
-    <div id="my-overdue-boards" >
-      <my-overdue-boards-component></my-overdue-boards-component>
-    </div>
-    <div id="cards-watcher" >
-      <cards-im-watching></cards-im-watching>
-    </div>
+    <my-overdue-cards-component id="my-overdue-cards"></my-overdue-cards-component>
 
-    <div id="all-open-incidents" >
-      <all-open-incidents-component></all-open-incidents-component>
-    </div>
+    <my-open-cards-component id="my-open-cards"></my-open-cards-component>
 
-    <div>
-      <div class="uk-card-small uk-inline uk-card-default uk-card-body uk-animation-scale-up">
-        <p class="uk-text-center">All Overdue Cards</p>
-        <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: These are all the Cards in the system. This is here to help you get an overall understanding of team workloads. If you find yourself with free time or happen to know how to help your colleagues advance with one of their Cards, feel free to provide a helping hand."></span>
-        <h1 class="uk-text-danger uk-text-center"><a class="uk-text-danger" href="#alloverduecards" onclick="UIkit.accordion('#dashboard-accordion').toggle(1); $($.fn.dataTable.tables(true)).DataTable().columns.adjust();" uk-scroll>{{alloverduecards}}</a></h1>
-      </div>
-    </div>
+    <my-overdue-boards-component id="my-overdue-boards"></my-overdue-boards-component>
 
-    <div id="my-backlog-cards" >
-      <my-backlog-component></my-backlog-component>
-    </div>
+    <cards-im-watching id="cards-watcher"></cards-im-watching>
 
-    <div id="all-cards-sla-breached" >
-      <all-cards-sla-breached-component></all-cards-sla-breached-component>
-    </div>
+    <all-open-incidents-component id="all-open-incidents"></all-open-incidents-component>
 
-    <div>
-      <div class="uk-card-small uk-inline uk-card-default uk-card-body uk-animation-scale-up">
-        <p class="uk-text-center">All Overdue Boards</p>
-        <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip="title: These are all the overdue Boards (projects) in the system. This is here to help you get an overall understanding of project status. If you find yourself with free time or happen to know how to help your colleagues advance with one of their projects, feel free to provide a helping hand."></span>
-        <h1 class="uk-text-danger uk-text-center">
-          <a class="uk-text-warning" href="#alloverdueboards-modal" uk-toggle>{{alloverdueboards|length}}</a>
-        </h1>
-      </div>
-    </div>
+    <all-overdue-cards-component id="all-overdue-cards"></all-overdue-cards-component>
 
-    <div id="all-backlog-cards" >
-      <all-backlog-component></all-backlog-component>
-    </div>
+    <my-backlog-component id="my-backlog-cards"></my-backlog-component>
 
-    <div id="cards-no-due-date" class="uk-animation-scale-up uk-animation-15">
-      <cards-no-due-date-component></cards-no-due-date-component>
-    </div>
+    <all-cards-sla-breached-component id="all-cards-sla-breached"></all-cards-sla-breached-component>
+
+    <all-overdue-boards-component id="all-overdue-boards"></all-overdue-boards-component>
+
+<!--    <div class="uk-card-small uk-inline uk-card-default uk-card-body uk-animation-scale-up">-->
+<!--        <p class="uk-text-center">All Overdue Boards</p>-->
+<!--        <span class="uk-margin-small-right uk-margin-small-bottom uk-position-bottom-right" uk-icon="question" uk-tooltip=""></span>-->
+<!--        <h1 class="uk-text-danger uk-text-center">-->
+<!--          <a class="uk-text-warning" href="#alloverdueboards-modal" uk-toggle>{{alloverdueboards|length}}</a>-->
+<!--        </h1>-->
+<!--      </div>-->
+
+
+    <all-backlog-component id="all-backlog-cards"></all-backlog-component>
+
+    <cards-no-due-date-component id="cards-no-due-date"></cards-no-due-date-component>
 
   </div>
 
 <!-- third row / labels -->
-  <!-- <div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>
-    <span class="uk-label uk-label-danger uk-margin-right">[[duetoday]] Due today</span>
-    <span class="uk-label uk-label-success uk-margin-right"># cards SLA breached</span>
-    <span class="uk-label uk-label-warning uk-margin-right"># cards Normal</span>
-    <span class="uk-label uk-label-danger">#cards Major</span>
-  </div> -->
+<!--  <div class="uk-padding uk-grid-small uk-child-width-1-6@s uk-grid-match uk-flex-center uk-text-center uk-padding-remove-top uk-padding-remove-bottom" uk-grid>-->
+<!--    <span class="uk-label uk-label-danger uk-margin-right">[[duetoday]] Due today</span>-->
+<!--    <span class="uk-label uk-label-success uk-margin-right"># cards SLA breached</span>-->
+<!--    <span class="uk-label uk-label-warning uk-margin-right"># cards Normal</span>-->
+<!--    <span class="uk-label uk-label-danger uk-margin-right">#cards Major</span>-->
+<!--  </div>-->
 {% endif %}
 <!-- end uikit -->
 
@@ -375,24 +337,50 @@
   <!-- end myoverduecards  -->
 
   <!-- alloverdueboards-->
-<div id="alloverdueboards-modal" uk-modal>
+<div id="alloverdueboard-modal" class="uk-modal-container" uk-modal>
+
   <div class="uk-modal-dialog">
     <button class="uk-modal-close-default" type="button" uk-close></button>
     <div class="uk-modal-header">
         <h2 class="uk-modal-title">All Overdue Boards</h2>
     </div>
       <div class="uk-modal-body" uk-overflow-auto>
-        <ul class="uk-list uk-list-striped">
-          {% for board in alloverdueboards %}
-          <li>
-            <a href="/cards/?board={{board.id}}">{{board.id}}</a> {{board}} <span class="uk-text-warning">{{board.due_date}}</span></li>
-          {% endfor %}
-        </ul>
+        <div>
+          <table id="all_overdue_boards_list" class="uk-table uk-table-striped">
+            <thead>
+              <tr>
+                <th>Board</th>
+                <th>Customer</th>
+                <th>ID</th>
+                <th>Created</th>
+                <th>Due</th>
+               <!-- <th>Actions</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="board in all_overdue_boards_list">
+                <td>[[board.name]]</td>
+                <td v-if="board.company.name" >[[board.company.name]]</td>
+                <td v-else="board.company.name" class="uk-text-danger">no company</td>
+                <td><a v-bind:href="'/boards/editboard/' + board.id">[[board.id]]</a></td>
+                <td>[[board.created_time | moment ]]</td>
+                <td v-cloak>[[board.due_date | moment ]]</td>
+                <!-- <td>
+                  <a v-on:click="deleteBoard(board.id)">
+                    <span uk-icon="trash" style="color:red" onclick="return confirm('This is a non-recoverable operation! All related items (tasks, attachments, etc.) will also be removed! Are you sure?')"></span>
+                  </a>
+                </td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     <div class="uk-modal-footer uk-text-right">
         <button class="uk-button uk-button-default uk-modal-close" type="button">Close</button>
     </div>
   </div>
+
+
 </div>
   <!-- end alloverdueboards  -->
 
@@ -797,9 +785,9 @@
                 <td v-cloak v-if="card.due_date">[[card.due_date | moment ]]</td>
                 <td v-cloak v-else="card.due_date" class="uk-text-danger">no due date</td>
                 <td>
-                  <a v-on:click="deleteCard(card.id)">
-                    <span uk-icon="trash" style="color:red"></span>
-                  </a>
+<!--                  <a v-on:click="deleteCard(card.id)">-->
+<!--                    <span uk-icon="trash" style="color:red"></span>-->
+<!--                  </a>-->
                 </td>
               </tr>
             </tbody>

@@ -93,17 +93,14 @@ def home(request):
         boards = Board.objects.all().filter(archived=False)
         allcards = Card.objects.all().filter(closed=False).distinct()
         allincidents = Card.objects.all().filter(closed=False, type="IN")
-        allmyincidents = Card.objects.all().filter(closed=False, type="IN", owner=u)
+
         myboards = Board.objects.all().filter(archived=False, owner=u)
 
         incidents = []
         for i in allincidents:
             if str(i.column.usage) != "Backlog":
                 incidents.append(i)
-        myincidents = []
-        for i in allmyincidents:
-            if str(i.column.usage) != "Backlog":
-                myincidents.append(i)
+
         cardswatcher = []
         for i in allcards:
             if u in i.watchers.all():
@@ -129,14 +126,8 @@ def home(request):
                 if i.column.usage.name != "Backlog" and u in i.watchers.all():
                     allcustomercards += 1
 
-        myoverduecards = []
-        myoverduecards = cards.filter(~Q(column__usage__name="Backlog")).filter(due_date__lt = today_date).count()
 
-        mycardsoverduetoday = []
-        for i in cards:
-            if i.due_date:
-                if i.is_overdue and str(i.column.usage) != "Backlog":
-                    mycardsoverduetoday.append(i)
+
         alloverduecards = 0
         for i in allcards:
             if str(i.column.usage) != "Backlog" and i.due_date:
@@ -158,13 +149,9 @@ def home(request):
         for i in cards:
             if str(i.column.usage) == "Backlog":
                 mybacklogcards.append(i)
-        cardswithoutcompany = []
-        for i in allcards:
-            if not i.company or not i.owner and str(i.column.usage) != "Backlog":
-                cardswithoutcompany.append(i)
 
         majorprio = Priority.objects.get(title='Major')
-        mymajorcards = cards.filter(priority=majorprio).count()
+
         cardswithoutduedate = []
         for i in allcards:
             if not i.due_date and str(i.column.usage) != "Backlog":
@@ -249,19 +236,14 @@ def home(request):
             'page_name': "DoIT",
             'customerowncards': customerowncards,
             'allcustomercards': allcustomercards,
-            'myoverduecards': myoverduecards,
-            'mycardsoverduetoday': mycardsoverduetoday,
             'alloverduecards': alloverduecards,
             'incidents': incidents,
-            'myincidents': myincidents,
             'myoverdueboards': myoverdueboards,
             'alloverdueboards': alloverdueboards,
             'cardswithoutduedate': cardswithoutduedate,
             'allcards': allcards,
             'cardswatcher': cardswatcher,
             'backlogcards': backlogcards,
-            'cardswithoutcompany': len(cardswithoutcompany),
-            'mymajorcards': mymajorcards,
             'mybacklogcards': mybacklogcards,
             'total_minutes_per_op': total_minutes_per_op,
             'group_by_owner_card_list': group_by_owner_card_list,
