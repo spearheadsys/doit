@@ -84,17 +84,17 @@ def sendmail_card_updated(cardid, comment):
                 msg.mixed_subtype = 'related'
                 msg.send()
             else:
-                try:
-                    account_type = User.objects.get(email=watcher)
-                    if account_type.is_superuser or account_type.is_operator:
-                        # text_content = text_template.render(content)
-                        # html_content = html_template.render(content)
-                        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-                        msg.attach_alternative(html_content, "text/html")
-                        msg.mixed_subtype = 'related'
-                        msg.send()
-                except:
-                    pass
+                # try:
+                if User.objects.get(email=watcher.email).profile_user.is_operator or \
+                        User.objects.get(email=watcher.email).is_superuser:
+                    # text_content = text_template.render(content)
+                    # html_content = html_template.render(content)
+                    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+                    msg.attach_alternative(html_content, "text/html")
+                    msg.mixed_subtype = 'related'
+                    msg.send()
+                # except:
+                #     pass
 
         # send to owner
         try:
