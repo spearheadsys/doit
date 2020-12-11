@@ -14,7 +14,7 @@
         <h3 class="uk-margin-remove-bottom">{{board.name}}</h3>
         <p class="uk-text uk-margin-remove-top uk-text-small"><time datetime="{{board.board_created_time}}">{{board.board_created_time}}</time></p>
         <p>{{board.description|slice:":50"}}</p>
-        <p class="uk-text-small">{{ board.allopen|default_if_none:"0" }} Open cards | {{board.all_closed_cards}} Closed cards | {{ board.alloverdue }} Overdue</p>
+        <p class="uk-text-small">{{ board.allopen|default_if_none:"0" }} Open cards | {{board.all_closed_cards}} Closed cards | {{ board.alloverdue }} Overdue </p>
       </div>
     </div>
   </div>

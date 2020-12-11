@@ -3,25 +3,23 @@ from django.urls import resolve
 from django.template import RequestContext
 from django.shortcuts import render
 # user auth
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 # login
 from django.contrib.auth.models import User
 from organization.forms import AddOrganizationsForm
 from organization.models import Organization
-from comment.models import Comment
-from datetime import date, timedelta
 from card.models import Worklog, Card
 from contact.models import UserProfile
-from django.contrib.contenttypes.models import ContentType
 # verions
 from django.conf import settings
 import json
-from dal import autocomplete
 from board.models import Board
-from organization.models import EmailDomain
+from django.http import JsonResponse
+from django.db.models import Q
 import collections
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+SITE_URL = settings.SITE_URL
 doitVersion = settings.DOIT_VERSION
 
 
@@ -58,6 +56,7 @@ def organizations(request):
 
     context_dict = {
         'site_title': "Organizations | DoIT Spearhead Systems",
+        'page_name': "Organizations",
         'addOrganizationForm': addOrganizationForm,
         # 'active_url': current_url,
         # 'org_list': org_list,
@@ -65,8 +64,72 @@ def organizations(request):
         # 'user_list': user_list,
         'doitVersion': doitVersion,
         'boards': boards,
+        'SITE_URL': SITE_URL,
     }
     return render(request, 'organization/organizations.html', context_dict)
+
+
+@login_required
+def all_companies_dt(request):
+    draw = request.GET['draw']
+    start = int(request.GET['start'])
+    length = int(request.GET['length'])
+
+    # Note: Ordering is implicit on created_time. If we we are passed a new ordering column,
+    # it is not taken into account!
+    # order_column = int(request.GET['order[0][column]'])
+    # TODO: not quite sure how this is supposed to works or if it works
+    order_direction = ''
+    global_search = request.GET['search[value]']
+    column = 'id'
+    # Note: If user != superuser we limit to company or owned/watched cards only!
+    if request.user.profile_user.is_operator:
+        all_records = Organization.objects.all()
+        records_total = all_records.count()
+        if not all_records:
+            all_records = 0
+
+    # if user selects all (-1 in datatables) we need to figure out our length here
+    if length < 0:
+        length = all_records.count()
+    columns = ['id', 'name']
+    objects = []
+    if all_records != 0:
+        if global_search:
+            grep = all_records.filter(
+                Q(name__icontains=global_search)
+            ).order_by(order_direction + column )[start:start + length].values(
+                'id',
+                'name')
+            for i in grep:
+                ret = [i[j] for j in columns]
+                objects.append(ret)
+            filtered_count = all_records.filter(
+                Q(name__icontains=global_search)
+            ).count()
+        else:
+            # TODO: this same check is required in the other &_ajax views
+            if all_records != 0 or all_records < 0:
+                for i in all_records.order_by(order_direction + column)[start:start + length].values(
+                        'id',
+                        'name'):
+                    ret = [i[j] for j in columns]
+                    filtered_count = all_records.count()
+                    objects.append(ret)
+    else:
+        filtered_count = 0
+    # TODO: this same check is required in the other &_ajax views
+    if not records_total:
+        records_total = 0
+    if not objects:
+        objects = 0
+
+    return JsonResponse({
+        "draw": draw,
+        "recordsTotal": records_total,
+        "recordsFiltered": filtered_count,
+        "data": objects,
+    })
 
 
 @login_required
@@ -99,6 +162,7 @@ def change_organization(request):
         }
         # return render_to_response('cases/addorganization.html', context_dict, context)
         return render(request, 'cases/addorganization.html', context_dict)
+
 
 @login_required
 def add_organization(request):

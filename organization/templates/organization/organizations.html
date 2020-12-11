@@ -4,125 +4,40 @@
   {% include "menu.html" %}
 {% endblock menu %}
 {% block main-content %}
-
 {% load static %}
-{{addOrganizationForm.media}}
-<!-- Todo: add company search form-->
-<div>
-  <div class="uk-navbar-item uk-hidden">
-    <form class="uk-search uk-search-navbar uk-muted">
-        <a href="#" uk-search-icon class="uk-search-icon-flip"></a>
-        <input class="uk-search-input" type="search" placeholder="Search by company name...">
-    </form>
-  </div>
+<script src="{% static 'organization/js/organizationapp.js' %}"></script>
+<script type="text/javascript" src='{% static "doit/js/datatables.min.js" %}'></script>
+<link rel="stylesheet" type="text/css" href='{% static "doit/css/datatables.min.css" %}'/>
+<link rel="stylesheet" type="text/css" href='{% static "doit/css/uikitdatatables.css" %}' rel="stylesheet">
 
-</div>
-
-<div class="js-filter uk-padding-small uk-child-width-1-4@m " uk-grid>
-    {% for company, details in companies.object_list %}
-    <div>
-        <div class="uk-card uk-card-default tag-blue">
-            <div class="uk-card-header">
-                <div class="uk-grid-small uk-flex-middle" uk-grid>
-                    {% if org.logo %}
-                    <div class="uk-width-auto">
-                        <img class="uk-border-circle" width="40" height="40" src="/media/{{ org.logo }}">
-                    </div>
-                    {% endif %}
-                    <div class="uk-width-expand">
-                        <h3 class="uk-card-title uk-margin-remove-bottom">{{company}}</h3>
-                        <p class="uk-text-meta uk-margin-remove-top"><time datetime="2016-04-01T19:00">{{company.created_time}}</time></p>
-                    </div>
-                </div>
-            </div>
-            <div class="uk-card-body">
-                <p>{{company.description|slice:":105"}}</p>
-            </div>
-            <div class="uk-card-footer">
-               {% if company.owner %}<span uk-icon="user" uk-tooltip="title: {{company.owner}} is owner"></span>{% endif %}
-                <span uk-icon="clock" uk-tooltip="title: SLA {{company.sla_response_time}}"></span>
-
-                {% if details.contacts %}
-                <a href="#" uk-icon="users" uk-tooltip="title: Company Contacts (click)"></a>
-                     <div uk-drop="mode: click">
-                        <div class="uk-card uk-card-body uk-card-default">
-                            {% for contact in details.contacts %}
-                                {{contact.user}}<br/>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
-
-                <span class="uk-badge" uk-tooltip="title: Open Cards">{{details.open_cards}}</span>
-                <span class="uk-badge" uk-tooltip="title: Closed Cards">{{details.closed_cards}}</span>
-                <a href="knowledge_base/{{company.id}}" uk-icon="file-text" uk-tooltip="title: Knowledge Base"></a>
-                <span uk-icon="settings" uk-tooltip="title: Company Settings"></span>
-                <a href="delete_organization/{{company.id}}" uk-icon="trash" uk-tooltip="title: Delete {{company}}" style="color: red;" onclick="return confirm('This is a non-recoverable operation! Are you sure?')"></a>
-            </div>
+<!-- Begin accord -->
+<div class="uk-padding uk-padding-remove-top"> <!-- container -->
+  <ul uk-accordion="multiple: true" id="all-companies-accordion">
+    <li class="uk-open">
+      <a class="uk-accordion-title" href="#"><h3>All Companies</h3></a>
+      <div class="uk-accordion-content" id="incidents">
+        <div class="">
+          <div class="well">
+            <table id="all-companies-table" class="uk-table uk-table-striped uk-table-hover uk-table-divider dataTable" width="100%">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
         </div>
-    </div>
-    {% endfor %}
-    <div class="uk-container-muted uk-align-center">
-      <ul class="uk-pagination">
-        <li>
-          {% if companies.has_previous %}
-            <a href="?page={{ companies.previous_page_number }}"><span class="uk-margin-small-right" uk-pagination-previous></span> Previous</a>
-          {% endif %}
-        </li>
-        <li>Page {{ companies.number }} of {{ companies.paginator.num_pages }}.</li>
-        <li>
-          {% if companies.has_next %}
-            <a href="?page={{ companies.next_page_number }}">Next <span class="uk-margin-small-left" uk-pagination-next></span></a>
-          {% endif %}
-        </li>
-      </ul>
-    </div>
-
-</div>
-
-
-<!-- Begin page content -->
-<div class="container">
+      </div>
+    </li>
+  </ul>
+</div> <!-- /accordion dt companies -->
 
 
 
-
-
-    <!-- AddOrg Modal -->
-    <div class="modal fade" id="addOrganizationModal" tabindex="-1" role="dialog" aria-labelledby="addOrganizationLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</li>
-                    <h4 class="modal-title" id="addOrganizationModal">Add Organization</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="addorganization_form" method="post" class="form-inline" role="form" action="/organizations/addorganization/">
-                        {% csrf_token %}
-                    <div class="input-group input-group-sm">
-                        {{  addOrganizationForm.as_p }}
-                            <input type="submit" class="btn-primary" name="submit" value="Save Organization" />
-                    </div>
-                        <br />
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end addOrg modal -->
-
-</div><!-- end content -->
-
-<!-- TODO: cleanup, centralize this somewhere -->
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="{% static "doit/js/jquery.min.js" %}"></script>
-<!-- used for datepicker modal addcard -->
-<script src="{% static "doit/js/jquery-ui.min.js" %}"></script>
-
-
-<!-- end uikit -->
 {% endblock main-content %}
 {% block footer %}
   {% include "footer.html" %}
