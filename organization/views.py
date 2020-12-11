@@ -164,39 +164,6 @@ def change_organization(request):
         return render(request, 'cases/addorganization.html', context_dict)
 
 
-@login_required
-def add_organization(request):
-    """ Add an Organization object."""
-    current_url = resolve(request.path_info).url_name
-    if request.is_ajax() or request.method == 'POST':
-        form = AddOrganizationsForm(request.POST)
-        if form.is_valid():
-            # add card to database
-            model_instance = form.save(commit=True)
-            model_instance = form.save()
-            return HttpResponseRedirect('/organizations/')
-        else:
-            print(form.errors)
-        return HttpResponseRedirect('/organizations/')
-    else:
-        u = User.objects.get(username=request.user)
-        addOrganizationForm = AddOrganizationsForm(
-            #todo : figure why this is not autopopulated
-            initial={
-                'owner': u.id,
-            }
-        )
-        context = RequestContext(request)
-        context_dict = {
-            'site_title': "Cases | Spearhead Systems",
-            'addOrganizationForm': addOrganizationForm,
-            'page_name': "Add Organization",
-            'active_url': current_url,
-        }
-        # return render_to_response('cases/addorganization.html', context_dict, context)
-        return render(request, 'cases/addorganization.html', context_dict)
-
-
 def delete_organization(request, company=None):
     """ Delete an Organization object."""
     # who can delete organization? Just superusers!
