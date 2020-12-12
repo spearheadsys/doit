@@ -74,10 +74,12 @@ def boards(request):
             Q(due_date__lt=today_date),
             board=board,
         )
+        progress = board.progress()
 
         # add our stats to the list
         boarddict = {
             'name': board.name,
+            'progress': progress,
             'id': board.id,
             'color': board.get_color_display(),
             'board_id': board.id,
