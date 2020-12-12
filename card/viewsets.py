@@ -13,6 +13,7 @@ from django.core.cache import cache
 # note: added limit to slabreached ftm
 today_date = timezone.now()
 
+
 class CardViewSet(viewsets.ModelViewSet):
     # Todo: restrict to user object (i.e. admin sees all, operator sees all, customers see only their own)
     queryset = Card.objects.filter(closed=False)
@@ -114,18 +115,27 @@ class AllSlaBreached(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_queryset(self):
-        # TODO: looool
-        if cache.get('all-open-cards'):
-            cards = cache.get('all-open-cards')
-        else:
-            cards = Card.objects.all().filter(closed=False)[:50]
 
-        if cache.get('default'):
-            return cache.get('default')
-        else:
-            queryset = [x for x in cards if x.sla_breached()]
-            cache.set('default', queryset, 900)
+        if not cache.get('all-sla-breached'):
+            # cards = Card.objects.all().filter(closed=False)
+            queryset = [x for x in Card.objects.all().filter(closed=False) if x.sla_breached()]
+            cache.set('all-sla-breached', queryset, 900)
             return queryset
+        else:
+            return cache.get('all-sla-breached')
+
+        # TODO: looool
+        # if cache.get('all-open-cards'):
+        #     cards = cache.get('all-open-cards')
+        # else:
+        #     cards = Card.objects.all().filter(closed=False)[:50]
+        #
+        # if cache.get('default'):
+        #     return cache.get('default')
+        # else:
+        #     queryset = [x for x in cards if x.sla_breached()]
+        #     cache.set('default', queryset, 900)
+        #     return queryset
 
 
 class NoOwnerOrCompanyViewSet(viewsets.ModelViewSet):
