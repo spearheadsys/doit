@@ -5,7 +5,8 @@ from django.contrib.auth.decorators import login_required
 from card.models import Card
 from comment.models import Comment
 from contact.models import UserProfile
-from attachment.models import Attachment
+from organization.models import KnowledgeBaseArticle
+from attachment.models import Attachment, KBAttachment
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
@@ -90,6 +91,52 @@ def addattachments(request):
                 content=path,
                 uploaded_by=u,
                 card=related_card,
+                mimetype=f,
+            )
+            data = {
+                'name': new_attachment.name,
+                'url': str(new_attachment)
+            }
+            dump = json.dumps(data)
+            return HttpResponse(dump, content_type='application/json')
+        else:
+            print(request)
+            # not sure how you got here ..
+            # return render_to_response('attachments/null.html')
+            return JsonResponse({'status': '500'})
+
+
+@login_required
+@csrf_exempt
+def addkbattachments(request):
+    u = User.objects.get(username=request.user)
+    up = u.profile_user
+    if request.is_ajax() or request.method == 'POST':
+        kb = request.POST['kb']
+        related_kb = KnowledgeBaseArticle.objects.get(id=kb)
+        for filename, uploaded_file in request.FILES.items():
+            f = uploaded_file.content_type
+
+            # # write file to upload dir
+            ## TODO: check if file already exista otherwise we truncate and this
+            # is probably NOT what we want
+            # todo: move these outside if
+            dirspath = 'uploads/kb/{}/{}'.format(related_kb.knowledgebase.id, related_kb.id)
+            path = 'uploads/kb/{}/{}/{}'.format(related_kb.knowledgebase.id, related_kb.id, uploaded_file)
+            if not os.path.exists(os.path.join(settings.MEDIA_ROOT, dirspath)):
+                os.makedirs(os.path.join(settings.MEDIA_ROOT, dirspath))
+            new_up_path = os.path.join(settings.MEDIA_ROOT, path)
+            destination = open(new_up_path, 'wb+')
+            for chunk in uploaded_file.chunks():
+                destination.write(chunk)
+            destination.close()
+            # end write
+            # TODO: clean files, make sure we do not bad things
+            new_attachment = KBAttachment.objects.create(
+                name=uploaded_file.name,
+                content=path,
+                uploaded_by=u,
+                kbarticleid=related_kb,
                 mimetype=f,
             )
             data = {

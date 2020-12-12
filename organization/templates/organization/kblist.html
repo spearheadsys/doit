@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+{% block menu %}
+  {% include "menu.html" %}
+{% endblock menu %}
+{% block main-content %}
+{% load static %}
+
+<div class=" uk-padding-small" uk-grid>
+    <div class="uk-width-1-4@s">
+        <div>
+          <ul uk-accordion="multiple: true">
+            {# KBS #}
+            <li class="uk-open">
+              <a class="uk-accordion-title" href="#">
+                <span class="uk-heading-bullet">KB's</span>
+              </a>
+              <div class="uk-accordion-content">
+                <ul class="uk-list">
+                  <li>
+                    <a class="uk-button-small uk-button-primary" target="_blank" href="/admin/organization/knowledgebase/add/">New KB</a>
+                  </li>
+                  {% for kb in kbs %}
+                  <li>
+                    <span class="uk-margin-right-small" uk-icon="icon:file;ratio:0.7"></span>
+                    <a target="_blank" href="http://127.0.0.1:8000/admin/organization/knowledgebase/{{kb.id}}/change/">{{ kb }}{% if kb.public %} <i uk-icon="icon:world; ratio:0.6;" style="color:green;"></i>{% endif %}</a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </li>
+            {# KB ARTICLES #}
+            <li class="uk-open">
+              <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">KB Articles</span></a>
+              <div class="uk-accordion-content">
+                <ul class="uk-list">
+                  <li>
+                    <a class="uk-button-small uk-button-primary" target="_blank" href="/admin/organization/knowledgebase/add/">New KB Article</a></li>
+                  {% for kbarticle in kbarticles %}
+                  <li>
+                    <span class="uk-margin-right-small" uk-icon="icon:file;ratio:0.7"></span>
+                      <a href="/organizations/kb/edit/{{kbarticle.id}}">{{ kbarticle }}</a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </li>
+            {# KB CATEGORIES #}
+            <li class="uk-open">
+              <a class="uk-accordion-title" href="#">
+                <span class="uk-heading-bullet">Categories</span>
+              </a>
+              <div class="uk-accordion-content">
+                <ul class="uk-list">
+                  <li>
+                    <a class="uk-button-small uk-button-secondary" target="_blank" href="/admin/organization/knowledgebasecategory/add/">New Category</a>
+                  </li>
+                  {% for category in categories %}
+                    <li>
+                      <span class="uk-margin-right-small" uk-icon="icon:list;ratio:0.7"></span>
+                      <a target="_blank" href="/admin/organization/knowledgebasecategory/{{category.id}}/change/">{{ category }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+    </div>
+
+    <div class="uk-width-expand">
+      <p class="uk-title">{{company}} Knowledge bases</p>
+      <p>some stats: kbs's trends (articles, etc)</p>
+    </div>
+
+</div>
+
+<!-- end uikit -->
+{% endblock main-content %}
+{% block footer %}
+  {% include "footer.html" %}
+{% endblock footer %}

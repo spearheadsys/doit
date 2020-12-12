@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 # login
 from django.contrib.auth.models import User
 from organization.forms import AddOrganizationsForm
-from organization.models import Organization
+from organization.models import Organization, KnowledgeBase, KnowledgeBaseCategory, \
+    KnowledgeBaseArticle
 from card.models import Worklog, Card
 from contact.models import UserProfile
 # verions
@@ -18,6 +19,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 import collections
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.exceptions import ObjectDoesNotExist
 
 SITE_URL = settings.SITE_URL
 doitVersion = settings.DOIT_VERSION
@@ -204,3 +206,47 @@ def get_company(request):
         data = 'fail'
     # mimetype = 'application/json'
     return HttpResponse(data, content_type='application/json')
+
+
+def kblist(request, company=None):
+    try:
+        company = Organization.objects.get(id=company)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/organizations')
+
+    # get all knowledge bases for this company
+    kbs = KnowledgeBase.objects.all().filter(company=company)
+    categories = KnowledgeBaseCategory.objects.all().filter(company=company)
+    kbarticles = KnowledgeBaseArticle.objects.all().filter(knowledgebase__company=company)
+
+
+    context_dict = {
+        # 'site_title': "Knowledge bases | DoIT Spearhead Systems",
+        'site_title': f"KB's {company} | DoIT Spearhead Systems",
+        'page_name': "KBs",
+        'kbs': kbs,
+        'kbarticles': kbarticles,
+        'company': company,
+        'categories': categories,
+        'SITE_URL': SITE_URL,
+    }
+    return render(request, 'organization/kblist.html', context_dict)
+
+
+def editkb(request, kb=None):
+    try:
+        kb = KnowledgeBaseArticle.objects.get(id=kb)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/kbs')
+
+
+
+    context_dict = {
+        # 'site_title': "Knowledge bases | DoIT Spearhead Systems",
+        'site_title': f"Edit KB {kb} | DoIT Spearhead Systems",
+        'page_name': f"{kb}",
+        'kb': kb,
+
+        'SITE_URL': SITE_URL,
+    }
+    return render(request, 'organization/editkb.html', context_dict)
