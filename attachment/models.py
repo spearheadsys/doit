@@ -23,6 +23,7 @@ class Attachment(models.Model):
         return self.content.name
 
 
+# todo: implement post_delete.signal or similar to remove from filesystem
 class KBAttachment(models.Model):
     created_time = models.DateField(auto_now_add=True)
     uploaded_by = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
