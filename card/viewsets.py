@@ -10,6 +10,7 @@ from django.core.cache import cache
 
 
 # todo: enable more caching as per slabreached
+# note: added limit to slabreached ftm
 today_date = timezone.now()
 
 class CardViewSet(viewsets.ModelViewSet):
@@ -117,7 +118,7 @@ class AllSlaBreached(viewsets.ModelViewSet):
         if cache.get('all-open-cards'):
             cards = cache.get('all-open-cards')
         else:
-            cards = Card.objects.all().filter(closed=False)
+            cards = Card.objects.all().filter(closed=False)[:50]
 
         if cache.get('default'):
             return cache.get('default')
