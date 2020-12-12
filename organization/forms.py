@@ -1,6 +1,6 @@
 from django import forms
 from dal import autocomplete
-from organization.models import Organization
+from organization.models import Organization, KnowledgeBaseArticle
 
 
 class AddOrganizationsForm(forms.ModelForm):

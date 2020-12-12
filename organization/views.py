@@ -37,7 +37,6 @@ def organizations(request):
     # user_list = [active_user for active_user in UserProfile.objects.select_related().all()
     #              if active_user.user.is_active]
     boards = Board.objects.filter(archived=False)
-    addOrganizationForm = AddOrganizationsForm()
     companiesdict = collections.OrderedDict()
     for company in org_list:
         companiesdict[company] = {'contacts': UserProfile.objects.filter(company=company),
@@ -59,7 +58,6 @@ def organizations(request):
     context_dict = {
         'site_title': "Organizations | DoIT Spearhead Systems",
         'page_name': "Organizations",
-        'addOrganizationForm': addOrganizationForm,
         # 'active_url': current_url,
         # 'org_list': org_list,
         'companies': companies,
@@ -214,7 +212,7 @@ def kblist(request, company=None):
     except ObjectDoesNotExist:
         return HttpResponseRedirect('/organizations')
 
-    # get all knowledge bases for this company
+    boards = Board.objects.filter(archived=False)
     kbs = KnowledgeBase.objects.all().filter(company=company)
     categories = KnowledgeBaseCategory.objects.all().filter(company=company)
     kbarticles = KnowledgeBaseArticle.objects.all().filter(knowledgebase__company=company)
@@ -225,6 +223,7 @@ def kblist(request, company=None):
         'site_title': f"KB's {company} | DoIT Spearhead Systems",
         'page_name': "KBs",
         'kbs': kbs,
+        'boards': boards,
         'kbarticles': kbarticles,
         'company': company,
         'categories': categories,
@@ -233,20 +232,55 @@ def kblist(request, company=None):
     return render(request, 'organization/kblist.html', context_dict)
 
 
-def editkb(request, kb=None):
+def kbview(request, company=None, kbid=None):
     try:
-        kb = KnowledgeBaseArticle.objects.get(id=kb)
+        company = Organization.objects.get(id=company)
+        kb = KnowledgeBase.objects.get(id=kbid)
     except ObjectDoesNotExist:
-        return HttpResponseRedirect('/kbs')
+        return HttpResponseRedirect('/organizations')
 
-
+    boards = Board.objects.filter(archived=False)
+    categories = KnowledgeBaseCategory.objects.all().filter(company=company)
+    kbarticles = KnowledgeBaseArticle.objects.all().filter(knowledgebase__id=kbid)
 
     context_dict = {
         # 'site_title': "Knowledge bases | DoIT Spearhead Systems",
+        'site_title': f"KB's {company} | DoIT Spearhead Systems",
+        'page_name': "KBs",
+        'kb': kb,
+        'kbarticles': kbarticles,
+        'company': company,
+        'boards': boards,
+        'categories': categories,
+        'SITE_URL': SITE_URL,
+    }
+    return render(request, 'organization/kbview.html', context_dict)
+
+
+def editkb(request, kb=None, company=None):
+    try:
+        kb = KnowledgeBaseArticle.objects.get(id=kb)
+        company = Organization.objects.get(id=company)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/kbs')
+
+    if request.is_ajax() or request.method == 'POST':
+        kb = KnowledgeBaseArticle.objects.get(id=kb.id)
+        kb.content = request.POST['kb']
+        kb.save()
+        redirect_url = f"/organizations/kb/edit/{kb.id}/{company.id}"
+        return HttpResponseRedirect(redirect_url)
+
+    categories = KnowledgeBaseCategory.objects.all().filter(company=company)
+    boards = Board.objects.filter(archived=False)
+
+    context_dict = {
         'site_title': f"Edit KB {kb} | DoIT Spearhead Systems",
         'page_name': f"{kb}",
         'kb': kb,
-
+        'boards': boards,
+        'company': company,
+        'categories': categories,
         'SITE_URL': SITE_URL,
     }
     return render(request, 'organization/editkb.html', context_dict)

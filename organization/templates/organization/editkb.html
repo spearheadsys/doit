@@ -5,6 +5,32 @@
 {% endblock menu %}
 {% block main-content %}
 {% load static %}
+<style>
+  trix-toolbar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: -0.1rem;
+    font-family: sans-serif;
+    background-color: #fff;
+    z-index: 10;
+    padding: 1em 0;
+    white-space: nowrap;
+    display: block;
+  }
+
+  trix-toolbar .trix-button-row {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: space-between;
+  }
+</style>
+
+<ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom uk-padding-remove-top uk-margin-left">
+  <li><a href="/organizations">Organizations</a></li>
+  <li><a href="/organizations/kblist/{{company.id}}">Knowledgebases</a></li>
+  <li><a href="/organizations/kbview/{{company.id}}/{{kb.id}}/">{{kb.knowledgebase}}</a></li>
+  <li><a href="#">{{kb}}</a></li>
+</ul>
 
 <div class=" uk-padding-small" uk-grid>
     <div class="uk-width-1-4@s">
@@ -20,10 +46,30 @@
                   <li>Last update: {{kb.last_update_date}}</li>
                   <li>Category: {{kb.category}}</li>
                   <li>Showcase: {{kb.showcase}}</li>
+                  <li>KB: {{kb.knowledgebase}}</li>
                   <li>Related cards: {% for card in kb.related_cards.values %}<a href="/cards/editcard/{{card.id}}">{{card.id}}</a>{% endfor %}</li>
                   <li><a href="/admin/organization/knowledgebasearticle/{{kb.id}}/change/" class="uk-button uk-button-primary">Edit in admin</a></li>
                 </ul>
             </div>
+            </li>
+            {# KB CATEGORIES #}
+            <li class="uk-open">
+              <a class="uk-accordion-title" href="#">
+                <span class="uk-heading-bullet">Categories</span>
+              </a>
+              <div class="uk-accordion-content">
+                <ul class="uk-list">
+                  <li>
+                    <a class="uk-button-small uk-button-secondary" target="_blank" href="/admin/organization/knowledgebasearticle/add/">New Category</a>
+                  </li>
+                  {% for category in categories %}
+                    <li>
+                      <span class="uk-margin-right-small" uk-icon="icon:list;ratio:0.7"></span>
+                      <a target="_blank" href="/admin/organization/knowledgebasecategory/{{category.id}}/change/">{{ category }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
             </li>
 
           </ul>
@@ -33,6 +79,8 @@
     <div class="uk-width-expand" style="height: calc((100vh - 150px) - 100px);" uk-overflow-auto>
         <div>
           <div>
+            <form id="addkbform" method="post">
+               {% csrf_token %}
             <input id="x" type="hidden" name="kb" value="{{kb.content}}">
             <trix-editor autofocus input="x"></trix-editor>
                 <script>
@@ -80,12 +128,14 @@
                     })();
                   })
                 </script>
+              <div class="uk-margin-top">
+                <input name="kbarticle" type="hidden" value="{{kb.id}}" />
+                <input class="uk-position-bottom-right uk-margin-right uk-button-small uk-button-secondary" uk-sticky="bottom: true  name="kb" type="submit" value="Save article" />
+              </div>
+              </form>
           </div>
         </div>
-      <div class="uk-margin-top">
-        <input name="kbarticle" type="hidden" value="{{kb.id}}" />
-        <input class="uk-button-small uk-button-secondary"  name="public_close" type="submit" value="Save article" />
-      </div>
+
     </div>
 </div>
 
