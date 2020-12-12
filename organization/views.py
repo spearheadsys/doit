@@ -207,6 +207,8 @@ def get_company(request):
 
 
 def kblist(request, company=None):
+    if not request.user.profile_user.is_operator:
+        return HttpResponseRedirect('/')
     try:
         company = Organization.objects.get(id=company)
     except ObjectDoesNotExist:
@@ -233,6 +235,8 @@ def kblist(request, company=None):
 
 
 def kbview(request, company=None, kbid=None):
+    if not request.user.profile_user.is_operator:
+        return HttpResponseRedirect('/')
     try:
         company = Organization.objects.get(id=company)
         kb = KnowledgeBase.objects.get(id=kbid)
@@ -258,6 +262,8 @@ def kbview(request, company=None, kbid=None):
 
 
 def editkb(request, kb=None, company=None):
+    if not request.user.profile_user.is_operator:
+        return HttpResponseRedirect('/')
     try:
         kb = KnowledgeBaseArticle.objects.get(id=kb)
         company = Organization.objects.get(id=company)
