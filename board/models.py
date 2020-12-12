@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from organization.models import Organization
+from django.db.models import Q
 from django.utils import timezone
-#from django_mailbox.models import Mailbox
 
 
 # Create your models here.
@@ -23,7 +23,6 @@ class Board(models.Model):
     due_date = models.DateTimeField(null=True, blank=True)
     owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     order = models.IntegerField(null=True, blank=True)
-    #mailbox = models.ForeignKey(Mailbox, related_name="Mailbox", null=True, blank=True, on_delete=models.SET_NULL)
     BOARD_CHOICES = (
         ('project_board', 'Project Board'),
         ('ongoing_board', 'Ongoing Board'),
@@ -55,6 +54,38 @@ class Board(models.Model):
         if self.archived is None:
             return None
         return bool(self.result)
+
+    # def percent_of_estimate(self):
+    #     if not self.total_minutes():
+    #         return None
+    #     try:
+    #         perc = (self.total_minutes() / float("%0.2f" % self.estimate)) * 100
+    #         return float("%0.2f" % perc)
+    #     except TypeError:
+    #         return None
+
+    def progress(self):
+        # look at opencards vs total cards
+        # probably needs todo
+        allcards = self.card_board.all().count()
+        opencards = self.card_board.all().filter(closed=False).count()
+        closedcards = self.card_board.all().filter(closed=True).count()
+        # todo, we may want to dig a bit deeper and take into accounts
+        # the card status (waiting/backloged, etc.
+        # allbacklogcards = self.card_board.all().filter(closed=False)
+        # allwaitingcards = self.card_board.all().filter(closed=False)
+
+        if opencards == 0 or allcards == 0 or closedcards == 0:
+            return float("%0.2f" % 0)
+
+        totalopen = opencards / allcards
+        totalclosed = closedcards / allcards
+        openperc = totalopen * 100
+        return openperc
+
+
+
+
 
     # TODO: this may miss out on certain boards overdue at 00:00:00 on same day, same with cards
     @property
