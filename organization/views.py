@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from organization.forms import AddOrganizationsForm
 from organization.models import Organization, KnowledgeBase, KnowledgeBaseCategory, \
     KnowledgeBaseArticle
+from organization.forms import AddKnowledgeBaseForm
 from card.models import Worklog, Card
 from contact.models import UserProfile
 # verions
@@ -206,6 +207,46 @@ def get_company(request):
     return HttpResponse(data, content_type='application/json')
 
 
+def createkb(request, company=None):
+    if not request.user.profile_user.is_operator:
+        return HttpResponseRedirect('/')
+    try:
+        company = Organization.objects.get(id=company)
+    except ObjectDoesNotExist:
+        return HttpResponseRedirect('/organizations')
+
+    if request.is_ajax() or request.method == 'POST':
+        addkbform = AddKnowledgeBaseForm(request.POST)
+        if addkbform.is_valid():
+            addkbform.save()
+
+
+    addkbform = AddKnowledgeBaseForm(
+        initial={
+            'company': company.id,
+        }
+    )
+
+    boards = Board.objects.filter(archived=False)
+    kbs = KnowledgeBase.objects.all().filter(company=company)
+    categories = KnowledgeBaseCategory.objects.all().filter(company=company)
+    kbarticles = KnowledgeBaseArticle.objects.all().filter(knowledgebase__company=company)
+
+    context_dict = {
+        # 'site_title': "Knowledge bases | DoIT Spearhead Systems",
+        'site_title': f"KB's {company} | DoIT Spearhead Systems",
+        'page_name': "KBs",
+        'kbs': kbs,
+        'boards': boards,
+        'kbarticles': kbarticles,
+        'company': company,
+        'categories': categories,
+        'SITE_URL': SITE_URL,
+        'addkbform': addkbform,
+    }
+    return render(request, 'organization/createkb.html', context_dict)
+
+
 def kblist(request, company=None):
     if not request.user.profile_user.is_operator:
         return HttpResponseRedirect('/')
@@ -246,12 +287,14 @@ def kbview(request, company=None, kbid=None):
     boards = Board.objects.filter(archived=False)
     categories = KnowledgeBaseCategory.objects.all().filter(company=company)
     kbarticles = KnowledgeBaseArticle.objects.all().filter(knowledgebase__id=kbid)
+    kbs = KnowledgeBase.objects.all().filter(company=company)
 
     context_dict = {
         # 'site_title': "Knowledge bases | DoIT Spearhead Systems",
         'site_title': f"KB's {company} | DoIT Spearhead Systems",
         'page_name': "KBs",
         'kb': kb,
+        'kbs': kbs,
         'kbarticles': kbarticles,
         'company': company,
         'boards': boards,
@@ -289,4 +332,4 @@ def editkb(request, kb=None, company=None):
         'categories': categories,
         'SITE_URL': SITE_URL,
     }
-    return render(request, 'organization/editkb.html', context_dict)
+    return render(request, 'organization/kbartedit.html', context_dict)

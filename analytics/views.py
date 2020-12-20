@@ -22,16 +22,22 @@ today_date = datetime.today()
 # Create your views here.
 @login_required
 @csrf_exempt
-def reports(request):
+def reports(request, organization=None):
     u = User.objects.get(username=request.user)
     up = u.profile_user
-
-    if not up.is_superuser:
+    if not up.is_superuser or not up.is_operator:
         return HttpResponse("This feature is not enabled.")
-    # try:
-    #     up = UserProfile.objects.get(user=u)
-    # except:
-    #     up = None
+
+    try:
+        organization = Organization.objects.get(organization)
+    except:
+        pass
+    if organization:
+
+        print("We got the company >>>>> ", organization)
+
+
+
     allCards = Card.objects.all()
     organizations = Organization.objects.all()
     boards = Board.objects.filter(archived=False)

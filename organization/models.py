@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from taggit.managers import TaggableManager
 
 
 class Organization(models.Model):
@@ -80,6 +81,7 @@ class KnowledgeBaseArticle(models.Model):
     published_date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     last_update_date = models.DateTimeField(blank=True, null=True, auto_now=True)
     content = models.TextField(null=True, blank=True)
+    tags = TaggableManager(blank=True)
 
     class KBArticleState(models.TextChoices):
         DRAFT = 'DR', _('Draft')

@@ -1,0 +1,58 @@
+<div class=" uk-padding-small" uk-grid>
+  <div class="uk-width-1-4@s">
+    <div>
+      <a href="/organizations/kb/create/{{company.id}}" class="uk-button-small uk-button-primary">+ KB</a>
+          <a href="/kb/create/{{company.id}}" class="uk-button-small uk-button-primary">+ Article</a>
+          <a href="/kb/create/{{company.id}}" class="uk-button-small uk-button-primary">+ Category</a>
+      <ul uk-accordion="multiple: true">
+        {# KBS #}
+        <li class="uk-open">
+          <a class="uk-accordion-title uk-background-muted" href="#">
+            <span class="uk-heading-bullet">Knowledge Bases</span>
+          </a>
+          <div class="uk-accordion-content">
+            <ul class="uk-list uk-panel uk-panel-scrollable uk-resize-vertical">
+              {% for kb in kbs %}
+              <li>
+                <span class="uk-margin-right-small" uk-icon="icon:folder;ratio:0.7"></span>
+                <a  href="/organizations/kbview/{{company.id}}/{{kb.id}}/">{{ kb }}{% if kb.public %} <i uk-icon="icon:world; ratio:0.6;" style="color:green;"></i>{% endif %}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
+        {# KB ARTICLES #}
+        <li class="uk-open">
+          <a class="uk-accordion-title uk-background-muted" href="#"><span class="uk-heading-bullet">Kb Articles</span></a>
+          <div class="uk-accordion-content">
+            <ul class="uk-list uk-panel uk-panel-scrollable uk-resize-vertical">
+              {% for kbarticle in kbarticles %}
+              <li>
+                <span class="uk-margin-right-small" uk-icon="icon:file-text;ratio:0.7"></span>
+                <a href="/organizations/kb/edit/{{kbarticle.id}}/{{company.id}}">{{ kbarticle }} <span class="uk-text-small">| {{kbarticle.knowledgebase}}</span></a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
+        {# KB CATEGORIES #}
+        <li class="uk-open">
+          <a class="uk-accordion-title uk-background-muted" href="#">
+            <span class="uk-heading-bullet">Categories</span>
+          </a>
+          <div class="uk-accordion-content">
+            <ul class="uk-list uk-panel uk-panel-scrollable uk-resize-vertical">
+              {% for category in categories %}
+                <li>
+                  <span class="uk-margin-right-small" uk-icon="icon:list;ratio:0.7"></span>
+                  <a target="_blank" href="/admin/organization/knowledgebasecategory/{{category.id}}/change/">{{ category }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+

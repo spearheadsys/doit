@@ -35,7 +35,7 @@ $(document).ready( function () {
         "targets": 2,
         "data": null,
         "render": function (data, type, row, meta) {
-          return '<a href="kblist/'+data[0]+'" uk-icon="file-text" uk-tooltip="title: Knowledge Base"></a><a target="_blank" href="/admin/organization/organization/'+data[0]+'/change/" uk-icon="settings" uk-tooltip="title: Company Settings"></a><a href="delete_organization/'+data[0]+'" uk-icon="trash" uk-tooltip="title: Delete '+data[1]+'" style="color: red;" onclick="return confirm(\'This is a non-recoverable operation! Are you sure?\')"></a>';
+          return '<a href="kb/list/'+data[0]+'" uk-icon="file-text" uk-tooltip="title: Knowledge Base"></a><a href="/analytics/organization/'+data[0]+'" uk-icon="info" uk-tooltip="title: Analytics"></a><a target="_blank" href="/admin/organization/organization/'+data[0]+'/change/" uk-icon="settings" uk-tooltip="title: Company Settings"></a><a href="delete_organization/'+data[0]+'" uk-icon="trash" uk-tooltip="title: Delete '+data[1]+'" style="color: red;" onclick="return confirm(\'This is a non-recoverable operation! Are you sure?\')"></a>';
         }
       },
 

@@ -8,70 +8,13 @@
 
 <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom uk-padding-remove-top uk-margin-left">
   <li><a href="/organizations">Organizations</a></li>
-  <li><a href="/organizations/kblist/{{company.id}}">Knowledgebases</a></li>
-  <li><a href="/organizations/kblist/{{company.id}}">{{kb}}</a></li>
+  <li><a href="/organizations/kb/list/{{company.id}}">Knowledgebases</a></li>
+  <li class="uk-disabled"><a>{{kb}}</a></li>
 </ul>
 
-<div class=" uk-padding-small" uk-grid>
-    <div class="uk-width-1-4@s">
-        <div>
-          <ul uk-accordion="multiple: true">
-            <li class="uk-open">
-              <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Knowledge Base Details</span></a>
-              <div class="uk-accordion-content">
-                <ul class="uk-list">
-                  <li>Name: {{kb}}</li>
-                  <li>Public: {{kb.public}}</li>
-                  <li>Company: {{kb.company}}</li>
-                  <li><a target="_blank" href="/admin/organization/knowledgebase/{{kb.id}}/change/" class="uk-button uk-button-primary">Edit in admin</a></li>
-                </ul>
-            </div>
-            </li>
-            {# KB ARTICLES #}
-            <li>
-              <a class="uk-accordion-title" href="#"><span class="uk-heading-bullet">Kb Articles</span></a>
-              <div class="uk-accordion-content">
-                <ul class="uk-list">
-                  <li>
-                    <a class="uk-button-small uk-button-primary" target="_blank" href="/admin/organization/knowledgebasearticle/add/">New KB Article</a>
-                  </li>
-                  {% for kbarticle in kbarticles %}
-                  <li>
-                    <span class="uk-margin-right-small" uk-icon="icon:file;ratio:0.7"></span>
-                      <a href="/organizations/kb/edit/{{kbarticle.id}}/{{company.id}}">{{ kbarticle }}</a>
-                  </li>
-                  {% endfor %}
-                </ul>
-              </div>
-            </li>
-            {# KB CATEGORIES #}
-            <li>
-              <a class="uk-accordion-title" href="#">
-                <span class="uk-heading-bullet">Categories</span>
-              </a>
-              <div class="uk-accordion-content">
-                <ul class="uk-list">
-                  <li>
-                    <a class="uk-button-small uk-button-secondary" target="_blank" href="/admin/organization/knowledgebasecategory/add/">New Category</a>
-                  </li>
-                  {% for category in categories %}
-                    <li>
-                      <span class="uk-margin-right-small" uk-icon="icon:list;ratio:0.7"></span>
-                      <a target="_blank" href="/admin/organization/knowledgebasecategory/{{category.id}}/change/">{{ category }}</a>
-                    </li>
-                  {% endfor %}
-                </ul>
-              </div>
-            </li>
+{% include "partials/kbsidebar.html" %}
+{% include "partials/kbview.html" %}
 
-          </ul>
-        </div>
-    </div>
-
-    <div class="uk-width-expand uk-divider-vertical uk-height-viewport">
-      <p>something about this kb {{kb}}</p>
-    </div>
-</div>
 
 <!-- end uikit -->
 {% endblock main-content %}

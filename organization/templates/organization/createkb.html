@@ -8,12 +8,13 @@
 
 <ul class="uk-breadcrumb uk-padding-small uk-padding-remove-bottom uk-padding-remove-top uk-margin-left">
   <li><a href="/organizations">Organizations</a></li>
-  <li class="uk-disabled"><a>Knowledgebases</a></li>
-  <li class="uk-disabled"><a>{{company}}</a></li>
+  <li><a href="#">Knowledgebases</a></li>
+  <li><a href="/organizations/kb/list/{{company.id}}">{{company}}</a></li>
 </ul>
 
 {% include "partials/kbsidebar.html" %}
-{% include "partials/kblist.html" %}
+{% include "partials/kbcreate.html" %}
+
 
 
 <!-- end uikit -->

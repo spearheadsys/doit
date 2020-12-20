@@ -1,0 +1,11 @@
+  <div class="uk-width-expand uk-divider-vertical uk-height-viewport">
+    <p class="uk-title">{{company}} Knowledge bases</p>
+    <p>Create a new KB here</p>
+    <form method="POST">
+      {% csrf_token %}
+      {{addkbform.as_ul}}
+      <input type="submit" />
+    </form>
+  </div>
+
+</div>
